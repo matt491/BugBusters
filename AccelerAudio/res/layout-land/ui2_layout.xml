@@ -40,10 +40,10 @@
         android:id="@+id/dataRegistrazione"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/thumbnail"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:layout_toRightOf="@+id/sessione"
+        android:layout_marginLeft="120dp"
         android:text="@string/RecordDate"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -60,10 +60,10 @@
         android:id="@+id/dataUltimaModifica"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/dataRegistrazione"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/sessione"
+        android:layout_marginLeft="120dp"
         android:text="@string/LastModifiedDate"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -91,10 +91,9 @@
         android:id="@+id/checkBoxX"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/selezionaAssi"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="10dp"
+        android:layout_alignBaseline="@+id/selezionaAssi"
+        android:layout_toRightOf="@+id/selezionaAssi"
+        android:layout_marginLeft="50dp"
         android:checked="true"
         android:text="@string/AsseX" />
 
@@ -104,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkBoxX"
         android:layout_toRightOf="@+id/checkBoxX"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="50dp"
         android:text="@string/AsseY" />
 
     <CheckBox
@@ -113,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkBoxY"
         android:layout_toRightOf="@+id/checkBoxY"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="50dp"
         android:text="@string/AsseZ" />
 
     <TextView
@@ -121,7 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/checkBoxX"
+        android:layout_below="@+id/selezionaAssi"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
         android:text="@string/Upsampling"
@@ -131,20 +130,20 @@
         android:id="@+id/seekBar1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/sovracampionamento"
+        android:layout_below="@+id/selezionaAssi"
+        android:layout_toRightOf="@+id/sovracampionamento"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginRight="16dp" />
 
     <Button
         android:id="@+id/recButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/seekBar1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp"
+        android:layout_below="@+id/sovracampionamento"
+        android:layout_marginTop="30dp"
         android:enabled="false"
         android:text="@string/Play" />
 
