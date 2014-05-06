@@ -208,7 +208,7 @@ public class UI2 extends Activity {
 	//Quando viene premuto il tasto Back
 	@Override
 	public void onBackPressed() {
-		if(primavolta){f
+		if(primavolta){
 			Toast.makeText(getApplicationContext(),"Premi di nuovo per uscire",Toast.LENGTH_SHORT).show();
 			primavolta=false;
 		}
