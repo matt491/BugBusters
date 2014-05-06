@@ -44,7 +44,7 @@ public class UI2 extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ui2);
+        setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
         String pkg_r=getPackageName();
         
@@ -53,14 +53,14 @@ public class UI2 extends Activity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
  
         nomevar= (TextView)findViewById(R.id.nome);
-        timevar= (TextView)findViewById(R.id.time);
-        ultimavar= (TextView)findViewById(R.id.ultima);
+        timevar= (TextView)findViewById(R.id.datareg);
+        ultimavar= (TextView)findViewById(R.id.dataulmod);
         result= (TextView)findViewById(R.id.res);
         fineui2=(Button)findViewById(R.id.invio_nome);
-        chX=(CheckBox)findViewById(R.id.checkX);
-        chY=(CheckBox)findViewById(R.id.checkY);
-        chZ=(CheckBox)findViewById(R.id.checkZ);
-        sb = (SeekBar)findViewById(R.id.scamp);
+        chX=(CheckBox)findViewById(R.id.checkBoxX);
+        chY=(CheckBox)findViewById(R.id.checkBoxY);
+        chZ=(CheckBox)findViewById(R.id.checkBoxZ);
+        sb = (SeekBar)findViewById(R.id.seekBar1);
         
         //Se si proviene dalla UI3 di registrazione o dalla UI1 allora:
         timestamp_ric=intent_r.getStringExtra(pkg_r+".myTimeStamp");
@@ -135,6 +135,7 @@ public class UI2 extends Activity {
             	//Inserimento/aggiornamento del DB
             	dbHelper.open();
             	
+            	//Se e' -1 vuol dire che hai appena registrato
             	if(id_ric==-1){ //La stringa per l'immagine viene generata solo alla creazione del record(anche la duplicazione crea un record)
             		String cod=codifica(datoX,datoY,datoZ,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());
             		
@@ -212,7 +213,7 @@ public class UI2 extends Activity {
 			primavolta=false;
 		}
 		else{
-			Intent returnIntent = new Intent(getApplicationContext(), UI3.class);
+			Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
         	startActivity(returnIntent);
 		}
 	return;
