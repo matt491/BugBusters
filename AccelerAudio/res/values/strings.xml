@@ -10,5 +10,9 @@
     <string name="SelAssi">Seleziona assi:</string>
     <string name="Upsampling">Sovracampionamento:</string>
     <string name="Play">Riproduci sessione</string>
+    <string name="Orientation">Scegli orientazione schermo:</string>
+    <string name="Orientation_port">portrait</string>
+    <string name="Orientation_land">landscape</string>
+    <string name="Assi">Assi:</string>
 
 </resources>
