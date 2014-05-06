@@ -165,6 +165,7 @@ public class UI3 extends Activity implements SensorEventListener {
                 intent.putExtra(pkg+".myDatoZ", datoZ.toString());
                
             	startActivity(intent);
+            	finish();
             	}
             	
             	}

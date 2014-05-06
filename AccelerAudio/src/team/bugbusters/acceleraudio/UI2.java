@@ -52,16 +52,7 @@ public class UI2 extends Activity {
        
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
      
-        /*nomevar= (TextView)findViewById(R.id.nome);
-        timevar= (TextView)findViewById(R.id.time);
-        ultimavar= (TextView)findViewById(R.id.ultima);
-        result= (TextView)findViewById(R.id.res);
-        fineui2=(Button)findViewById(R.id.invio_nome);
-        chX=(CheckBox)findViewById(R.id.checkX);
-        chY=(CheckBox)findViewById(R.id.checkY);
-        chZ=(CheckBox)findViewById(R.id.checkZ);
-        sb = (SeekBar)findViewById(R.id.scamp);*/
-       nomevar= (TextView)findViewById(R.id.nomeSessione);
+        nomevar= (TextView)findViewById(R.id.nomeSessione);
         timevar= (TextView)findViewById(R.id.datareg);
         ultimavar= (TextView)findViewById(R.id.dataulmod);
         result= (TextView)findViewById(R.id.res);
