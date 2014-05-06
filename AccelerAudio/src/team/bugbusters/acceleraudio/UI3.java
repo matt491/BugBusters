@@ -281,10 +281,14 @@ public class UI3 extends Activity implements SensorEventListener {
 	//Metodo che controlla se è gia presente un NOME di una music session nel DB
 	public boolean sameName(String s){
 			dbHelper.open();
-			cursor=dbHelper.fetchRecordByFilter(s);
+			Cursor cursor=dbHelper.fetchRecordByFilter(s);
 			while (cursor.moveToNext()) {
 				String rNAME = cursor.getString(cursor.getColumnIndex(DbAdapter.KEY_NAME) );
-				if(s.equals(rNAME)) return true;
+				if(s.equals(rNAME)) {
+					cursor.close();
+					dbHelper.close();
+					return true;
+				}
 			} 
 			cursor.close();
 			dbHelper.close();
