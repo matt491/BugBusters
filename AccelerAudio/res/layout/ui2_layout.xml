@@ -152,7 +152,9 @@
         android:id="@+id/res"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/seekBar1"
-        android:layout_toRightOf="@+id/dataulmod"/>
+        android:layout_alignBaseline="@+id/sovracampionamento"
+        android:layout_toRightOf="@+id/sovracampionamento"
+        android:layout_marginLeft="5dp"
+        android:text="sovracamp" />
 
 </RelativeLayout>

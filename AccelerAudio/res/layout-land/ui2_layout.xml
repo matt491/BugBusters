@@ -37,17 +37,6 @@
         android:text="nome_sessione" />
 
     <TextView
-        android:id="@+id/dataRegistrazione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:layout_toRightOf="@+id/sessione"
-        android:layout_marginLeft="120dp"
-        android:text="@string/RecordDate"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
         android:id="@+id/datareg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,17 +44,6 @@
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/dataRegistrazione"
         android:text="data" />
-
-    <TextView
-        android:id="@+id/dataUltimaModifica"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/dataRegistrazione"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/sessione"
-        android:layout_marginLeft="120dp"
-        android:text="@string/LastModifiedDate"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/dataulmod"
@@ -154,5 +132,24 @@
         android:layout_alignLeft="@+id/sovracampionamento"
         android:layout_below="@+id/seekBar1"
         android:layout_marginLeft="24dp" />
+
+    <TextView
+        android:id="@+id/dataUltimaModifica"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/dataRegistrazione"
+        android:layout_alignTop="@+id/nomeSessione"
+        android:text="@string/LastModifiedDate"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/dataRegistrazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/sessione"
+        android:layout_alignBottom="@+id/sessione"
+        android:layout_toRightOf="@+id/sovracampionamento"
+        android:text="@string/RecordDate"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
