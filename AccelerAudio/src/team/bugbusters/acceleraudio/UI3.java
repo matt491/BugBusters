@@ -50,7 +50,7 @@ public class UI3 extends Activity implements SensorEventListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ui3);
+        setContentView(R.layout.ui3_layout);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         dbHelper = new DbAdapter(this);
