@@ -1,4 +1,4 @@
-package it.bugbusters.acceleraudio;
+package team.bugbusters.acceleraudio;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
