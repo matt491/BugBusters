@@ -46,7 +46,7 @@ public class UI3 extends Activity implements SensorEventListener {
     private SharedPreferences prefs;
     private DbAdapter dbHelper;
     private Cursor cursor;
-    
+    ////tgyuirty
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
