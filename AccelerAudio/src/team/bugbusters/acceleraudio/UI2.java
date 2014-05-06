@@ -44,7 +44,7 @@ public class UI2 extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ui2);
+        setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
         String pkg_r=getPackageName();
         
