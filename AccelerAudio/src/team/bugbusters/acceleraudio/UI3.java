@@ -31,7 +31,7 @@ public class UI3 extends Activity implements SensorEventListener {
     private StringBuilder datoY;
     private StringBuilder datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
-	private int i=0,delay;									//i: indice dei campioni
+	private int i=0;									//i: indice dei campioni
 	private long starttime;
     private double millis,m=0;							//variabile usata per tenere traccia della durata della registrazione
     private String freq1;						
@@ -50,6 +50,14 @@ public class UI3 extends Activity implements SensorEventListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //Tipo...
+        if(savedInstanceState!=null){
+        	
+        	//ripristina qualcosa
+        	
+        }
+        
         setContentView(R.layout.ui3_layout);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -81,7 +89,7 @@ public class UI3 extends Activity implements SensorEventListener {
 
         t.setText("Tempo: ");
         
-        
+        //Diabilito i pulsanti all'inizio
         pause.setEnabled(false);
         resume.setEnabled(false);
         stop.setEnabled(false);
@@ -259,18 +267,13 @@ public class UI3 extends Activity implements SensorEventListener {
 		return ((double)(System.currentTimeMillis() - starttime)/1000)+millis;
 	}
 	
-	//Metodo per arrotondare a 2 cifre decimale la durata
+	//Metodo per arrotondare a 2 cifre decimali la durata
 	public static double arrotondaTempo(double x){
 		x = Math.floor(x*100);
 		x = x/100;
 		return x;
 		}
 	
-	public static float arrotondamento(float x){
-		x = Math.round(x*1000);
-		x = x/1000;
-		return x;
-		}
 
 	//Metodo per la conversione in short che servirà all'AudioTrack
 	public static short converti(float x){
@@ -279,7 +282,7 @@ public class UI3 extends Activity implements SensorEventListener {
 		else return (short)Math.round(x*1000);
 	}
 	
-	//Metodo che controlla se è gia presente un NOME di una music session nel DB
+	//Metodo che controlla se � gia presente un NOME di una music session nel DB
 	public boolean sameName(String s){
 			dbHelper.open();
 			Cursor cursor=dbHelper.fetchRecordByFilter(s);
