@@ -27,14 +27,14 @@ import android.widget.Toast;
 
 public class UI3 extends Activity {
 	
-    private StringBuilder datoX;
-    private StringBuilder datoY;
-    private StringBuilder datoZ;
+    private String datoX;
+    private String datoY;
+    private String datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
-	private int i=0;									//i: indice dei campioni
+	private int i=0,end_time;									//i: indice dei campioni
 	private long starttime;
-    private double millis,m=0;							//variabile usata per tenere traccia della durata della registrazione
-    private String freq1;						
+    private double time;							//variabile usata per tenere traccia della durata della registrazione
+    private String freq_curr;						
     private String nome;								// Nome inserito dall'utente tramite EditText
     private String ts;
     private String pkg;
@@ -42,7 +42,7 @@ public class UI3 extends Activity {
     private Button pause,resume,stop,rec,avan;									
     private EditText nome_music;						//Campo di testo del nome della registrazione
     private TextView t,varcamp;
-    Intent intent,msgIntent;
+    Intent intent,intentToSer;
     private SharedPreferences prefs;
     private DbAdapter dbHelper;
     private MyUI3Receiver receiver;
@@ -54,7 +54,7 @@ public class UI3 extends Activity {
         
 
         receiver = new MyUI3Receiver();
-        msgIntent = new Intent(UI3.this, DataRecord.class);
+        intentToSer = new Intent(UI3.this, DataRecord.class);
         filter = new IntentFilter(MyUI3Receiver.PROCESS_RESPONSE);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiver,filter);
@@ -63,9 +63,7 @@ public class UI3 extends Activity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         dbHelper = new DbAdapter(this);
         
-        datoX=new StringBuilder();
-        datoY=new StringBuilder();
-        datoZ=new StringBuilder();
+
         
         //Intent predisposto per passare alla UI2
         intent=new Intent(getApplicationContext(), UI2.class);
@@ -99,29 +97,31 @@ public class UI3 extends Activity {
         //Tasto Pausa premuto
         pause.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	millis=((double)(System.currentTimeMillis() - starttime)/1000)+millis;
-            	m=arrotondaTempo(millis);
-            	t.setText("Tempo: "+m);
+
             	pause.setEnabled(false);
             	resume.setEnabled(true);
-            	Toast.makeText(getApplicationContext(),"Registrazione in pausa",Toast.LENGTH_SHORT).show();
-            	
-            	msgIntent.putExtra("tempocorr",m);
-            	startService(msgIntent);
-            	//pausa();
-            	}
-            });
+
+            	stopService(intentToSer);
+            }
+        });
         
         //Tasto Resume premuto
         resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
-            	starttime=System.currentTimeMillis();
+            	
             	resume.setEnabled(false);
             	pause.setEnabled(true);
-            		Toast.makeText(getApplicationContext(), "Registrazione ripresa", Toast.LENGTH_SHORT).show();
+            	
+            	//Creare un intent nuovo ogni volta?
+        		intentToSer.putExtra("VecchioX", datoX);
+        		intentToSer.putExtra("VecchioY", datoY);
+        		intentToSer.putExtra("VecchioZ", datoZ);
+        		intentToSer.putExtra("attFreq", freq_curr);
+        		intentToSer.putExtra("attFineTempo", end_time);
+        		intentToSer.putExtra("attTempo", time);
+        		intentToSer.getIntExtra("attCamp", i);
+        		startService(intentToSer);
             		
-            		
-            	//	acquisizione();
             }
             	
         });
@@ -129,32 +129,27 @@ public class UI3 extends Activity {
         //Tasto Stop premuto
         stop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if(pause.isEnabled()){
-            		millis=((double)(System.currentTimeMillis() - starttime)/1000)+millis;
-            		m=arrotondaTempo(millis);
-            		t.setText("Tempo: "+m);
-            	}
-            	
-            	stopService(msgIntent);
-            	//arresto();
+            		avan.setEnabled(true);
+            		pause.setEnabled(false);
+            		stop.setEnabled(false);
+            		resume.setEnabled(false);
+
+            		stopService(intentToSer);
             	}
         });
          
         //Tasto Record premuto
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
-            		starttime=System.currentTimeMillis();
-            		freq1=prefs.getString("Campion", "NORMAL");
-            		pb.setMax(prefs.getInt("duratadef", 20));
             		avan.setEnabled(false);
             		pause.setEnabled(true);
             		stop.setEnabled(true);
             		rec.setEnabled(false);
-            		Toast.makeText(getApplicationContext(), "Registrazione iniziata", Toast.LENGTH_LONG).show();
             		
-            		 
-            		startService(msgIntent);
-            		//acquisizione();
+            		end_time=prefs.getInt("duratadef", 50);
+            		pb.setMax(end_time);
+            		
+            		startService(intentToSer);
             		
             	}
         });
@@ -173,7 +168,7 @@ public class UI3 extends Activity {
             	nome = nome_music.getText().toString();
             	ts = (DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString());
             	
-            	intent.putExtra(pkg+".myDurata", m);
+            	intent.putExtra(pkg+".myDurata", time);
             	intent.putExtra(pkg+".myNome", nome);
             	intent.putExtra(pkg+".myTimeStamp", ts); 
             	intent.putExtra(pkg+".myNCamp", i);
@@ -190,20 +185,7 @@ public class UI3 extends Activity {
                
     }    //FINE onCreate()
     
-        /*
 
-    
-
-    protected void arresto(){
-    	mSensorManager.unregisterListener(this);
-    	Toast.makeText(getApplicationContext(), "Registrazione terminata", Toast.LENGTH_SHORT).show();
-    	pause.setEnabled(false);
-    	rec.setEnabled(false);
-    	resume.setEnabled(false);
-    	stop.setEnabled(false);
-    	avan.setEnabled(true);
-    }
-    */
     protected void onResume() {
         super.onResume();
        
@@ -220,28 +202,6 @@ public class UI3 extends Activity {
          super.onDestroy();
      }
 
-
-	
-	
-	//Metodo per aggiornare la variabile della durata
-	protected double aggiornoTempo(){
-		return ((double)(System.currentTimeMillis() - starttime)/1000)+millis;
-	}
-	
-	//Metodo per arrotondare a 2 cifre decimali la durata
-	public static double arrotondaTempo(double x){
-		x = Math.floor(x*100);
-		x = x/100;
-		return x;
-		}
-	
-
-	//Metodo per la conversione in short che servirÃ  all'AudioTrack
-	public static short converti(float x){
-		if(x>32.767) return 32767;
-		if(x<-32.768) return -32768;
-		else return (short)Math.round(x*1000);
-	}
 	
 	//Metodo che controlla se è gia presente un NOME di una music session nel DB
 	public boolean sameName(String s){
@@ -284,8 +244,17 @@ public class UI3 extends Activity {
 	            pbX.setProgress(intent.getIntExtra("intPbX", 0));
 	            pbY.setProgress(intent.getIntExtra("intPbY", 0));
 	            pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
-	            varcamp.setText(""+(intent.getIntExtra("attCamp",0)));
-	           // intent.getStringExtra("ValoreX");
+	            
+	            i=intent.getIntExtra("serCamp",0);
+	            varcamp.setText(""+i);
+	            datoX=intent.getStringExtra("ValoreX");
+	            datoY=intent.getStringExtra("ValoreX");
+	            datoZ=intent.getStringExtra("ValoreX");
+	            freq_curr=intent.getStringExtra("serFreq");
+	            end_time=intent.getIntExtra("serDur",0);
+	            time=intent.getDoubleExtra("serTempo", 0);
+	            t.setText("Tempo: "+time);
+	            
 	            
 	        }
 
