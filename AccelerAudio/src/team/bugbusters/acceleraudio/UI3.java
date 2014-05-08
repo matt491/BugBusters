@@ -1,8 +1,10 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.Sensor;
@@ -23,10 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class UI3 extends Activity implements SensorEventListener {
+public class UI3 extends Activity {
 	
-	private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
     private StringBuilder datoX;
     private StringBuilder datoY;
     private StringBuilder datoZ;
@@ -42,24 +42,24 @@ public class UI3 extends Activity implements SensorEventListener {
     private Button pause,resume,stop,rec,avan;									
     private EditText nome_music;						//Campo di testo del nome della registrazione
     private TextView t,varcamp;
-    Intent intent;
+    Intent intent,msgIntent;
     private SharedPreferences prefs;
     private DbAdapter dbHelper;
-
+    private MyUI3Receiver receiver;
+    private IntentFilter filter;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        //Tipo...
-        if(savedInstanceState!=null){
-        	
-        	//ripristina qualcosa
-        	
-        }
+
+        receiver = new MyUI3Receiver();
+        msgIntent = new Intent(UI3.this, DataRecord.class);
+        filter = new IntentFilter(MyUI3Receiver.PROCESS_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(receiver,filter);
         
         setContentView(R.layout.ui3_layout);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         dbHelper = new DbAdapter(this);
         
@@ -105,7 +105,10 @@ public class UI3 extends Activity implements SensorEventListener {
             	pause.setEnabled(false);
             	resume.setEnabled(true);
             	Toast.makeText(getApplicationContext(),"Registrazione in pausa",Toast.LENGTH_SHORT).show();
-            	pausa();
+            	
+            	msgIntent.putExtra("tempocorr",m);
+            	startService(msgIntent);
+            	//pausa();
             	}
             });
         
@@ -116,8 +119,10 @@ public class UI3 extends Activity implements SensorEventListener {
             	resume.setEnabled(false);
             	pause.setEnabled(true);
             		Toast.makeText(getApplicationContext(), "Registrazione ripresa", Toast.LENGTH_SHORT).show();
-            		acquisizione();
-            		}
+            		
+            		
+            	//	acquisizione();
+            }
             	
         });
         
@@ -130,7 +135,8 @@ public class UI3 extends Activity implements SensorEventListener {
             		t.setText("Tempo: "+m);
             	}
             	
-            	arresto();
+            	stopService(msgIntent);
+            	//arresto();
             	}
         });
          
@@ -145,7 +151,10 @@ public class UI3 extends Activity implements SensorEventListener {
             		stop.setEnabled(true);
             		rec.setEnabled(false);
             		Toast.makeText(getApplicationContext(), "Registrazione iniziata", Toast.LENGTH_LONG).show();
-            		acquisizione();
+            		
+            		 
+            		startService(msgIntent);
+            		//acquisizione();
             		
             	}
         });
@@ -181,28 +190,10 @@ public class UI3 extends Activity implements SensorEventListener {
                
     }    //FINE onCreate()
     
-        
-    //Metodo chiamato dal tasto Record: Inizia l'acquisizione dati
-    protected void acquisizione(){
-    	mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-    	
-    	if(freq1.equals("NORMAL"))
-    		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    	
-    	if(freq1.equals("UI"))
-    		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        /*
 
-    	if(freq1.equals("GAME"))
-    		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+    
 
-    	if(freq1.equals("FASTEST"))
-    		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-    }
-    
-    protected void pausa(){
-    	mSensorManager.unregisterListener(this);
-    }
-    
     protected void arresto(){
     	mSensorManager.unregisterListener(this);
     	Toast.makeText(getApplicationContext(), "Registrazione terminata", Toast.LENGTH_SHORT).show();
@@ -212,7 +203,7 @@ public class UI3 extends Activity implements SensorEventListener {
     	stop.setEnabled(false);
     	avan.setEnabled(true);
     }
-    
+    */
     protected void onResume() {
         super.onResume();
        
@@ -222,45 +213,15 @@ public class UI3 extends Activity implements SensorEventListener {
         super.onPause();
         
     }
+ 	 
+     @Override
+     public void onDestroy() {
+         this.unregisterReceiver(receiver);
+         super.onDestroy();
+     }
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
 	
-	}
-	
-	
-	//Cuore dell'activity: registra i dati memorizzandoli negli array
-	@Override
-	public void onSensorChanged(SensorEvent event) {
-		
-	    if(millis<prefs.getInt("duratadef", 10)) {    
-    
-			pb.setProgress((int)Math.round(millis));
-			
-			datoX.append(prefix+converti(event.values[0]));
-			datoY.append(prefix+converti(event.values[1]));
-			datoZ.append(prefix+converti(event.values[2]));
-			pbX.setProgress(Math.round(Math.abs(event.values[0])));
-			pbY.setProgress(Math.round(Math.abs(event.values[1])));
-			pbZ.setProgress(Math.round(Math.abs(event.values[2])));
-			millis=aggiornoTempo();
-			starttime=System.currentTimeMillis();
-			m=arrotondaTempo(millis);
-			t.setText("Tempo: "+m);
-			varcamp.setText(""+((i+1)*3));
-			i++;
-			prefix=" ";
-		}
-		
-		else {
-			//Adatta la dimensione della StringBuilder in base al numero di elementi presenti
-    		datoX.trimToSize();
-    		datoY.trimToSize();
-    		datoZ.trimToSize();
-        	arresto();
-		}
-		
-	}
 	
 	//Metodo per aggiornare la variabile della durata
 	protected double aggiornoTempo(){
@@ -314,5 +275,23 @@ public class UI3 extends Activity implements SensorEventListener {
 	}
 	
 
+	   public class MyUI3Receiver extends BroadcastReceiver{
+
+		   public static final String PROCESS_RESPONSE = "team.bugbusters.acceleraudio.intent.action.PROCESS_RESPONSE";
+	        @Override
+	        public void onReceive(Context context, Intent intent) {
+	            pb.setProgress(intent.getIntExtra("intPb", 0));
+	            pbX.setProgress(intent.getIntExtra("intPbX", 0));
+	            pbY.setProgress(intent.getIntExtra("intPbY", 0));
+	            pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
+	            varcamp.setText(""+(intent.getIntExtra("attCamp",0)));
+	           // intent.getStringExtra("ValoreX");
+	            
+	        }
+
+
+	        }
+
+	
 	
 	}
