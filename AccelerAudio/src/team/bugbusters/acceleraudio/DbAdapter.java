@@ -122,6 +122,8 @@ public class DbAdapter {
     
         return mCursor;
   }
+   
+   //Qua ci va il metodo di Mattia
   
   
 }
