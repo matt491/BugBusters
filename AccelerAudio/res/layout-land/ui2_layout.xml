@@ -37,17 +37,6 @@
         android:text="nome_sessione" />
 
     <TextView
-        android:id="@+id/dataRegistrazione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:layout_toRightOf="@+id/sessione"
-        android:layout_marginLeft="120dp"
-        android:text="@string/RecordDate"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
         android:id="@+id/datareg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,17 +44,6 @@
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/dataRegistrazione"
         android:text="data" />
-
-    <TextView
-        android:id="@+id/dataUltimaModifica"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/dataRegistrazione"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/sessione"
-        android:layout_marginLeft="120dp"
-        android:text="@string/LastModifiedDate"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/dataulmod"
@@ -131,20 +109,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/selezionaAssi"
-        android:layout_toRightOf="@+id/sovracampionamento"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/sovracampionamento"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp" />
 
     <Button
-        android:id="@+id/recButton"
+        android:id="@+id/toPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/sovracampionamento"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="45dp"
         android:enabled="false"
         android:text="@string/Play" />
+
+    <TextView
+        android:id="@+id/res"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/sovracampionamento"
+        android:layout_toRightOf="@+id/sovracampionamento"
+        android:layout_marginLeft="5dp"
+        android:text="sovracamp" />
+
+    <TextView
+        android:id="@+id/dataUltimaModifica"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/dataRegistrazione"
+        android:layout_alignTop="@+id/nomeSessione"
+        android:text="@string/LastModifiedDate"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/dataRegistrazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/sessione"
+        android:layout_alignBottom="@+id/sessione"
+        android:layout_toRightOf="@+id/sovracampionamento"
+        android:text="@string/RecordDate"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

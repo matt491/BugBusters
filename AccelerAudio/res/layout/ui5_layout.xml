@@ -1,7 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
     
+ 	   <TableRow
+        android:id="@+id/tableRow22"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp" >
+    
+    <CheckBox
+        android:id="@+id/checkXdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/AsseX" />
 
-</RelativeLayout>
+    <CheckBox
+        android:id="@+id/checkYdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/AsseY" />
+
+    <CheckBox
+        android:id="@+id/checkZdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/AsseZ" />
+
+       </TableRow>
+       
+    
+        <TableRow
+        android:id="@+id/tableRow23"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/tt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:text="Campionamento: "
+            android:textSize="15sp" />
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </TableRow>
+
+        <TableRow
+        android:id="@+id/tableRow24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left" >
+        
+        
+          <TextView
+              android:id="@+id/tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:text="Durata Massima: "
+            android:textSize="15sp" />
+
+          <TextView
+              android:id="@+id/durmax"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:textSize="15sp"/>
+          
+          </TableRow>
+            
+    <SeekBar
+        android:id="@+id/durdef"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="150"
+        android:paddingBottom="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp"
+        android:progress="1" />
+     
+     <TableRow
+        android:id="@+id/tableRow25"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp" >
+    
+    <TextView
+       		android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingLeft="10dp"
+            android:text="Sovracampionamento: "
+            android:textSize="15sp" />
+    
+    <TextView
+        	android:id="@+id/sovradef"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:max="100"
+       		android:paddingBottom="15dp"
+        	android:paddingTop="15dp"
+        	android:progress="1" />
+    
+    </TableRow>
+    
+    <SeekBar
+        android:id="@+id/sbcampdef"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:paddingBottom="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:progress="1" />
+            
+            <Button
+                android:id="@+id/salva_imp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SALVA"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+    
+</LinearLayout>
