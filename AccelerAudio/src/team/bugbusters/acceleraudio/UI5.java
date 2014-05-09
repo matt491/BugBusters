@@ -52,7 +52,7 @@ public class UI5 extends Activity {
 	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 	        		this,
 	        		android.R.layout.simple_spinner_item,
-	        		new String[]{"NORMAL","UI","GAME","FASTEST"}
+	        		new String[]{"Molto lento","Lento","Molto lentoe","Veloce"}
 	        		);
 	         spinner.setAdapter(adapter);
     
@@ -61,7 +61,6 @@ public class UI5 extends Activity {
 	         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 	        	public void onItemSelected(AdapterView<?> adapter, View view,int pos, long id) {
 	        		String selected = (String)adapter.getItemAtPosition(pos);
-	        		Toast.makeText(getApplicationContext(),"Hai selezionato "+selected,Toast.LENGTH_SHORT).show();
 	        		freqdef=selected;
 	        	}
 	        	public void onNothingSelected(AdapterView<?> arg0) {}
@@ -74,10 +73,10 @@ public class UI5 extends Activity {
 	        	defZ.setChecked(prefs.getBoolean("Zselect", true));
 	        	sbdurdef.setProgress(prefs.getInt("duratadef", 50));
 	        	sbsovradef.setProgress(prefs.getInt("sovrdef", 0));
-	        	if(prefs.getString("Campion", "NORMAL").equals("NORMAL")) spinner.setSelection(0);
-	        	if(prefs.getString("Campion", "NORMAL").equals("UI")) spinner.setSelection(1);
-	        	if(prefs.getString("Campion", "NORMAL").equals("GAME")) spinner.setSelection(2);
-	        	if (prefs.getString("Campion", "NORMAL").equals("FASTEST")) spinner.setSelection(3);
+	        	if(prefs.getString("Campion", "Molto lento").equals("Molto lento")) spinner.setSelection(0);
+	        	if(prefs.getString("Campion", "Molto lento").equals("Lento")) spinner.setSelection(1);
+	        	if(prefs.getString("Campion", "Molto lento").equals("Normale")) spinner.setSelection(2);
+	        	if (prefs.getString("Campion", "Molto lento").equals("Veloce")) spinner.setSelection(3);
 	        	dmax.setText(sbdurdef.getProgress()+" secondi");					//Visualizzazione Durata default (max 120 sec)
 	        	if(sbsovradef.getProgress()==0)scampdef.setText("Scelta 0");		//Visualizzazione Sovracampionamento
 				if(sbsovradef.getProgress()==25)scampdef.setText("Scelta 1");
@@ -123,7 +122,7 @@ public class UI5 extends Activity {
 
 	    			@Override
 	    			public void onStopTrackingTouch(SeekBar seekBar) {
-	    				scampdef.setText(UI2.campToString(sbsovradef.getProgress()));
+	    				scampdef.setText(campToString(sbsovradef.getProgress()));
 	    			}});
 	        	
 	        	
@@ -149,5 +148,24 @@ public class UI5 extends Activity {
 	        	
 	} //Fine onCreate
 	
+	
+	public static String campToString(int c){
+		if(c==0) return "Scelta 0";
+		else if(c==25) return "Scelta 1";
+		else if(c==50) return "Scelta 2";
+		else if(c==75) return "Scelta 3";
+		else return  "Scelta 4";
+		
+	}
+	
+	public static int stringToCamp(String s){
+		if(s.equals("Scelta 0")) return 0;
+		if(s.equals("Scelta 1")) return 25;
+		if(s.equals("Scelta 2")) return 50;
+		if(s.equals("Scelta 3")) return 75;
+		else return 100;
+	}
 
+	
+	
 }

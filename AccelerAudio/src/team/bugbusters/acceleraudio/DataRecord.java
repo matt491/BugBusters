@@ -72,6 +72,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        
 	        while(tempo<durata_def);
 	        
+	        Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
 	        //Se si viene dalla UI2 si termina qua
 	        //se si viene chiamati dal widget si deve fare un altro metodo
 	 	}
