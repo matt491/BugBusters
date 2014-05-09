@@ -14,5 +14,17 @@
     <string name="Orientation_port">portrait</string>
     <string name="Orientation_land">landscape</string>
     <string name="Assi">Assi:</string>
+    <string name="toggleButtonString">Blocca orientazione schermo</string>
+    <string name="ifLocked">Sblocca</string>
+    <string name="ifUnlocked">Blocca</string>
+    <string name="time">Tempo:</string>
+    <string name="campioniRegistratiString">Campioni registrati:</string>
+    <string name="nameChoosing">Nome:</string>
+    <string name="hintName">Inserisci un nome</string>
+    <string name="record">Registra</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Riprendi</string>
+    <string name="stop">Stop</string>
+    <string name="avanti">Avanti</string>
 
 </resources>
