@@ -190,23 +190,6 @@
         android:text="@string/record" />
 
     <Button
-        android:id="@+id/pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView7"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/pause" />
-
-    <Button
-        android:id="@+id/resume"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pause"
-        android:layout_centerHorizontal="true"
-        android:text="@string/resume" />
-
-    <Button
         android:id="@+id/stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -217,11 +200,26 @@
         android:text="@string/stop" />
 
     <Button
+        android:id="@+id/resume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/record"
+        android:layout_centerHorizontal="true"
+        android:text="@string/resume" />
+
+    <Button
+        android:id="@+id/pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/resume"
+        android:layout_alignRight="@+id/avanz"
+        android:text="@string/pause" />
+
+    <Button
         android:id="@+id/avanz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/resume"
-        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:text="@string/avanti" />
         
