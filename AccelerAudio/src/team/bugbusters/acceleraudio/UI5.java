@@ -52,7 +52,7 @@ public class UI5 extends Activity {
 	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 	        		this,
 	        		android.R.layout.simple_spinner_item,
-	        		new String[]{"Molto lento","Lento","Molto lentoe","Veloce"}
+	        		new String[]{"Molto lento","Lento","Normale","Veloce"}
 	        		);
 	         spinner.setAdapter(adapter);
     

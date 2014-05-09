@@ -60,7 +60,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	datoX=new StringBuilder();
 	        	datoY=new StringBuilder();
 	        	datoZ=new StringBuilder();
-	        	freq=prefs.getString("Campion", "NORMAL");
+	        	freq=prefs.getString("Campion", "Molto lento");
 	        	tempo=0;
 	        	durata_def=prefs.getInt("duratadef", 50);
 	        	starttime=System.currentTimeMillis();        	
@@ -70,9 +70,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	
 	        acquisizione();
 	        
-	        while(tempo<durata_def);
 	        
 	        Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
+	        while(tempo<durata_def);
+	        
+	        
 	        //Se si viene dalla UI2 si termina qua
 	        //se si viene chiamati dal widget si deve fare un altro metodo
 	 	}
@@ -136,10 +138,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
     		Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
     	
     	mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-    	if(freq.equals("NORMAL")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    	if(freq.equals("UI"))	   	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-    	if(freq.equals("GAME")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-    	if(freq.equals("FASTEST"))	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+    	if(freq.equals("Molto lento")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    	if(freq.equals("Lento"))	   	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+    	if(freq.equals("Normale")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+    	if(freq.equals("Veloce"))	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
     	Toast.makeText(getApplicationContext(), "Registrazione iniziata", Toast.LENGTH_SHORT).show();
     }
 	
