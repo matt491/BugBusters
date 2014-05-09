@@ -26,5 +26,7 @@
     <string name="resume">Riprendi</string>
     <string name="stop">Stop</string>
     <string name="avanti">Avanti</string>
+    <string name="alertTitle">Avviso!!!</string>
+    <string name="alertMessage">Sei sicuro di voler abbanadonare l\'app?</string>
 
 </resources>
