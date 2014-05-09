@@ -73,16 +73,10 @@ public class UI5 extends Activity {
 	        	defZ.setChecked(prefs.getBoolean("Zselect", true));
 	        	sbdurdef.setProgress(prefs.getInt("duratadef", 50));
 	        	sbsovradef.setProgress(prefs.getInt("sovrdef", 0));
-	        	if(prefs.getString("Campion", "Molto lento").equals("Molto lento")) spinner.setSelection(0);
-	        	if(prefs.getString("Campion", "Molto lento").equals("Lento")) spinner.setSelection(1);
-	        	if(prefs.getString("Campion", "Molto lento").equals("Normale")) spinner.setSelection(2);
-	        	if (prefs.getString("Campion", "Molto lento").equals("Veloce")) spinner.setSelection(3);
-	        	dmax.setText(sbdurdef.getProgress()+" secondi");					//Visualizzazione Durata default (max 120 sec)
-	        	if(sbsovradef.getProgress()==0)scampdef.setText("Scelta 0");		//Visualizzazione Sovracampionamento
-				if(sbsovradef.getProgress()==25)scampdef.setText("Scelta 1");
-				if(sbsovradef.getProgress()==50)scampdef.setText("Scelta 2");
-				if(sbsovradef.getProgress()==75)scampdef.setText("Scelta 3");
-				if(sbsovradef.getProgress()==100)scampdef.setText("Scelta 4");
+	        	spinner.setSelection(stringToFreq(prefs.getString("Campion", "Molto lento")));
+	        	dmax.setText(sbdurdef.getProgress()+" secondi");
+	        	scampdef.setText(campToString(sbsovradef.getProgress()));
+	
 	         
 	        	//Sovrascritti i metodi della SeekBar della durata di default
 	        	sbdurdef.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -91,8 +85,7 @@ public class UI5 extends Activity {
 	            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 	            }
 				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {				
-				}
+				public void onStartTrackingTouch(SeekBar seekBar) {}
 
 				@Override
 				public void onStopTrackingTouch(SeekBar seekBar) {
@@ -117,8 +110,7 @@ public class UI5 extends Activity {
 	                }
 
 	    			@Override
-	    			public void onStartTrackingTouch(SeekBar seekBar) {
-	    			}
+	    			public void onStartTrackingTouch(SeekBar seekBar) {}
 
 	    			@Override
 	    			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -157,6 +149,14 @@ public class UI5 extends Activity {
 		else return  "Scelta 4";
 		
 	}
+	
+	public static int stringToFreq(String s){
+		if(s.equals("Molto lento")) return 0;
+		if(s.equals("Lento")) return 1;
+		if(s.equals("Normale")) return 2;
+		else return 3;
+	}
+	
 	
 	public static int stringToCamp(String s){
 		if(s.equals("Scelta 0")) return 0;

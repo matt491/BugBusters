@@ -71,7 +71,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        acquisizione();
 	        
 	        
-	        Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
+	        
 	        while(tempo<durata_def);
 	        
 	        
@@ -119,7 +119,12 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			datoX.trimToSize();
 			datoY.trimToSize();
 			datoZ.trimToSize();
-
+			
+			if(tempo>=durata_def){
+				Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
+				broadcastIntent.putExtra("STOP", true);
+			}
+			
 			broadcastIntent.putExtra("ValoreX", datoX.toString());
 			broadcastIntent.putExtra("ValoreY", datoY.toString());
 			broadcastIntent.putExtra("ValoreZ", datoZ.toString());

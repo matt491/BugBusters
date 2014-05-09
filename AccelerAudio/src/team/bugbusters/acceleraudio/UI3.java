@@ -248,6 +248,12 @@ public class UI3 extends Activity {
 	            time=intent.getDoubleExtra("serTempo", 0);
 	            t.setText("Tempo: "+time);
 	            
+	            if(intent.getBooleanExtra("STOP", false)){
+	            	avan.setEnabled(true);
+            		pause.setEnabled(false);
+            		stop.setEnabled(false);
+            		resume.setEnabled(false);
+	            }
 	            
 	        }
 
