@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.hardware.SensorEvent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
@@ -28,14 +27,12 @@ public class UI3 extends Activity {
     private String datoY;
     private String datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
-	private int i=0,end_time;									//i: indice dei campioni
-	private long starttime;
+	private int i,end_time;									//i: indice dei campioni
     private double time;							//variabile usata per tenere traccia della durata della registrazione
     private String freq_curr;						
-    private String nome;								// Nome inserito dall'utente tramite EditText
+    private String nome; 							// Nome inserito dall'utente tramite EditText
     private String ts;
     private String pkg;
-    private String prefix="";
     private Button pause,resume,stop,rec,avan;									
     private EditText nome_music;						//Campo di testo del nome della registrazione
     private TextView t,varcamp;
@@ -109,14 +106,13 @@ public class UI3 extends Activity {
             	resume.setEnabled(false);
             	pause.setEnabled(true);
             	
-            	//Creare un intent nuovo ogni volta?
         		intentToSer.putExtra("VecchioX", datoX);
         		intentToSer.putExtra("VecchioY", datoY);
         		intentToSer.putExtra("VecchioZ", datoZ);
         		intentToSer.putExtra("attFreq", freq_curr);
         		intentToSer.putExtra("attFineTempo", end_time);
         		intentToSer.putExtra("attTempo", time);
-        		intentToSer.getIntExtra("attCamp", i);
+        		intentToSer.putExtra("attCamp", i);
         		startService(intentToSer);
             		
             }
@@ -157,7 +153,7 @@ public class UI3 extends Activity {
             	pkg=getPackageName();
             	String nomeinserito=nome_music.getText().toString();
             	
-            	//Se il nome inserito e' la stringa vuota o e' gia' presente nel DB allora	
+            	//Se il nome inserito e la stringa vuota o  gia presente nel DB allora	
             	if((nomeinserito.equals("")) || sameName(nomeinserito))
             		Toast.makeText(getApplicationContext(), "Immetere un nome valido!", Toast.LENGTH_SHORT).show();
             		
@@ -200,71 +196,7 @@ public class UI3 extends Activity {
      }
 
 	
-
-	
-	
-	
-	//Cuore dell'activity: registra i dati memorizzandoli negli array
-	/*@Override
-	public void onSensorChanged(SensorEvent event) {
-		
-	    if(millis<prefs.getInt("duratadef", 10)) {    
-    
-			pb.setProgress((int)Math.round(millis));
-			
-			datoX.append(prefix+converti(event.values[0]));
-			datoY.append(prefix+converti(event.values[1]));
-			datoZ.append(prefix+converti(event.values[2]));
-			pbX.setProgress(Math.round(Math.abs(event.values[0])));
-			pbY.setProgress(Math.round(Math.abs(event.values[1])));
-			pbZ.setProgress(Math.round(Math.abs(event.values[2])));
-			millis=aggiornoTempo();
-			starttime=System.currentTimeMillis();
-			m=arrotondaTempo(millis);
-			t.setText("Tempo: "+m);
-			varcamp.setText(""+((i+1)*3));
-			i++;
-			prefix=" ";
-		}
-		
-		else {
-			//Adatta la dimensione della StringBuilder in base al numero di elementi presenti
-    		datoX.trimToSize();
-    		datoY.trimToSize();
-    		datoZ.trimToSize();
-        	arresto();
-		}
-		
-	}
-	
-	//Metodo per aggiornare la variabile della durata
-	protected double aggiornoTempo(){
-		return ((double)(System.currentTimeMillis() - starttime)/1000)+millis;
-	}*/
-	
-	//Metodo per arrotondare a 2 cifre decimale la durata
-	public static double arrotondaTempo(double x){
-		x = Math.floor(x*100);
-		x = x/100;
-		return x;
-		}
-	
-	public static float arrotondamento(float x){
-		x = Math.round(x*1000);
-		x = x/1000;
-		return x;
-		}
-
-	//Metodo per la conversione in short che servira' all'AudioTrack
-	public static short converti(float x){
-		if(x>32.767) return 32767;
-		if(x<-32.768) return -32768;
-		else return (short)Math.round(x*1000);
-	}
-	
-	//Metodo che controlla se e' gia' presente un NOME di una music session nel DB
-
-	//Metodo che controlla se e' gia presente un NOME di una music session nel DB
+	//Metodo che controlla se e gia presente un NOME di una music session nel DB
 	public boolean sameName(String s){
 			dbHelper.open();
 			Cursor cursor=dbHelper.fetchRecordByFilter(s);
@@ -306,11 +238,11 @@ public class UI3 extends Activity {
 	            pbY.setProgress(intent.getIntExtra("intPbY", 0));
 	            pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
 	            
-	            i=intent.getIntExtra("serCamp",0);
+	            i=intent.getIntExtra("serCamp",1);
 	            varcamp.setText(""+i);
 	            datoX=intent.getStringExtra("ValoreX");
-	            datoY=intent.getStringExtra("ValoreX");
-	            datoZ=intent.getStringExtra("ValoreX");
+	            datoY=intent.getStringExtra("ValoreY");
+	            datoZ=intent.getStringExtra("ValoreZ");
 	            freq_curr=intent.getStringExtra("serFreq");
 	            end_time=intent.getIntExtra("serDur",0);
 	            time=intent.getDoubleExtra("serTempo", 0);
