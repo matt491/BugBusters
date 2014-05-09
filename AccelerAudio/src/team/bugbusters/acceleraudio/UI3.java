@@ -27,14 +27,14 @@ public class UI3 extends Activity {
     private String datoY;
     private String datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
-	private int i,end_time;			//i: indice dei campioni
-    private double time;		    //variabile usata per tenere traccia della durata della registrazione
+	private int i,end_time;									//i: indice dei campioni
+    private double time;							//variabile usata per tenere traccia della durata della registrazione
     private String freq_curr;						
-    private String nome; 			// Nome inserito dall'utente tramite EditText
+    private String nome; 							// Nome inserito dall'utente tramite EditText
     private String ts;
     private String pkg;
     private Button pause,resume,stop,rec,avan;									
-    private EditText nome_music;	//Campo di testo del nome della registrazione
+    private EditText nome_music;						//Campo di testo del nome della registrazione
     private TextView t,varcamp;
     Intent intent,intentToSer;
     private SharedPreferences prefs;
@@ -259,4 +259,7 @@ public class UI3 extends Activity {
 
 
 	        }
+
+	
+	
 	}
