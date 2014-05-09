@@ -3,7 +3,6 @@ package team.bugbusters.acceleraudio;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.view.View;
 
 public class UI1 extends Activity {
 
@@ -12,7 +11,9 @@ public class UI1 extends Activity {
 	
 	
 	/*
-	 * Alla pressione del tasto back viene notificato all'utente che l'applicazione sta per chiudersi
+	 * Alla pressione del tasto back viene notificato all'utente che l'applicazione sta per chiudersi.
+	 * Se la risposta alla domanda "Sei sicuro di voler terminare l'app?" e' "Si", l'activity
+	 * viene terminata; altrimenti, se la risposta e' "No", l'activity rimane in vita.
 	 * 
 	 */
 	@Override
