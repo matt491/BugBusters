@@ -19,9 +19,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private Intent broadcastIntent;
 	private SharedPreferences prefs;
 	private StringBuilder datoX,datoY,datoZ;
-	private double tempo,m;
+	private double tempo;
 	private long starttime,sendtime;
-	private int i,pX,pY,pZ,durata_def;
+	private int i,durata_def;
 	private String freq;
 	
 	
@@ -35,12 +35,16 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	    protected void onHandleIntent(Intent intent) {
 		 	prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		 	mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		 	
+		 	//Intent usato per comunicare con il Broadcast Receiver della UI3
 		 	broadcastIntent = new Intent();
 	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
 	        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
 	        
+	        //Variabile usata per 
 	        sendtime=System.currentTimeMillis();
 	        
+	        //Ripristino parametri dopo una pausa
 	        if(intent.hasExtra("VecchioX")){
 	        	datoX=new StringBuilder().append(intent.getStringExtra("VecchioX"));
 	        	datoY=new StringBuilder().append(intent.getStringExtra("VecchioY"));
@@ -48,50 +52,52 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	freq=intent.getStringExtra("attFreq");
 	        	tempo=intent.getDoubleExtra("attTempo", 0);
 	        	durata_def=intent.getIntExtra("attFineTempo", 0);
-	        	starttime=System.currentTimeMillis()+(long)(tempo*1000);
-	        	
+	        	starttime=System.currentTimeMillis()-(long)(tempo*1000); 	
 	        }
 	        
+	        //Parametri di una nuova registrazione
 	        else {
 	        	datoX=new StringBuilder();
 	        	datoY=new StringBuilder();
 	        	datoZ=new StringBuilder();
-	        	freq=prefs.getString("Campion", "NORMAL");
+	        	freq=prefs.getString("Campion", "Molto lento");
 	        	tempo=0;
 	        	durata_def=prefs.getInt("duratadef", 50);
-	        	starttime=System.currentTimeMillis();
+	        	starttime=System.currentTimeMillis();        	
 	        }
 
 	        	i=intent.getIntExtra("attCamp", 1);
-	        
-	        	
-	        	
 	        	
 	        acquisizione();
 	        
+	        
+	        
 	        while(tempo<durata_def);
+	        
+	        
 	        //Se si viene dalla UI2 si termina qua
 	        //se si viene chiamati dal widget si deve fare un altro metodo
-	}
+	 	}
 	 
 	 
-	 public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		
-		}
+	 	public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 		
 		
-		//Cuore dell'activity: registra i dati memorizzandoli negli array
+		//Ad ogni variazione dell'accelerometro
 		public void onSensorChanged(SensorEvent event) {
-
+				
+				//Aggiornamento delle StringBuilder
 			    datoX.append(converti(event.values[0])+" ");
 				datoY.append(converti(event.values[1])+" ");
 				datoZ.append(converti(event.values[2])+" ");
-				tempo=((double)(System.currentTimeMillis()-starttime))/1000;
-			//	tempo=arrotondaTempo(((double)(System.currentTimeMillis()-starttime))/1000);
 				
+				//Aggiornamento del tempo attuale
+				tempo=arrotondaTempo(((double)(System.currentTimeMillis()-starttime))/1000);
+				
+				//Aggiornamento campioni registrati
 				i=i+3;
-
-				/*Se e' passato mezzo secondo e sto registrando dalla UI3*/
+				
+				//Aggiornamento delle barre dei 3 assi, del tempo e dei campioni registrati che vengono visualizzati nella UI3
 				if(System.currentTimeMillis()-sendtime>100){
 					sendtime=System.currentTimeMillis();
 					broadcastIntent.putExtra("intPb", (int)Math.round(tempo));
@@ -113,7 +119,12 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			datoX.trimToSize();
 			datoY.trimToSize();
 			datoZ.trimToSize();
-
+			
+			if(tempo>=durata_def){
+				Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
+				broadcastIntent.putExtra("STOP", true);
+			}
+			
 			broadcastIntent.putExtra("ValoreX", datoX.toString());
 			broadcastIntent.putExtra("ValoreY", datoY.toString());
 			broadcastIntent.putExtra("ValoreZ", datoZ.toString());
@@ -132,10 +143,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
     		Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
     	
     	mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-    	if(freq.equals("NORMAL")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    	if(freq.equals("UI"))	   	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-    	if(freq.equals("GAME")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-    	if(freq.equals("FASTEST"))	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+    	if(freq.equals("Molto lento")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    	if(freq.equals("Lento"))	   	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+    	if(freq.equals("Normale")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+    	if(freq.equals("Veloce"))	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
     	Toast.makeText(getApplicationContext(), "Registrazione iniziata", Toast.LENGTH_SHORT).show();
     }
 	
@@ -146,7 +157,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		x = Math.floor(x*100);
 		x = x/100;
 		return x;
-		}
+	}
 	
 
     

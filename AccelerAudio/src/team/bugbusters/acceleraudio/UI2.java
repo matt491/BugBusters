@@ -81,7 +81,7 @@ public class UI2 extends Activity {
         	chX.setChecked(Boolean.parseBoolean(intent_r.getStringExtra(pkg_r+".myCheckX")));
         	chY.setChecked(Boolean.parseBoolean(intent_r.getStringExtra(pkg_r+".myCheckY")));
         	chZ.setChecked(Boolean.parseBoolean(intent_r.getStringExtra(pkg_r+".myCheckZ")));
-        	sb.setProgress(stringToCamp(intent_r.getStringExtra(pkg_r+".mySovra")));
+        	sb.setProgress(UI5.stringToCamp(intent_r.getStringExtra(pkg_r+".mySovra")));
         	result.setText(intent_r.getStringExtra(pkg_r+".mySovra"));
         	ultimavar.setText(dataulitmamodifica); 	
         }
@@ -92,7 +92,7 @@ public class UI2 extends Activity {
         	chY.setChecked(prefs.getBoolean("Yselect", true));
         	chZ.setChecked(prefs.getBoolean("Zselect", true));
         	sb.setProgress(prefs.getInt("sovrdef", 0));
-        	result.setText(campToString(sb.getProgress()));
+        	result.setText(UI5.campToString(sb.getProgress()));
         	dataulitmamodifica=timestamp_ric;
         	ultimavar.setText(dataulitmamodifica);
         }
@@ -108,23 +108,23 @@ public class UI2 extends Activity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             	if(progress<15){
             		seekBar.setProgress(0);
-            		result.setText(campToString(sb.getProgress()));
+            		result.setText(UI5.campToString(sb.getProgress()));
             		}
                 if(progress>15 && progress<40){
                 	seekBar.setProgress(25);
-                	result.setText(campToString(sb.getProgress()));
+                	result.setText(UI5.campToString(sb.getProgress()));
                 	}
                 if(progress>40 && progress<60){
                 	seekBar.setProgress(50);
-                	result.setText(campToString(sb.getProgress()));
+                	result.setText(UI5.campToString(sb.getProgress()));
                 	}
                 if(progress>60 && progress<80){
                 	seekBar.setProgress(75);
-                	result.setText(campToString(sb.getProgress()));
+                	result.setText(UI5.campToString(sb.getProgress()));
                 	}
                 if(progress>80){
                 	seekBar.setProgress(100);
-                	result.setText(campToString(sb.getProgress()));
+                	result.setText(UI5.campToString(sb.getProgress()));
                 	}
             }
 
@@ -135,7 +135,7 @@ public class UI2 extends Activity {
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				result.setText(campToString(sb.getProgress()));
+				result.setText(UI5.campToString(sb.getProgress()));
 				
 			}});
         
@@ -157,12 +157,12 @@ public class UI2 extends Activity {
             		String cod=codifica(datoX,datoY,datoZ,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());
             		
             		id_to_ui4=dbHelper.createRecord(nome_ric, ""+dur_ric, datoX, datoY, datoZ, ""+chX.isChecked(),""+chY.isChecked(),
-            								""+chZ.isChecked(), ncamp_ric, campToString(sb.getProgress()), timestamp_ric, dataulitmamodifica, cod);
+            								""+chZ.isChecked(), ncamp_ric, UI5.campToString(sb.getProgress()), timestamp_ric, dataulitmamodifica, cod);
             	}
             		
             	else {
             		dbHelper.updateRecord(id_ric, nome_ric, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
-            								campToString(sb.getProgress()), dataulitmamodifica);
+            								UI5.campToString(sb.getProgress()), dataulitmamodifica);
             		id_to_ui4=id_ric;
             		
             	}
@@ -181,24 +181,7 @@ public class UI2 extends Activity {
                
 	} //Fine onCreate()
 	
-	
-	public static String campToString(int c){
-		if(c==0) return "Scelta 0";
-		else if(c==25) return "Scelta 1";
-		else if(c==50) return "Scelta 2";
-		else if(c==75) return "Scelta 3";
-		else return  "Scelta 4";
-		
-	}
-	
-	public static int stringToCamp(String s){
-		if(s.equals("Scelta 0")) return 0;
-		if(s.equals("Scelta 1")) return 25;
-		if(s.equals("Scelta 2")) return 50;
-		if(s.equals("Scelta 3")) return 75;
-		else return 100;
-	}
-	
+
 
 	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
 	public String codifica(String s, String p, String q,boolean a,boolean b,boolean c, int t){
