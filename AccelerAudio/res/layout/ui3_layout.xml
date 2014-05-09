@@ -94,7 +94,7 @@
         android:max="15"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/y_axis"
-        android:layout_marginLeft="68dp" />
+        android:layout_marginLeft="48dp" />
 
     <TextView
         android:id="@+id/textView3"
@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView3"
         android:layout_toRightOf="@+id/textView4"
-        android:layout_marginLeft="85dp"
+        android:layout_marginLeft="105dp"
         android:text="@string/AsseZ"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

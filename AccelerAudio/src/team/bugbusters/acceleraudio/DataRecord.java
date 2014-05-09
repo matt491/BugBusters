@@ -98,7 +98,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				i=i+3;
 				
 				//Aggiornamento delle barre dei 3 assi, del tempo e dei campioni registrati che vengono visualizzati nella UI3
-				if(System.currentTimeMillis()-sendtime>100){
+				/*if(System.currentTimeMillis()-sendtime>500){
 					sendtime=System.currentTimeMillis();
 					broadcastIntent.putExtra("intPb", (int)Math.round(tempo));
 					broadcastIntent.putExtra("intPbX", Math.round(Math.abs(event.values[0])));
@@ -107,7 +107,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					broadcastIntent.putExtra("serTempo",tempo);
 					broadcastIntent.putExtra("serCamp",i);
 					sendBroadcast(broadcastIntent);
-				}
+				}*/
 		}
 	 
 	 
@@ -161,7 +161,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 
     
-	//Metodo per la conversione in short che servira'  all'AudioTrack
+	//Metodo per la conversione in short che servira' all'AudioTrack
 	public static short converti(float x){
 		if(x>32.767) return 32767;
 		if(x<-32.768) return -32768;

@@ -15,10 +15,12 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 
 public class UI3 extends Activity {
@@ -41,6 +43,7 @@ public class UI3 extends Activity {
     private DbAdapter dbHelper;
     private MyUI3Receiver receiver;
     private IntentFilter filter;
+    private ToggleButton toggle;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,22 @@ public class UI3 extends Activity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         dbHelper = new DbAdapter(this);
         
-
+        //Toggle button
+        toggle = (ToggleButton) findViewById(R.id.toggleButton1);
+        
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					//Se il toggle button e' attivo (lo implementero' presto)
+				}
+				else {
+					//Se il toggle button non e' attivo (lo implementero' presto)
+				}
+				
+			}
+		});
         
         //Intent predisposto per passare alla UI2
         intent=new Intent(getApplicationContext(), UI2.class);
