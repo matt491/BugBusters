@@ -28,17 +28,15 @@ import android.widget.ToggleButton;
 
 public class UI3 extends Activity {
 	
-    private String datoX;
-    private String datoY;
-    private String datoZ;
+    private String datoX,datoY,datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
-	private int i,end_time;									//i: indice dei campioni
-    private double time;							//variabile usata per tenere traccia della durata della registrazione
+	private int i,end_time;									
+    private double time;							
     private String freq_curr;						
-    private String nome; 							// Nome inserito dall'utente tramite EditText
+    private String nome; 								// Nome inserito dall'utente tramite EditText
     private String ts;
     private String pkg;
-    private Button pause,resume,stop,rec,avan;									
+    private Button pause_resume,stop,rec,avan;								
     private EditText nome_music;						//Campo di testo del nome della registrazione
     private TextView t,varcamp;
     Intent intent,intentToSer;
@@ -47,7 +45,8 @@ public class UI3 extends Activity {
     private MyUI3Receiver receiver;
     private IntentFilter filter;
     private ToggleButton toggle;
-    
+    private boolean in_pausa=false;
+    		
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +70,7 @@ public class UI3 extends Activity {
         //Intent predisposto per passare alla UI2
         intent=new Intent(getApplicationContext(), UI2.class);
         
-        pause=(Button)findViewById(R.id.pause);					//Tasto Pause
-        resume=(Button)findViewById(R.id.resume);				//Tasto Resume
+        pause_resume=(Button)findViewById(R.id.pause_res);					//Tasto pause/resume
         stop=(Button)findViewById(R.id.stop);					//Tasto Stop
         rec=(Button)findViewById(R.id.record);					//Tasto Record
         avan=(Button)findViewById(R.id.avanz);					//Tasto Avanti
@@ -88,11 +86,9 @@ public class UI3 extends Activity {
 		//Visualizza il numero di campioni registrati
 		varcamp=(TextView)findViewById(R.id.campioni);
 
-        t.setText("Tempo: ");
         
         //Diabilito i pulsanti all'inizio
-        pause.setEnabled(false);
-        resume.setEnabled(false);
+        pause_resume.setEnabled(false);
         stop.setEnabled(false);
         avan.setEnabled(false);
         rec.setEnabled(false);
@@ -118,44 +114,36 @@ public class UI3 extends Activity {
 			}
 		});
        
-        //Tasto Pausa premuto
-        pause.setOnClickListener(new View.OnClickListener() {
+        //Tasto Pausa/Resume premuto
+        pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-            	pause.setEnabled(false);
-            	resume.setEnabled(true);
-
-            	stopService(intentToSer);
+            	if(!in_pausa){
+            		pause_resume.setText("Riprendi");
+            		in_pausa=true;
+            		stopService(intentToSer);
+            	}
+            	else {
+            		pause_resume.setText("Pausa");
+            		intentToSer.putExtra("VecchioX", datoX);
+            		intentToSer.putExtra("VecchioY", datoY);
+            		intentToSer.putExtra("VecchioZ", datoZ);
+            		intentToSer.putExtra("attFreq", freq_curr);
+            		intentToSer.putExtra("attFineTempo", end_time);
+            		intentToSer.putExtra("attTempo", time);
+            		intentToSer.putExtra("attCamp", i);
+            		in_pausa=false;
+            		startService(intentToSer);
+            	}
             }
         });
         
-        //Tasto Resume premuto
-        resume.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) { 
-            	
-            	resume.setEnabled(false);
-            	pause.setEnabled(true);
-            	
-        		intentToSer.putExtra("VecchioX", datoX);
-        		intentToSer.putExtra("VecchioY", datoY);
-        		intentToSer.putExtra("VecchioZ", datoZ);
-        		intentToSer.putExtra("attFreq", freq_curr);
-        		intentToSer.putExtra("attFineTempo", end_time);
-        		intentToSer.putExtra("attTempo", time);
-        		intentToSer.putExtra("attCamp", i);
-        		startService(intentToSer);
-            		
-            }
-            	
-        });
-        
+
         //Tasto Stop premuto
         stop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             		avan.setEnabled(true);
-            		pause.setEnabled(false);
+            		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
-            		resume.setEnabled(false);
 
             		stopService(intentToSer);
             	}
@@ -165,7 +153,7 @@ public class UI3 extends Activity {
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
             		avan.setEnabled(false);
-            		pause.setEnabled(true);
+            		pause_resume.setEnabled(true);
             		stop.setEnabled(true);
             		rec.setEnabled(false);
             		
@@ -214,7 +202,7 @@ public class UI3 extends Activity {
        
     }
 
- 	 protected void onPause() {
+ 	 protected void onpause_resume() {
         super.onPause();
         
     }
@@ -280,9 +268,8 @@ public class UI3 extends Activity {
 	            
 	            if(intent.getBooleanExtra("STOP", false)){
 	            	avan.setEnabled(true);
-            		pause.setEnabled(false);
+            		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
-            		resume.setEnabled(false);
 	            }
 	            
 	        }

@@ -12,9 +12,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="10dp"
-        android:textSize="17sp"
         android:text="@string/toggleButtonString"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="17sp" />
 
     <ToggleButton
         android:id="@+id/toggleButton1"
@@ -25,7 +25,7 @@
         android:layout_toRightOf="@+id/textView1"
         android:textOff="@string/ifUnlocked"
         android:textOn="@string/ifLocked" />
-    
+
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
@@ -36,20 +36,21 @@
         android:layout_marginTop="20dp"
         android:text="@string/nameChoosing"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    
-     <EditText
-         android:id="@+id/nome"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignBaseline="@+id/textView8"
-         android:layout_alignParentRight="true"
-         android:layout_toRightOf="@+id/textView8"
-         android:layout_marginLeft="16dp"
-         android:layout_marginRight="16dp"
-         android:ems="10"
-         android:hint="@string/hintName"
-         android:inputType="text"
-         android:imeOptions="actionSend" >
+
+    <EditText
+        android:id="@+id/nome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView8"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/textView8"
+        android:ems="10"
+        android:hint="@string/hintName"
+        android:imeOptions="actionSend"
+        android:inputType="text" >
+
         <requestFocus />
     </EditText>
 
@@ -70,10 +71,10 @@
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_below="@id/textView2"
-        android:max="15"
+        android:layout_marginRight="68dp"
         android:layout_marginTop="5dp"
         android:layout_toLeftOf="@+id/y_axis"
-        android:layout_marginRight="68dp" />
+        android:max="15" />
 
     <team.bugbusters.acceleraudio.VerticalProgressBar
         android:id="@+id/y_axis"
@@ -81,9 +82,9 @@
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_below="@id/textView2"
-        android:max="15"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:layout_centerHorizontal="true" />
+        android:max="15" />
 
     <team.bugbusters.acceleraudio.VerticalProgressBar
         android:id="@+id/z_axis"
@@ -91,19 +92,19 @@
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_below="@id/textView2"
-        android:max="15"
+        android:layout_marginLeft="48dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/y_axis"
-        android:layout_marginLeft="48dp" />
+        android:max="15" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/x_axis"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp"
+        android:layout_below="@+id/x_axis"
         android:layout_marginLeft="50dp"
+        android:layout_marginTop="5dp"
         android:text="@string/AsseX"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -112,8 +113,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView3"
-        android:layout_toRightOf="@+id/textView3"
         android:layout_marginLeft="105dp"
+        android:layout_toRightOf="@+id/textView3"
         android:text="@string/AsseY"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -122,8 +123,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView3"
-        android:layout_toRightOf="@+id/textView4"
         android:layout_marginLeft="105dp"
+        android:layout_toRightOf="@+id/textView4"
         android:text="@string/AsseZ"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -143,8 +144,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView6"
-        android:layout_toRightOf="@+id/textView6"
         android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/textView6"
         android:text="tempo_di_registrazione" />
 
     <ProgressBar
@@ -152,9 +153,9 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView6"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView6"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="5dp" />
@@ -163,10 +164,10 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar1"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
+        android:layout_below="@+id/progressBar1"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
         android:text="@string/campioniRegistratiString"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -175,8 +176,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView7"
-        android:layout_toRightOf="@+id/textView7"
         android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/textView7"
         android:text="campioni_registrati" />
 
     <Button
@@ -185,42 +186,32 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView7"
-        android:layout_marginTop="30dp"
         android:layout_marginLeft="16dp"
-        android:text="@string/record" />
-
-    <Button
-        android:id="@+id/stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView7"
         android:layout_marginTop="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:text="@string/stop" />
-
-    <Button
-        android:id="@+id/resume"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/record"
-        android:layout_centerHorizontal="true"
-        android:text="@string/resume" />
-
-    <Button
-        android:id="@+id/pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/resume"
-        android:layout_alignRight="@+id/avanz"
-        android:text="@string/pause" />
+        android:text="@string/record" />
 
     <Button
         android:id="@+id/avanz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/resume"
+        android:layout_below="@+id/record"
         android:layout_centerHorizontal="true"
         android:text="@string/avanti" />
-        
+
+    <Button
+        android:id="@+id/pause_res"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/avanz"
+        android:layout_centerHorizontal="true"
+        android:text="@string/pause" />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/avanz"
+        android:layout_alignRight="@+id/z_axis"
+        android:text="@string/stop" />
+
 </RelativeLayout>
