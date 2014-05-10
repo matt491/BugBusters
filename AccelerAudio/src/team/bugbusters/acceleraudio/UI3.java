@@ -264,7 +264,7 @@ public class UI3 extends Activity {
 	            freq_curr=intent.getStringExtra("serFreq");
 	            end_time=intent.getIntExtra("serDur",0);
 	            time=intent.getDoubleExtra("serTempo", 0);
-	            t.setText("Tempo: "+time);
+	            t.setText(""+time);
 	            
 	            if(intent.getBooleanExtra("STOP", false)){
 	            	avan.setEnabled(true);

@@ -9,6 +9,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -23,14 +24,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private long starttime,sendtime;
 	private int i,durata_def;
 	private String freq;
-	
+	private float currX,currY,currZ;
 	
 	
 	public DataRecord() {
 		super("DataRecord");
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	 @Override
 	    protected void onHandleIntent(Intent intent) {
 		 	prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -40,6 +41,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		 	broadcastIntent = new Intent();
 	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
 	        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+
 	        
 	        //Variabile usata per 
 	        sendtime=System.currentTimeMillis();
@@ -63,16 +65,16 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	freq=prefs.getString("Campion", "Molto lento");
 	        	tempo=0;
 	        	durata_def=prefs.getInt("duratadef", 50);
-	        	starttime=System.currentTimeMillis();        	
+	        	starttime=System.currentTimeMillis();
 	        }
 
 	        	i=intent.getIntExtra("attCamp", 1);
-	        	
-	        acquisizione();
-	        
-	        
-	        
-	        while(tempo<durata_def);
+	        	        	
+	        	acquisizione();
+       	
+	         
+	        	while(tempo<durata_def)
+	               SystemClock.sleep(25);
 	        
 	        
 	        //Se si viene dalla UI2 si termina qua
@@ -92,13 +94,13 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				datoZ.append(converti(event.values[2])+" ");
 				
 				//Aggiornamento del tempo attuale
-				tempo=arrotondaTempo(((double)(System.currentTimeMillis()-starttime))/1000);
+				tempo=((double)((System.currentTimeMillis()-starttime)/100))/10;
 				
 				//Aggiornamento campioni registrati
 				i=i+3;
 				
 				//Aggiornamento delle barre dei 3 assi, del tempo e dei campioni registrati che vengono visualizzati nella UI3
-				/*if(System.currentTimeMillis()-sendtime>500){
+				if(System.currentTimeMillis()-sendtime>100){
 					sendtime=System.currentTimeMillis();
 					broadcastIntent.putExtra("intPb", (int)Math.round(tempo));
 					broadcastIntent.putExtra("intPbX", Math.round(Math.abs(event.values[0])));
@@ -107,7 +109,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					broadcastIntent.putExtra("serTempo",tempo);
 					broadcastIntent.putExtra("serCamp",i);
 					sendBroadcast(broadcastIntent);
-				}*/
+				}
 		}
 	 
 	 
@@ -116,6 +118,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	@Override
 	public void onDestroy(){
 			mSensorManager.unregisterListener(this);
+			
 			datoX.trimToSize();
 			datoY.trimToSize();
 			datoZ.trimToSize();
@@ -141,21 +144,23 @@ public class DataRecord extends IntentService implements SensorEventListener {
     protected void acquisizione(){
     	if(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null)
     		Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
-    	
+    		
     	mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     	if(freq.equals("Molto lento")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     	if(freq.equals("Lento"))	   	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-    	if(freq.equals("Normale")) 	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-    	if(freq.equals("Veloce"))	mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+    	if(freq.equals("Normale")) 		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+    	if(freq.equals("Veloce"))		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
     	Toast.makeText(getApplicationContext(), "Registrazione iniziata", Toast.LENGTH_SHORT).show();
+    	
+    	
     }
 	
     
 	
 	//Metodo per arrotondare a 2 cifre decimali la durata
 	public static double arrotondaTempo(double x){
-		x = Math.floor(x*100);
-		x = x/100;
+		x = Math.floor(x*10);
+		x = x/10;
 		return x;
 	}
 	
