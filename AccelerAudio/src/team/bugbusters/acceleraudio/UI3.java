@@ -91,7 +91,7 @@ public class UI3 extends Activity {
         pause_resume.setEnabled(false);
         stop.setEnabled(false);
         avan.setEnabled(false);
-        rec.setEnabled(false);
+        rec.setEnabled(true);
         
         
         //Toggle premuto
@@ -107,8 +107,7 @@ public class UI3 extends Activity {
 					if(orientation==1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 					//Non è supportato nelle API8, perchè nelle API8 non era previsto il reverse landscape
 					if(orientation==3) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-					toggle.setEnabled(false);
-					rec.setEnabled(true);				
+								
 				}
 						
 			}
@@ -156,7 +155,7 @@ public class UI3 extends Activity {
             		pause_resume.setEnabled(true);
             		stop.setEnabled(true);
             		rec.setEnabled(false);
-            		
+            		toggle.setEnabled(false);
             		end_time=prefs.getInt("duratadef", 50);
             		pb.setMax(end_time);
             		
@@ -196,17 +195,7 @@ public class UI3 extends Activity {
                
     }    //FINE onCreate()
     
-
-    protected void onResume() {
-        super.onResume();
-       
-    }
-
- 	 protected void onpause_resume() {
-        super.onPause();
-        
-    }
- 	 
+ 
      @Override
      public void onDestroy() {
          this.unregisterReceiver(receiver);
