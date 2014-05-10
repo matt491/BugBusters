@@ -33,8 +33,7 @@
         <!-- 		SETTING UI3			-->
         
         <activity android:name="team.bugbusters.acceleraudio.UI3"
-            android:label="New Music Session (UI#3)"
-            android:configChanges="orientation">
+            android:label="New Music Session (UI#3)">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

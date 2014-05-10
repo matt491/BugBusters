@@ -6,14 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -60,23 +63,11 @@ public class UI3 extends Activity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         dbHelper = new DbAdapter(this);
         
-        //Toggle button
+        
+        
+        //Toggle button che blocca la rotazione dello schermo
         toggle = (ToggleButton) findViewById(R.id.toggleButton1);
-        
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if(isChecked) {
-					//Se il toggle button e' attivo (lo implementero' presto)
-				}
-				else {
-					//Se il toggle button non e' attivo (lo implementero' presto)
-				}
-				
-			}
-		});
-        
+    
         //Intent predisposto per passare alla UI2
         intent=new Intent(getApplicationContext(), UI2.class);
         
@@ -104,7 +95,28 @@ public class UI3 extends Activity {
         resume.setEnabled(false);
         stop.setEnabled(false);
         avan.setEnabled(false);
+        rec.setEnabled(false);
         
+        
+        //Toggle premuto
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked) {
+					WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+					Display disp = wm.getDefaultDisplay();
+					int orientation = disp.getRotation();
+					
+					if(orientation==0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
+					if(orientation==1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+					//Non è supportato nelle API8, perchè nelle API8 non era previsto il reverse landscape
+					if(orientation==3) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+					toggle.setEnabled(false);
+					rec.setEnabled(true);				
+				}
+						
+			}
+		});
        
         //Tasto Pausa premuto
         pause.setOnClickListener(new View.OnClickListener() {

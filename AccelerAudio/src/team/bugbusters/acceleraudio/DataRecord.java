@@ -24,7 +24,6 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private long starttime,sendtime;
 	private int i,durata_def;
 	private String freq;
-	private float currX,currY,currZ;
 	
 	
 	public DataRecord() {
@@ -72,9 +71,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	        	
 	        	acquisizione();
        	
-	         
-	        	while(tempo<durata_def)
-	               SystemClock.sleep(25);
+	        	//Ogni 25 ms controlla se il tempo trascorso supera la durata massima impostata
+	        	while(tempo<durata_def)	SystemClock.sleep(35);
 	        
 	        
 	        //Se si viene dalla UI2 si termina qua
@@ -155,17 +153,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
     	
     }
 	
-    
-	
-	//Metodo per arrotondare a 2 cifre decimali la durata
-	public static double arrotondaTempo(double x){
-		x = Math.floor(x*10);
-		x = x/10;
-		return x;
-	}
-	
-
-    
+        
 	//Metodo per la conversione in short che servira' all'AudioTrack
 	public static short converti(float x){
 		if(x>32.767) return 32767;
