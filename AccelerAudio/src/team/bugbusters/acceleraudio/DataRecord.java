@@ -24,7 +24,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private long starttime,sendtime;
 	private int i,durata_def;
 	private String freq;
-	
+	private DbAdapter dbHelper;
 	
 	public DataRecord() {
 		super("DataRecord");
@@ -40,9 +40,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		 	broadcastIntent = new Intent();
 	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
 	        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-
 	        
-	        //Variabile usata per 
+	        //Inizializzo il database
+	        dbHelper = new DbAdapter(this);
+	        
+	        //Variabile usata per il refresh dei dati sulla UI3
 	        sendtime=System.currentTimeMillis();
 	        
 	        //Ripristino parametri dopo una pausa
@@ -74,9 +76,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	//Ogni 25 ms controlla se il tempo trascorso supera la durata massima impostata
 	        	while(tempo<durata_def)	SystemClock.sleep(35);
 	        
+	        	//Se si viene dalla UI2 si termina qua
+	        	
+	        	//Altrimenti superata l'istruzione sopra continuo come se fossi statom lanciato dal widget
 	        
-	        //Se si viene dalla UI2 si termina qua
-	        //se si viene chiamati dal widget si deve fare un altro metodo
+	        
 	 	}
 	 
 	 

@@ -70,7 +70,7 @@ public class UI3 extends Activity {
         //Intent predisposto per passare alla UI2
         intent=new Intent(getApplicationContext(), UI2.class);
         
-        pause_resume=(Button)findViewById(R.id.pause_res);					//Tasto pause/resume
+        pause_resume=(Button)findViewById(R.id.pause_res);		//Tasto pause/resume
         stop=(Button)findViewById(R.id.stop);					//Tasto Stop
         rec=(Button)findViewById(R.id.record);					//Tasto Record
         avan=(Button)findViewById(R.id.avanz);					//Tasto Avanti
@@ -109,6 +109,7 @@ public class UI3 extends Activity {
 					if(orientation==3) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 								
 				}
+				else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 						
 			}
 		});
@@ -143,14 +144,17 @@ public class UI3 extends Activity {
             		avan.setEnabled(true);
             		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
-
+            		
+            		Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
             		stopService(intentToSer);
+            		
             	}
         });
          
         //Tasto Record premuto
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
+            	if(toggle.isChecked()){
             		avan.setEnabled(false);
             		pause_resume.setEnabled(true);
             		stop.setEnabled(true);
@@ -160,8 +164,9 @@ public class UI3 extends Activity {
             		pb.setMax(end_time);
             		
             		startService(intentToSer);
-            		
             	}
+            	else Toast.makeText(getApplicationContext(), "Devi bloccare lo Schermo", Toast.LENGTH_SHORT).show();
+            }
         });
         
         //Tasto Avanti premuto
@@ -256,6 +261,7 @@ public class UI3 extends Activity {
 	            t.setText(""+time);
 	            
 	            if(intent.getBooleanExtra("STOP", false)){
+	            	
 	            	avan.setEnabled(true);
             		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
