@@ -123,7 +123,6 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/sovracampionamento"
         android:layout_marginTop="45dp"
-        android:enabled="false"
         android:text="@string/Play" />
 
     <TextView

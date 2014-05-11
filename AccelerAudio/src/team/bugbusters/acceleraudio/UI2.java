@@ -129,9 +129,7 @@ public class UI2 extends Activity {
             }
 
 			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-
-			}
+			public void onStartTrackingTouch(SeekBar seekBar) {}
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -142,9 +140,9 @@ public class UI2 extends Activity {
         
         fineui2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	dataulitmamodifica=(DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString());            	
+            	dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();            	
             	if(!(timestamp_ric.equals(dataulitmamodifica))){
-            		dataulitmamodifica=(DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString());
+            		dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
                 	ultimavar.setText(dataulitmamodifica);
             	}
             	
@@ -154,7 +152,7 @@ public class UI2 extends Activity {
             	
             	//Se e' -1 vuol dire che hai appena registrato
             	if(id_ric==-1){ //La stringa per l'immagine viene generata solo alla creazione del record(anche la duplicazione crea un record)
-            		String cod=codifica(datoX,datoY,datoZ,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());
+            		String cod=DataRecord.codifica(datoX,datoY,datoZ,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());
             		
             		id_to_ui4=dbHelper.createRecord(nome_ric, ""+dur_ric, datoX, datoY, datoZ, ""+chX.isChecked(),""+chY.isChecked(),
             								""+chZ.isChecked(), ncamp_ric, UI5.campToString(sb.getProgress()), timestamp_ric, dataulitmamodifica, cod);
@@ -182,28 +180,6 @@ public class UI2 extends Activity {
 	} //Fine onCreate()
 	
 
-
-	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
-	public String codifica(String s, String p, String q,boolean a,boolean b,boolean c, int t){
-		StringBuilder sb=new StringBuilder();
-		sb.append(s.charAt(7));
-		sb.append(p.charAt(23));
-		sb.append(q.charAt(52));
-		sb.append(s.charAt(27));
-		sb.append(p.charAt(43));
-		if(t==0) sb.append(""+0);
-		if(t==25) sb.append(""+3);
-		if(t==50) sb.append(""+5);
-		if(t==75) sb.append(""+7);
-		if(t==100) sb.append(""+9);
-		if(a==true) sb.append(""+2);
-		else sb.append(""+0);
-		if(b==true) sb.append(""+5);
-		else sb.append(""+0);
-		if(c==true) sb.append(""+5);
-		else sb.append(""+0);
-		return sb.toString();
-	}
 	
 	//Quando viene premuto il tasto Back
 	@Override
@@ -215,6 +191,7 @@ public class UI2 extends Activity {
 		else{
 			Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
         	startActivity(returnIntent);
+        	finish();
 		}
 	return;
 	}

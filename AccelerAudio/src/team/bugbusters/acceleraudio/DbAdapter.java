@@ -78,7 +78,14 @@ public class DbAdapter {
     
    return values;
   }
-         
+      
+  private ContentValues updateContentValuesNameOnly(String name) {
+	    ContentValues values = new ContentValues();
+	    values.put( KEY_NAME, name );
+	    	    
+	   return values;
+	  }
+  
   //crea una music session
   public long createRecord(String name, String dur, String assex, String assey, String assez, String checkx,
 		  				   String checky , String checkz, int numcamp, String upsample, String datacreaz, String dataulti, String datimm ) {
@@ -122,6 +129,11 @@ public class DbAdapter {
     
         return mCursor;
   }
+   
+   public boolean updateRecordName(long recordID, String name) {
+			ContentValues updateValuesNameOnly = updateContentValuesNameOnly(name);
+			return database.update(DATABASE_TABLE, updateValuesNameOnly, KEY_RECORDID + "=" + recordID, null) > 0;
+}
    
    //Qua ci va il metodo di Mattia
   

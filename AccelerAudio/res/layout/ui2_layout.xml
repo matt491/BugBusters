@@ -145,7 +145,6 @@
         android:layout_below="@+id/seekBar1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp"
-        android:enabled="false"
         android:text="@string/Play" />
 
     <TextView

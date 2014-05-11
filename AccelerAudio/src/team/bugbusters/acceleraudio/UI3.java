@@ -120,10 +120,12 @@ public class UI3 extends Activity {
             	if(!in_pausa){
             		pause_resume.setText("Riprendi");
             		in_pausa=true;
+            		intentToSer.putExtra("fromUI3", true);
             		stopService(intentToSer);
             	}
             	else {
             		pause_resume.setText("Pausa");
+            		intentToSer.putExtra("fromUI3", true);
             		intentToSer.putExtra("VecchioX", datoX);
             		intentToSer.putExtra("VecchioY", datoY);
             		intentToSer.putExtra("VecchioZ", datoZ);
@@ -144,7 +146,7 @@ public class UI3 extends Activity {
             		avan.setEnabled(true);
             		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
-            		
+            		intentToSer.putExtra("fromUI3", true);
             		Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
             		stopService(intentToSer);
             		
@@ -162,7 +164,7 @@ public class UI3 extends Activity {
             		toggle.setEnabled(false);
             		end_time=prefs.getInt("duratadef", 50);
             		pb.setMax(end_time);
-            		
+            		intentToSer.putExtra("fromUI3", true);
             		startService(intentToSer);
             	}
             	else Toast.makeText(getApplicationContext(), "Devi bloccare lo Schermo", Toast.LENGTH_SHORT).show();
@@ -181,7 +183,7 @@ public class UI3 extends Activity {
             		
             	else {	
             	nome = nome_music.getText().toString();
-            	ts = (DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString());
+            	ts = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
             	
             	intent.putExtra(pkg+".myDurata", time);
             	intent.putExtra(pkg+".myNome", nome);
