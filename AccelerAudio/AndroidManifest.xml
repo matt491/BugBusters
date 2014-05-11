@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme" >
         
         <service android:name="DataRecord"/>
+        <service android:name="PlayRecord"/>
         
         <!-- 		SETTING UI1			 -->
         
@@ -43,8 +44,7 @@
         <!-- 		SETTING UI4			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI4"
-            android:label="Play (UI#4)"
-            android:configChanges="orientation">
+            android:label="Play (UI#4)">
         </activity>
         
         <!-- 		SETTING UI5			 -->

@@ -47,7 +47,7 @@ public class UI2 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
-        String pkg_r=getPackageName();
+        final String pkg_r=getPackageName();
         
         dbHelper = new DbAdapter(this);
        
@@ -99,7 +99,7 @@ public class UI2 extends Activity {
         //Se si proviene dalla UI1 allora
 
         id_ric=intent_r.getLongExtra(pkg_r+".myIdFromUI1", -1);
-
+        
        
         //Barra del Sovracampionamento
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -168,10 +168,10 @@ public class UI2 extends Activity {
             	dbHelper.close();
             	
             	//Alla UI4 viene spedito l'ID del record creato/aggiornato
-            	Intent intentToUI4=new Intent(getApplicationContext(), UI5.class);
-            	String pkg=getPackageName();
-            	intentToUI4.putExtra(pkg+".myID", id_to_ui4);
-                startActivity(intentToUI4);
+            	Intent intentToUI4=new Intent(UI2.this, UI4.class);
+            	
+            	intentToUI4.putExtra(pkg_r+".myServiceID", id_to_ui4);
+               startActivity(intentToUI4);
 
             	}
             });
