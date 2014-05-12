@@ -3,12 +3,13 @@ package team.bugbusters.acceleraudio;
 import android.app.IntentService;
 import android.content.Intent;
 import android.database.Cursor;
+import android.widget.Toast;
 
 public class PlayRecord extends IntentService {
 
 	private DbAdapter dbHelper;
 	private Cursor cr;
-	private long id;
+	private long id_to_process;
 	private double m;
 	private String asseX,asseY,asseZ;
 	private boolean checkX,checkY,checkZ;
@@ -28,11 +29,16 @@ public class PlayRecord extends IntentService {
         
         dbHelper = new DbAdapter(this);
         
-        id=intent.getLongExtra("ID", -1);
+        id_to_process=intent.getLongExtra("ID", -1);
+        
+        //Apertura DB
+        dbHelper.open();
         
         //Query che individua l'unica riga con questo ID
-        dbHelper.open();
-        cr=dbHelper.fetchRecordById(id);
+        cr=dbHelper.fetchRecordById(id_to_process);
+        
+        //Si posiziona all'unica tupla esistente
+        cr.moveToNext();
         
         //Lettura dei dati dal record(cursor) restituito
         m=Double.parseDouble(cr.getString(cr.getColumnIndex(DbAdapter.KEY_DURATION)));
@@ -44,26 +50,30 @@ public class PlayRecord extends IntentService {
         checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
         ncamp=cr.getInt(cr.getColumnIndex(DbAdapter.KEY_NUMCAMP));
         sovrac=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
-
+        
+        //Chiusura DB
+        dbHelper.close();
+        
+        
         x=new short[ncamp/3];
         y=new short[ncamp/3];
         z=new short[ncamp/3];
         
         //Tokenizzazione delle stringhe in array di short
         s=asseX.split(" "); 
-        for(int i=0;i<s.length-1;i++)
+        for(int i=0;i<s.length;i++)
     		x[i]=Short.parseShort(s[i]);
         
         s=asseY.split(" "); 
-        for(int i=0;i<s.length-1;i++)
+        for(int i=0;i<s.length;i++)
     		y[i]=Short.parseShort(s[i]);
         
         s=asseZ.split(" "); 
-        for(int i=0;i<s.length-1;i++)
+        for(int i=0;i<s.length;i++)
     		z[i]=Short.parseShort(s[i]);
         
         
-        
+     //   Toast.makeText(getApplicationContext(),"sdafgasgd",Toast.LENGTH_SHORT).show();
 
 	}
 

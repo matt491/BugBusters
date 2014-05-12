@@ -97,12 +97,12 @@ public class DbAdapter {
   //aggiorna un record
   public boolean updateRecord(long recordID, String name, String checkx, String checky , String checkz, String upsample, String dataulti ) {
 	  			ContentValues updateValues = updateContentValues(name, checkx, checky , checkz, upsample, dataulti);
-	  			return database.update(DATABASE_TABLE, updateValues, KEY_RECORDID + "=" + recordID, null) > 0;
+	  			return database.update(DATABASE_TABLE, updateValues, KEY_RECORDID + "==" + recordID, null) > 0;
   }
                  
   //Elimina un record    
   public boolean deleteRecord(long recordID) {
-	  			return database.delete(DATABASE_TABLE, KEY_RECORDID + "=" + recordID, null) > 0;
+	  			return database.delete(DATABASE_TABLE, KEY_RECORDID + "==" + recordID, null) > 0;
   }
  
   //Query che restituisce tutti i record
@@ -125,14 +125,14 @@ public class DbAdapter {
    public Cursor fetchRecordById(long id) {
         Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
         		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
-        							KEY_RECORDID + " = "+ id , null, null, null, null, null);
+        							KEY_RECORDID + " == "+ id , null, null, null, null, null);
     
         return mCursor;
   }
    
    public boolean updateRecordName(long recordID, String name) {
 			ContentValues updateValuesNameOnly = updateContentValuesNameOnly(name);
-			return database.update(DATABASE_TABLE, updateValuesNameOnly, KEY_RECORDID + "=" + recordID, null) > 0;
+			return database.update(DATABASE_TABLE, updateValuesNameOnly, KEY_RECORDID + "==" + recordID, null) > 0;
 }
    
    //Qua ci va il metodo di Mattia

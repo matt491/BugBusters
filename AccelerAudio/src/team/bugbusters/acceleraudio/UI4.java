@@ -2,26 +2,15 @@ package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
 
-	private DbAdapter dbHelper;
-	private Cursor cr;
 	private long id;
-	private double m;
-	private String asseX,asseY,asseZ;
-	private boolean checkX,checkY,checkZ;
-	private int ncamp;
-	private String sovrac, pkg_r;
-	private String[] s;
- 	private short[] x,y,z;
+	private String pkg_r;
 	private Intent playIntentService;
 	private Button play;
 	
@@ -34,14 +23,14 @@ public class UI4 extends Activity {
         
         
         pkg_r=getPackageName();   
-        id=getIntent().getLongExtra(pkg_r+".myServiceID", 2);
+        id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
         
-        playIntentService=new Intent(UI4.this, PlayRecord.class);
+        
         
         play.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-            	playIntentService.putExtra("ID", 5);
+            	playIntentService=new Intent(UI4.this, PlayRecord.class);
+            	playIntentService.putExtra("ID", id);
             	playIntentService.putExtra("fromUI4", true);
             	startService(playIntentService);
             	

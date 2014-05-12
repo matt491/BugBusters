@@ -26,7 +26,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private int i,durata_def;
 	private String freq;
 	private DbAdapter dbHelper;
-	private boolean ric_UI3;
+	private boolean ric_UI3,stop_from_ui;
 	
 	public DataRecord() {
 		super("DataRecord");
@@ -72,17 +72,15 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	starttime=System.currentTimeMillis();
 	        }
 
-	        	i=intent.getIntExtra("attCamp", 1);
+	        	i=intent.getIntExtra("attCamp", 0);
+	        	
 	        	ric_UI3=intent.getBooleanExtra("fromUI3", false);
+	        	stop_from_ui=intent.getBooleanExtra("StopFromUI3", false);
 	        	
 	        	acquisizione();
        	
-	        	//Ogni 25 ms controlla se il tempo trascorso supera la durata massima impostata
+	        	//Ogni 25 ms si controlla se il tempo trascorso supera la durata massima impostata
 	        	while(tempo<durata_def)	SystemClock.sleep(25);
-	        
-	        	//Se si viene dalla UI2 si termina qua
-
-	        	//Altrimenti superata l'istruzione sopra continuo come se fossi statom lanciato dal widget
 	        
 	        
 	 	}
@@ -94,6 +92,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		//Ad ogni variazione dell'accelerometro
 		public void onSensorChanged(SensorEvent event) {
 				
+				//Aggiornamento campioni registrati
+				i=i+3;
 				//Aggiornamento delle StringBuilder
 			    datoX.append(converti(event.values[0])+" ");
 				datoY.append(converti(event.values[1])+" ");
@@ -102,8 +102,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				//Aggiornamento del tempo attuale
 				tempo=((double)((System.currentTimeMillis()-starttime)/100))/10;
 				
-				//Aggiornamento campioni registrati
-				i=i+3;
+				
 				
 				//Aggiornamento delle barre dei 3 assi, del tempo e dei campioni registrati che vengono visualizzati nella UI3
 				if(System.currentTimeMillis()-sendtime>100){
@@ -129,11 +128,12 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			datoY.trimToSize();
 			datoZ.trimToSize();
 			
-			//Se si proviene dalla UI3
+			//Se si e' cominciata la registrazione dalla UI3
 			if(ric_UI3==true) {
 			
 			
 				if(tempo>=durata_def){
+					tempo=durata_def;
 					Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
 					broadcastIntent.putExtra("STOP", true);
 				}
@@ -154,15 +154,13 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
 				String code = codifica(datoX.toString(), datoY.toString(), datoZ.toString(), prefs.getBoolean("Xselect", true),
 						prefs.getBoolean("Yselect", true),prefs.getBoolean("Zselect", true), prefs.getInt("sovrdef", 0));
-				
-				String name="registrazione_";
-				long id;
+							
 				dbHelper.open();
-				id=dbHelper.createRecord(name, ""+tempo, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
+				long id=dbHelper.createRecord("Rec_", ""+tempo, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
 						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i, UI5.campToString(prefs.getInt("sovrdef", 0)),
 						timestamp, timestamp, code);
 				
-				dbHelper.updateRecordName(id, name+id);
+				dbHelper.updateRecordName(id, "Rec_"+id);
 				dbHelper.close();
 			}
 			

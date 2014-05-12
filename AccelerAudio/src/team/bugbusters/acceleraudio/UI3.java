@@ -120,7 +120,7 @@ public class UI3 extends Activity {
             	if(!in_pausa){
             		pause_resume.setText("Riprendi");
             		in_pausa=true;
-            		intentToSer.putExtra("fromUI3", true);
+            		
             		stopService(intentToSer);
             	}
             	else {
@@ -146,7 +146,7 @@ public class UI3 extends Activity {
             		avan.setEnabled(true);
             		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
-            		intentToSer.putExtra("fromUI3", true);
+            		
             		Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
             		stopService(intentToSer);
             		
@@ -252,7 +252,7 @@ public class UI3 extends Activity {
 	            pbY.setProgress(intent.getIntExtra("intPbY", 0));
 	            pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
 	            
-	            i=intent.getIntExtra("serCamp",1);
+	            i=intent.getIntExtra("serCamp",0);
 	            varcamp.setText(""+i);
 	            datoX=intent.getStringExtra("ValoreX");
 	            datoY=intent.getStringExtra("ValoreY");
