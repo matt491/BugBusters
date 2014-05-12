@@ -133,7 +133,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 			
 				if(tempo>=durata_def){
-					tempo=durata_def;
+					tempo=(double)durata_def;
 					Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
 					broadcastIntent.putExtra("STOP", true);
 				}
