@@ -26,11 +26,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private int i,durata_def;
 	private String freq;
 	private DbAdapter dbHelper;
-	private boolean ric_UI3,stop_from_ui;
+	private boolean ric_UI3;
 	
 	public DataRecord() {
 		super("DataRecord");
-		// TODO Auto-generated constructor stub
 	}
 	
 	 @Override
@@ -45,10 +44,6 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        
 	        //Inizializzo il database
 	        dbHelper = new DbAdapter(this);
-	        
-	        
-	        
-	        //
 	        
 	        //Ripristino parametri dopo una pausa
 	        if(intent.hasExtra("VecchioX")){
@@ -75,8 +70,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	i=intent.getIntExtra("attCamp", 0);
 	        	
 	        	ric_UI3=intent.getBooleanExtra("fromUI3", false);
-	        	stop_from_ui=intent.getBooleanExtra("StopFromUI3", false);
-	        	
+ 	
 	        	acquisizione();
        	
 	        	//Ogni 25 ms si controlla se il tempo trascorso supera la durata massima impostata
@@ -130,8 +124,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 			//Se si e' cominciata la registrazione dalla UI3
 			if(ric_UI3==true) {
-			
-			
+
 				if(tempo>=durata_def){
 					tempo=(double)durata_def;
 					Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
@@ -195,7 +188,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	
 	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
-	public static String codifica(String s, String p, String q,boolean a,boolean b,boolean c, int t){
+	public static String codifica(String s, String p, String q,boolean a,boolean b,boolean c, int t) {
 		StringBuilder sb=new StringBuilder();
 		if (s.charAt(7)==' ' || s.charAt(7)=='-') sb.append("8");
 			else sb.append(s.charAt(7));

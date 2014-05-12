@@ -54,7 +54,6 @@ public class PlayRecord extends IntentService {
         //Chiusura DB
         dbHelper.close();
         
-        
         x=new short[ncamp/3];
         y=new short[ncamp/3];
         z=new short[ncamp/3];
@@ -71,10 +70,12 @@ public class PlayRecord extends IntentService {
         s=asseZ.split(" "); 
         for(int i=0;i<s.length;i++)
     		z[i]=Short.parseShort(s[i]);
-        
-        
-     //   Toast.makeText(getApplicationContext(),"sdafgasgd",Toast.LENGTH_SHORT).show();
+      
 
+	}
+	
+	public void onDestroy(){
+		
 	}
 
 }
