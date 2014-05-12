@@ -102,11 +102,26 @@ public class UI5 extends Activity {
 
 	                @Override
 	                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-	                	if(progress<15)seekBar.setProgress(0);
-	                    if(progress>15 && progress<40)seekBar.setProgress(25);
-	                    if(progress>40 && progress<60)seekBar.setProgress(50);
-	                    if(progress>60 && progress<80)seekBar.setProgress(75);
-	                    if(progress>80)seekBar.setProgress(100);
+	                	if(progress<15){
+	                		seekBar.setProgress(0);
+	                		scampdef.setText(campToString(sbsovradef.getProgress()));
+	                		}
+	                    if(progress>15 && progress<40){
+	                    	seekBar.setProgress(25);
+	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
+	                    	}
+	                    if(progress>40 && progress<60){
+	                    	seekBar.setProgress(50);
+	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
+	                    	}
+	                    if(progress>60 && progress<80){
+	                    	seekBar.setProgress(75);
+	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
+	                    	}
+	                    if(progress>80){
+	                    	seekBar.setProgress(100);
+	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
+	                    	}
 	                }
 
 	    			@Override

@@ -2,7 +2,7 @@ package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class UI2 extends Activity {
 
@@ -29,17 +28,14 @@ public class UI2 extends Activity {
 	private Button fineui2;
 	private String timestamp_ric;
 	private String nome_ric;
-	private double dur_ric;
+	private String sovra_ric;
 	private String dataulitmamodifica;
-	private String datoX;
-	private String datoY;
-	private String datoZ;
-	private int ncamp_ric;
-	private long id_ric,id_to_ui4;
-	private SharedPreferences prefs;
-	private boolean primavolta=true;
+    private boolean x_selected, y_selected, z_selected;
+	private long id_ric;
+	private String pkg_r;
+
 	private DbAdapter dbHelper;
-	
+	private Cursor cr;
 
 	
 	@Override
@@ -47,11 +43,9 @@ public class UI2 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
-        final String pkg_r=getPackageName();
+        pkg_r=getPackageName();
         
         dbHelper = new DbAdapter(this);
-       
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
      
         nomevar= (TextView)findViewById(R.id.nomeSessione);
         timevar= (TextView)findViewById(R.id.datareg);
@@ -63,42 +57,36 @@ public class UI2 extends Activity {
         chZ=(CheckBox)findViewById(R.id.checkBoxZ);
         sb = (SeekBar)findViewById(R.id.seekBar1);
         
-               
-        //Se si proviene dalla UI3 di registrazione o dalla UI1 allora:
-        timestamp_ric=intent_r.getStringExtra(pkg_r+".myTimeStamp");
-        nome_ric=intent_r.getStringExtra(pkg_r+".myNome");
-        dur_ric=intent_r.getDoubleExtra(pkg_r+".myDurata", 0.0);
-        datoX=intent_r.getStringExtra(pkg_r+".myDatoX");
-        datoY=intent_r.getStringExtra(pkg_r+".myDatoY");
-        datoZ=intent_r.getStringExtra(pkg_r+".myDatoZ");
-        ncamp_ric=intent_r.getIntExtra(pkg_r+".myNCamp", 0);
+   
+        id_ric=intent_r.getLongExtra(pkg_r+".myIdToUi2", -1);
+        //Apertura DB
+        dbHelper.open();
+        //Query al DB: dato l'ID recupero tutta la tupla
+        cr=dbHelper.fetchRecordById(id_ric);
+        cr.moveToNext();
+        
+        //Recupero delle informazioni dalla query fatta al DB
+        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
+        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
+        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
+        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
+        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
+        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+        sovra_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+        
+        //Chiusura Cursor e DB
+        cr.close();
+        dbHelper.close();
+        
+        chX.setChecked(x_selected);
+        chY.setChecked(y_selected);
+        chZ.setChecked(z_selected);
         nomevar.setText(nome_ric);
         timevar.setText(timestamp_ric);
+        ultimavar.setText(dataulitmamodifica);
+        result.setText(sovra_ric);
+        sb.setProgress(UI5.stringToCamp(sovra_ric));
         
-        //Se si proviene dalla UI1 allora
-        if(intent_r.hasExtra(pkg_r+".myIdFromUI1")){
-        	dataulitmamodifica=intent_r.getStringExtra(pkg_r+".myDataUltima");
-        	chX.setChecked(Boolean.parseBoolean(intent_r.getStringExtra(pkg_r+".myCheckX")));
-        	chY.setChecked(Boolean.parseBoolean(intent_r.getStringExtra(pkg_r+".myCheckY")));
-        	chZ.setChecked(Boolean.parseBoolean(intent_r.getStringExtra(pkg_r+".myCheckZ")));
-        	sb.setProgress(UI5.stringToCamp(intent_r.getStringExtra(pkg_r+".mySovra")));
-        	result.setText(intent_r.getStringExtra(pkg_r+".mySovra"));
-        	ultimavar.setText(dataulitmamodifica); 	
-        }
-        
-        //Se invece si proviene dalla UI3 si leggono le impostazioni dalla UI5 e si impostano le 2 date uguali
-        else{
-        	chX.setChecked(prefs.getBoolean("Xselect", true));
-        	chY.setChecked(prefs.getBoolean("Yselect", true));
-        	chZ.setChecked(prefs.getBoolean("Zselect", true));
-        	sb.setProgress(prefs.getInt("sovrdef", 0));
-        	result.setText(UI5.campToString(sb.getProgress()));
-        	dataulitmamodifica=timestamp_ric;
-        	ultimavar.setText(dataulitmamodifica);
-        }
-        //Se si proviene dalla UI1 allora
-
-        id_ric=intent_r.getLongExtra(pkg_r+".myIdFromUI1", -1);
         
        
         //Barra del Sovracampionamento
@@ -140,38 +128,21 @@ public class UI2 extends Activity {
         
         fineui2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();            	
-            	if(!(timestamp_ric.equals(dataulitmamodifica))){
+            	         	
+            if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected || sb.getProgress()!=UI5.stringToCamp(sovra_ric)){
+            		
             		dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-                	ultimavar.setText(dataulitmamodifica);
-            	}
-            	
-            	
-            	//Inserimento/aggiornamento del DB
-            	dbHelper.open();
-            	
-            	//Se e' -1 vuol dire che hai appena registrato
-            	if(id_ric==-1){ //La stringa per l'immagine viene generata solo alla creazione del record(anche la duplicazione crea un record)
-            		String cod=DataRecord.codifica(datoX,datoY,datoZ,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());
-            		
-            		id_to_ui4=dbHelper.createRecord(nome_ric, ""+dur_ric, datoX, datoY, datoZ, ""+chX.isChecked(),""+chY.isChecked(),
-            								""+chZ.isChecked(), ncamp_ric, UI5.campToString(sb.getProgress()), timestamp_ric, dataulitmamodifica, cod);
-            	}
-            		
-            	else {
+            		dbHelper.open();
             		dbHelper.updateRecord(id_ric, nome_ric, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
-            								UI5.campToString(sb.getProgress()), dataulitmamodifica);
-            		id_to_ui4=id_ric;
-            		
+							UI5.campToString(sb.getProgress()), dataulitmamodifica);
+            		dbHelper.close();
             	}
-            		
-            	dbHelper.close();
             	
             	//Alla UI4 viene spedito l'ID del record creato/aggiornato
             	Intent intentToUI4=new Intent(UI2.this, UI4.class);
             	
-            	intentToUI4.putExtra(pkg_r+".myServiceID", id_to_ui4);
-               startActivity(intentToUI4);
+            	intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
+                startActivity(intentToUI4);
 
             	}
             });
@@ -184,15 +155,9 @@ public class UI2 extends Activity {
 	//Quando viene premuto il tasto Back
 	@Override
 	public void onBackPressed() {
-		if(primavolta){
-			Toast.makeText(getApplicationContext(),"Premi di nuovo per uscire",Toast.LENGTH_SHORT).show();
-			primavolta=false;
-		}
-		else{
 			Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
         	startActivity(returnIntent);
-        	finish();
-		}
+        	finish();	
 	return;
 	}
 	

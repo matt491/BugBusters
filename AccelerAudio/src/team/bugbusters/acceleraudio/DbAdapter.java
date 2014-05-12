@@ -79,9 +79,16 @@ public class DbAdapter {
    return values;
   }
       
-  private ContentValues updateContentValuesNameOnly(String name) {
+  private ContentValues updateContentValuesNameImage(String name, String imm) {
 	    ContentValues values = new ContentValues();
 	    values.put( KEY_NAME, name );
+	    values.put( KEY_IMM, imm );    
+	   return values;
+	  }
+  
+  private ContentValues updateContentValuesImageCodeOnly(String name) {
+	    ContentValues values = new ContentValues();
+	    values.put( KEY_IMM, name );
 	    	    
 	   return values;
 	  }
@@ -130,9 +137,15 @@ public class DbAdapter {
         return mCursor;
   }
    
-   public boolean updateRecordName(long recordID, String name) {
-			ContentValues updateValuesNameOnly = updateContentValuesNameOnly(name);
-			return database.update(DATABASE_TABLE, updateValuesNameOnly, KEY_RECORDID + "==" + recordID, null) > 0;
+   public boolean updateRecordNameAndImage(long recordID, String name, String imm) {
+			ContentValues updateValuesNameAndImage = updateContentValuesNameImage(name, imm);
+			return database.update(DATABASE_TABLE, updateValuesNameAndImage, KEY_RECORDID + "==" + recordID, null) > 0;
+}
+   
+   
+   public boolean updateImageCode(long recordID, String name) {
+			ContentValues updateValuesImageCode = updateContentValuesImageCodeOnly(name);
+			return database.update(DATABASE_TABLE, updateValuesImageCode, KEY_RECORDID + "==" + recordID, null) > 0;
 }
    
    //Qua ci va il metodo di Mattia

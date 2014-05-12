@@ -31,7 +31,7 @@ public class UI3 extends Activity {
     private String datoX,datoY,datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
 	private int i,end_time;									
-    private double time;							
+    private float time;							
     private String freq_curr;						
     private String nome; 								// Nome inserito dall'utente tramite EditText
     private String ts;
@@ -182,23 +182,31 @@ public class UI3 extends Activity {
             		Toast.makeText(getApplicationContext(), "Immetere un nome valido!", Toast.LENGTH_SHORT).show();
             		
             	else {	
-            	nome = nome_music.getText().toString();
-            	ts = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+            		nome = nome_music.getText().toString();
+            		ts = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
             	
-            	intent.putExtra(pkg+".myDurata", time);
-            	intent.putExtra(pkg+".myNome", nome);
-            	intent.putExtra(pkg+".myTimeStamp", ts); 
-            	intent.putExtra(pkg+".myNCamp", i);
-                intent.putExtra(pkg+".myDatoX", datoX.toString());
-                intent.putExtra(pkg+".myDatoY", datoY.toString());
-                intent.putExtra(pkg+".myDatoZ", datoZ.toString());
-               
-            	startActivity(intent);
-            	finish();
+            		dbHelper.open();           	
+        		
+            		long id_to_ui2=dbHelper.createRecord(nome, ""+time, datoX.toString(), datoY.toString(), datoY.toString(),
+            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
+        					i, UI5.campToString(prefs.getInt("sovrdef", 0)), ts, ts, null);
+            		
+            		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoY.toString(), ts, id_to_ui2);
+        		
+            		//Update dei dati immagine
+            		dbHelper.updateImageCode(id_to_ui2, cod);
+            		
+            		//Chiusura del DB
+            		dbHelper.close();
+        		
+            		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
+            
+            		startActivity(intent);
+            		finish();
             	}
             	
-            	}
-            });
+          }
+       });
                
     }    //FINE onCreate()
     
@@ -259,7 +267,7 @@ public class UI3 extends Activity {
 	            datoZ=intent.getStringExtra("ValoreZ");
 	            freq_curr=intent.getStringExtra("serFreq");
 	            end_time=intent.getIntExtra("serDur",0);
-	            time=intent.getDoubleExtra("serTempo", 0);
+	            time=intent.getFloatExtra("serTempo", 0);
 	            t.setText(""+time);
 	            
 	            if(intent.getBooleanExtra("STOP", false)){

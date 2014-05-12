@@ -21,7 +21,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private Intent broadcastIntent;
 	private SharedPreferences prefs;
 	private StringBuilder datoX,datoY,datoZ;
-	private double tempo;
+	private float tempo;
 	private long starttime,sendtime;
 	private int i,durata_def;
 	private String freq;
@@ -51,7 +51,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	datoY=new StringBuilder().append(intent.getStringExtra("VecchioY"));
 	        	datoZ=new StringBuilder().append(intent.getStringExtra("VecchioZ"));
 	        	freq=intent.getStringExtra("attFreq");
-	        	tempo=intent.getDoubleExtra("attTempo", 0);
+	        	tempo=intent.getFloatExtra("attTempo", 0);
 	        	durata_def=intent.getIntExtra("attFineTempo", 0);
 	        	starttime=System.currentTimeMillis()-(long)(tempo*1000); 	
 	        }
@@ -94,7 +94,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				datoZ.append(converti(event.values[2])+" ");
 				
 				//Aggiornamento del tempo attuale
-				tempo=((double)((System.currentTimeMillis()-starttime)/100))/10;
+				tempo=((float)((System.currentTimeMillis()-starttime)/100))/10;
 				
 				
 				
@@ -126,7 +126,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			if(ric_UI3==true) {
 
 				if(tempo>=durata_def){
-					tempo=(double)durata_def;
+					tempo=(float)durata_def;
 					Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
 					broadcastIntent.putExtra("STOP", true);
 				}
@@ -145,15 +145,13 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			//Invece se si proviene dal widget
 			else {
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-				String code = codifica(datoX.toString(), datoY.toString(), datoZ.toString(), prefs.getBoolean("Xselect", true),
-						prefs.getBoolean("Yselect", true),prefs.getBoolean("Zselect", true), prefs.getInt("sovrdef", 0));
-							
+											
 				dbHelper.open();
 				long id=dbHelper.createRecord("Rec_", ""+tempo, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
 						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i, UI5.campToString(prefs.getInt("sovrdef", 0)),
-						timestamp, timestamp, code);
-				
-				dbHelper.updateRecordName(id, "Rec_"+id);
+						timestamp, timestamp, null);
+				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
+				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
 				dbHelper.close();
 			}
 			
@@ -188,29 +186,20 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	
 	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
-	public static String codifica(String s, String p, String q,boolean a,boolean b,boolean c, int t) {
+	public static String codifica(String s, String p, String q, String time, long id) {
 		StringBuilder sb=new StringBuilder();
 		if (s.charAt(7)==' ' || s.charAt(7)=='-') sb.append("8");
 			else sb.append(s.charAt(7));
-		if (s.charAt(23)==' ' || s.charAt(23)=='-') sb.append("1");
-		else sb.append(s.charAt(23));
-		if (s.charAt(52)==' ' || s.charAt(52)=='-') sb.append("5");
-		else sb.append(s.charAt(52));
-		if (s.charAt(27)==' ' || s.charAt(27)=='-') sb.append("6");
-		else sb.append(s.charAt(27));
-		if (s.charAt(43)==' ' || s.charAt(43)=='-') sb.append("3");
-		else sb.append(s.charAt(43));
-		if(t==0) sb.append(""+0);
-		if(t==25) sb.append(""+3);
-		if(t==50) sb.append(""+5);
-		if(t==75) sb.append(""+7);
-		if(t==100) sb.append(""+9);
-		if(a==true) sb.append(""+2);
-		else sb.append(""+0);
-		if(b==true) sb.append(""+5);
-		else sb.append(""+0);
-		if(c==true) sb.append(""+5);
-		else sb.append(""+0);
+		if (p.charAt(7)==' ' || p.charAt(7)=='-') sb.append("4");
+		else sb.append(p.charAt(7));
+		if (q.charAt(7)==' ' || q.charAt(7)=='-') sb.append("5");
+		else sb.append(q.charAt(7));
+		sb.append(time.charAt(1));
+		sb.append(time.charAt(12));
+		sb.append(time.charAt(15));
+		sb.append(""+id%2);
+		sb.append(""+id%7);
+		sb.append(""+id%9);
 		return sb.toString();
 	}
 	
