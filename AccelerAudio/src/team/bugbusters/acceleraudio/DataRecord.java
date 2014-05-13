@@ -89,9 +89,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				//Aggiornamento campioni registrati
 				i=i+3;
 				//Aggiornamento delle StringBuilder
-			    datoX.append(converti(event.values[0])+" ");
-				datoY.append(converti(event.values[1])+" ");
-				datoZ.append(converti(event.values[2])+" ");
+			    datoX.append((converti(event.values[0]))+" ");
+				datoY.append((converti(event.values[1]))+" ");
+				datoZ.append((converti(event.values[2]))+" ");
 				
 				//Aggiornamento del tempo attuale
 				tempo=((float)((System.currentTimeMillis()-starttime)/100))/10;

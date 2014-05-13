@@ -1,9 +1,14 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.widget.Toast;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
+import android.media.MediaRecorder;
 
 public class PlayRecord extends IntentService {
 
@@ -17,7 +22,7 @@ public class PlayRecord extends IntentService {
 	private String sovrac;
 	private String[] s;
  	private short[] x,y,z;
-	
+	long re;
 	
 	public PlayRecord() {
 		super("PlayRecord");
@@ -71,11 +76,38 @@ public class PlayRecord extends IntentService {
         for(int i=0;i<s.length;i++)
     		z[i]=Short.parseShort(s[i]);
       
+        re=System.currentTimeMillis();
+      		
 
+              AudioHelper device = new AudioHelper( );
+              
+             
+              while(System.currentTimeMillis()-re<10000 ){
+            	//  while(System.currentTimeMillis()-re<100 )
+                	  device.writeSamples( x ); 
+            	  
+            //	  while(System.currentTimeMillis()-re<100 )
+                	  device.writeSamples( y ); 
+            	  
+            	//  while(System.currentTimeMillis()-re<200 )
+                	  device.writeSamples( z ); 
+            	  
+            	  
+              }
+            	  	
+          
+             
+              device.stop();
+           }
+     
+        
+        
+        
+        
 	}
 	
-	public void onDestroy(){
-		
-	}
+                 
+            
 
-}
+
+        
