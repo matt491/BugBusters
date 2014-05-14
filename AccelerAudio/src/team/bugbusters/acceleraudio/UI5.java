@@ -80,20 +80,18 @@ public class UI5 extends Activity {
 	         
 	        	//Sovrascritti i metodi della SeekBar della durata di default
 	        	sbdurdef.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
-
 	            @Override
 	            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+	            	sbdurdef.setProgress(seekBar.getProgress());
+	            	dmax.setText(seekBar.getProgress()+" secondi");
 	            }
 				@Override
 				public void onStartTrackingTouch(SeekBar seekBar) {}
 
 				@Override
 				public void onStopTrackingTouch(SeekBar seekBar) {
-					String l;
-					if(seekBar.getProgress()%60 < 10) l="0"+seekBar.getProgress()%60;
-					else l=""+seekBar.getProgress()%60;
-					 dmax.setText(seekBar.getProgress()/60+":"+l);
-	              //  dmax.setText(seekBar.getProgress()+" secondi");
+					sbdurdef.setProgress(seekBar.getProgress());
+	                dmax.setText(seekBar.getProgress()+" secondi");
 				}});
 
 	        

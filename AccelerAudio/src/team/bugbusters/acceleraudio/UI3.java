@@ -282,6 +282,40 @@ public class UI3 extends Activity {
 
 	        }
 
-	
+	//Questo metodo per la duplicazione va messo nella UI1 quando ci sara'
+	   private void duplica(long id){
+		   dbHelper.open();
+		   Cursor c=dbHelper.fetchRecordById(id);
+		   c.moveToNext();
+		   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
+	       String d=c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
+	       String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
+	       String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
+	       String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
+	       boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
+	       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
+	       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+	       int ncamp=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMP));
+	       String sovrac=c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
+	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+	       
+	       if(checkX==true) checkX=!checkX;
+	       if(checkY==false) checkY=!checkY;
+	       if(checkZ==true) checkZ=!checkZ;
+	       if(sovrac.equals("Scelta 0")) sovrac="Scelta 1";
+	       if(sovrac.equals("Scelta 1")) sovrac="Scelta 2";
+	       if(sovrac.equals("Scelta 2")) sovrac="Scelta 3";
+	       if(sovrac.equals("Scelta 3")) sovrac="Scelta 4";
+	       if(sovrac.equals("Scelta 4")) sovrac="Scelta 0";
+	       
+	       long id_new=dbHelper.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac,	datar, dataul, null);
+			String code = DataRecord.codifica(asseX, asseY, asseX, dataul, id_new);
+			dbHelper.updateRecordNameAndImage(id, n+id, code);
+			
+		   c.close();
+		   dbHelper.close();
+	   }
+	   
 	
 	}

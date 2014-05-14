@@ -1,134 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
- 	   <TableRow
-        android:id="@+id/tableRow22"
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="15dp" >
-    
+        android:layout_above="@+id/sbcampdef"
+        android:layout_alignParentLeft="true"
+        android:gravity="left"
+        android:paddingLeft="10dp"
+        android:text="Sovracampionamento: "
+        android:textSize="15sp" />
+
     <CheckBox
         android:id="@+id/checkXdef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="27dp"
+        android:layout_toLeftOf="@+id/checkYdef"
         android:text="@string/AsseX" />
 
     <CheckBox
         android:id="@+id/checkYdef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkXdef"
+        android:layout_alignBottom="@+id/checkXdef"
+        android:layout_alignLeft="@+id/salva_imp"
         android:text="@string/AsseY" />
 
     <CheckBox
         android:id="@+id/checkZdef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkYdef"
+        android:layout_alignBottom="@+id/checkYdef"
+        android:layout_toRightOf="@+id/salva_imp"
         android:text="@string/AsseZ" />
 
-       </TableRow>
-       
-    
-        <TableRow
-        android:id="@+id/tableRow23"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" >
-
-        <TextView
-            android:id="@+id/tt1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:text="Campionamento: "
-            android:textSize="15sp" />
-
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </TableRow>
-
-        <TableRow
-        android:id="@+id/tableRow24"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="left" >
-        
-        
-          <TextView
-              android:id="@+id/tt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:text="Durata Massima: "
-            android:textSize="15sp" />
-
-          <TextView
-              android:id="@+id/durmax"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:textSize="15sp"/>
-          
-          </TableRow>
-            
-    <SeekBar
-        android:id="@+id/durdef"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="150"
-        android:paddingBottom="15dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="15dp"
-        android:progress="1" />
-     
-     <TableRow
-        android:id="@+id/tableRow25"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp" >
-    
-    <TextView
-       		android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:paddingLeft="10dp"
-            android:text="Sovracampionamento: "
-            android:textSize="15sp" />
-    
-    <TextView
-        	android:id="@+id/sovradef"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:max="100"
-       		android:paddingBottom="15dp"
-        	android:paddingTop="15dp"
-        	android:progress="1" />
-    
-    </TableRow>
-    
     <SeekBar
         android:id="@+id/sbcampdef"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/sovradef"
+        android:layout_marginTop="25dp"
         android:max="100"
-        android:paddingBottom="15dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:progress="1" />
-            
-            <Button
-                android:id="@+id/salva_imp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SALVA"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-    
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tt1"
+        android:layout_marginTop="36dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:text="Durata Massima: "
+        android:textSize="15sp" />
+
+    <SeekBar
+        android:id="@+id/durdef"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/durmax"
+        android:layout_marginTop="15dp"
+        android:max="120"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp"
+        android:progress="1" />
+
+    <TextView
+        android:id="@+id/tt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/spinner1"
+        android:layout_alignRight="@+id/tt"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:text="Campionamento: "
+        android:textSize="15sp" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/checkZdef"
+        android:layout_marginTop="22dp"
+        android:layout_toRightOf="@+id/textView1" />
+
+    <TextView
+        android:id="@+id/durmax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tt"
+        android:layout_alignBottom="@+id/tt"
+        android:layout_alignLeft="@+id/spinner1"
+        android:layout_marginLeft="19dp"
+        android:gravity="center"
+        android:text="dur "
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/sovradef"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/durmax"
+        android:layout_below="@+id/durdef"
+        android:layout_marginTop="54dp"
+        android:text="sovra" />
+
+    <Button
+        android:id="@+id/salva_imp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sbcampdef"
+        android:layout_centerHorizontal="true"
+        android:text="SALVA"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

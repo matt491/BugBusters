@@ -96,12 +96,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				//Aggiornamento del tempo attuale
 				tempo=((float)((System.currentTimeMillis()-starttime)/100))/10;
 				
-				
-				
+
 				//Aggiornamento delle barre dei 3 assi, del tempo e dei campioni registrati che vengono visualizzati nella UI3
 				if(System.currentTimeMillis()-sendtime>100){
 					sendtime=System.currentTimeMillis();
-					broadcastIntent.putExtra("intPb", (int)Math.round(tempo));
+					broadcastIntent.putExtra("intPb",  Math.round(tempo));
 					broadcastIntent.putExtra("intPbX", Math.round(Math.abs(event.values[0])));
 					broadcastIntent.putExtra("intPbY", Math.round(Math.abs(event.values[1])));
 					broadcastIntent.putExtra("intPbZ", Math.round(Math.abs(event.values[2])));

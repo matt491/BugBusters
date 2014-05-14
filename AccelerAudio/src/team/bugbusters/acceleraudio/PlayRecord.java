@@ -21,7 +21,7 @@ public class PlayRecord extends IntentService {
 	private int ncamp;
 	private String sovrac;
 	private String[] s;
- 	private short[] x,y,z;
+ 	private short[] x,y,z,w;
 	long re;
 	
 	public PlayRecord() {
@@ -46,7 +46,7 @@ public class PlayRecord extends IntentService {
         cr.moveToNext();
         
         //Lettura dei dati dal record(cursor) restituito
-        m=Double.parseDouble(cr.getString(cr.getColumnIndex(DbAdapter.KEY_DURATION)));
+        m=Float.parseFloat(cr.getString(cr.getColumnIndex(DbAdapter.KEY_DURATION)));
         asseX=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEX));
         asseY=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEY));
         asseZ=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEZ));
@@ -59,41 +59,57 @@ public class PlayRecord extends IntentService {
         //Chiusura DB
         dbHelper.close();
         
-        x=new short[ncamp/3];
-        y=new short[ncamp/3];
-        z=new short[ncamp/3];
+        s=asseX.split(" "); 
+        
+        x=new short[s.length];
+        y=new short[s.length];
+        z=new short[s.length];
         
         //Tokenizzazione delle stringhe in array di short
-        s=asseX.split(" "); 
-        for(int i=0;i<s.length;i++)
+        int i;
+        for(i=0;i<s.length;i++)
     		x[i]=Short.parseShort(s[i]);
         
         s=asseY.split(" "); 
-        for(int i=0;i<s.length;i++)
+        for(i=0;i<s.length;i++)
     		y[i]=Short.parseShort(s[i]);
         
         s=asseZ.split(" "); 
-        for(int i=0;i<s.length;i++)
+        for(i=0;i<s.length;i++)
     		z[i]=Short.parseShort(s[i]);
       
+        int j=0;
+        
+        w=new short[3*s.length];
+        for(i=0; i<w.length-2;i=i+3){
+        	w[i]=x[j];
+        	w[i+1]=y[j];
+        	w[i+2]=z[j];
+        	j++;
+        }
+        
+        
+        
+        
+        
         re=System.currentTimeMillis();
       		
 
               AudioHelper device = new AudioHelper( );
               
              
-              while(System.currentTimeMillis()-re<10000 ){
+           //   while(System.currentTimeMillis()-re<10000 ){
             	//  while(System.currentTimeMillis()-re<100 )
-                	  device.writeSamples( x ); 
+                	  device.writeSamples( w ); 
             	  
             //	  while(System.currentTimeMillis()-re<100 )
-                	  device.writeSamples( y ); 
+             //   	  device.writeSamples( y ); 
             	  
             	//  while(System.currentTimeMillis()-re<200 )
-                	  device.writeSamples( z ); 
+              //  	  device.writeSamples( z ); 
             	  
             	  
-              }
+           //   }
             	  	
           
              

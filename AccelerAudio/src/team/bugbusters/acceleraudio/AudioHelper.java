@@ -38,21 +38,5 @@ public class AudioHelper
          buffer[i] = samples[i];
    }	
    
-   public void writeSamples(short[] s, short[] p, short[] q ) 
-   {	
-      fillBuffer( s,p,q );
-      track.write( buffer, 0, buffer.length );
-   }
-   
-   private void fillBuffer( short[] s, short[] p, short[] q ){
-	   if( buffer.length < s.length+p.length+q.length )
-	         buffer = new short[s.length+p.length+q.length];
-	   int j=0;
-	   for(int i=0;i < s.length; i++) { buffer[j] = s[i]; j++;}
-	   for(int i=0; i < p.length; i++) { buffer[j] = p[i]; j++;}
-	   for(int i=0; i < q.length; i++) { buffer[j] = q[i]; j++;}
-	   
-	   
-   }
    
 }
