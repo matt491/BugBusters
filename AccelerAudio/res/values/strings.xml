@@ -28,5 +28,8 @@
     <string name="avanti">Avanti</string>
     <string name="alertTitle">Avviso!!!</string>
     <string name="alertMessage">Sei sicuro di voler abbanadonare l\'applicazione?</string>
+    <string name="MaxDur">Durata Massima:</string>
+    <string name="Sampling">Campionamento:</string>
+    <string name="save">Salva</string>
 
 </resources>

@@ -45,7 +45,7 @@
         android:layout_centerVertical="true"
         android:gravity="center"
         android:paddingLeft="10dp"
-        android:text="Durata Massima: "
+        android:text="@string/MaxDur"
         android:textSize="15sp" />
 
     <SeekBar
@@ -68,7 +68,7 @@
         android:layout_alignTop="@+id/sovradef"
         android:gravity="left"
         android:paddingLeft="10dp"
-        android:text="Sovracampionamento: "
+        android:text="@string/Upsampling"
         android:textSize="15sp" />
 
     <SeekBar
@@ -99,7 +99,7 @@
         android:layout_toRightOf="@+id/checkXdef"
         android:gravity="center"
         android:paddingLeft="10dp"
-        android:text="Campionamento: "
+        android:text="@string/Sampling"
         android:textSize="15sp" />
 
     <Button
@@ -110,7 +110,7 @@
         android:layout_alignBottom="@+id/checkYdef"
         android:layout_alignParentRight="true"
         android:layout_marginRight="47dp"
-        android:text="SALVA"
+        android:text="@string/save"
         android:textSize="15sp"
         android:textStyle="bold" />
 

@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:gravity="left"
         android:paddingLeft="10dp"
-        android:text="Sovracampionamento: "
+        android:text="@string/Upsampling"
         android:textSize="15sp" />
 
     <CheckBox
@@ -64,7 +64,7 @@
         android:layout_marginTop="36dp"
         android:gravity="center"
         android:paddingLeft="10dp"
-        android:text="Durata Massima: "
+        android:text="@string/MaxDur"
         android:textSize="15sp" />
 
     <SeekBar
@@ -89,7 +89,7 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:paddingLeft="10dp"
-        android:text="Campionamento: "
+        android:text="@string/Sampling"
         android:textSize="15sp" />
 
     <Spinner
@@ -127,7 +127,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/sbcampdef"
         android:layout_centerHorizontal="true"
-        android:text="SALVA"
+        android:text="@string/save"
         android:textSize="15sp"
         android:textStyle="bold" />
 
