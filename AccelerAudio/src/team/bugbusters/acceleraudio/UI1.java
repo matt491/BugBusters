@@ -12,15 +12,14 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -186,15 +185,36 @@ public class UI1 extends Activity {
 			return(true);
 		
 		case R.id.Elimina:
+			
+			AlertDialog.Builder alert2 = new AlertDialog.Builder(this);
+			alert2.setTitle(R.string.Delete);
+			alert2.setMessage(R.string.DeleteMessage);
 			dati = (String[]) lv.getAdapter().getItem(info.position);
-			db.open();
-			db.deleteRecord(Long.parseLong(dati[0]));
-			db.close();
+			final long id_to_delete=Long.parseLong(dati[0]);
 			
-			List<String[]> data2 = dataToFill();
-			CustomList cl2 = new CustomList(UI1.this, data2);
-			lv.setAdapter(cl2);
+			alert2.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					db.open();
+					db.deleteRecord(id_to_delete);
+					db.close();
+					
+					List<String[]> data2 = dataToFill();
+					CustomList cl2 = new CustomList(UI1.this, data2);
+					lv.setAdapter(cl2);	
+				}
+			});
 			
+			alert2.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			
+			alert2.show();
 			return(true);
 			
 		case R.id.Riproduci:
@@ -313,4 +333,7 @@ public class UI1 extends Activity {
 		AlertDialog alertDialog = alertDialogBuilder.create();
 		alertDialog.show();
 	}
+	
 }
+
+

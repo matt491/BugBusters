@@ -45,5 +45,6 @@
     <string name="okAlert">Ok</string>
     <string name="ToastAlertSameName">Questo nome esiste già!</string>
     <string name="Cancel">Cancella</string>
+    <string name="DeleteMessage">Sei sicuro di voler eliminare questa sessione?</string>
 
 </resources>
