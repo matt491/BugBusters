@@ -41,7 +41,14 @@ public class UI4 extends Activity {
         
 	} //FINE onCreate()
 	
-	
+	//Quando viene premuto il tasto Back
+	@Override
+	public void onBackPressed() {
+			Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
+        	startActivity(returnIntent);
+        	finish();	
+	return;
+	}
 	
 	
 }

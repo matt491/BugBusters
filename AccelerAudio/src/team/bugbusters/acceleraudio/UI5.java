@@ -1,6 +1,5 @@
 package team.bugbusters.acceleraudio;
 
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -12,6 +11,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class UI5 extends Activity {
 	        setContentView(R.layout.ui5_layout);
 	        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	        defX=(CheckBox)findViewById(R.id.checkXdef);
+	        
 	        defY=(CheckBox)findViewById(R.id.checkYdef);
 	        defZ=(CheckBox)findViewById(R.id.checkZdef);
 	        sbdurdef =(SeekBar)findViewById(R.id.durdef);
@@ -47,6 +49,35 @@ public class UI5 extends Activity {
 	    	dmax=(TextView)findViewById(R.id.durmax);
 	    	
       
+	    	OnCheckedChangeListener listener = new OnCheckedChangeListener() {
+	        	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+	        		if(!isChecked){
+	        		switch(arg0.getId())
+	        		  {
+	        		    case R.id.checkXdef:{
+	        		         if(!defY.isChecked() && !defZ.isChecked())
+	        		        	 defX.setChecked(true);
+	        		         break;
+	        		    }
+	        		    case R.id.checkYdef:{
+	        		    	if(!defX.isChecked() && !defZ.isChecked())
+	        		        	 defY.setChecked(true);
+	        		         break;
+	        		    }
+	        		   case R.id.checkZdef:{
+	        			   if(!defY.isChecked() && !defX.isChecked())
+	        		        	 defZ.setChecked(true);
+	        		        break;
+	        		   }
+	        		  }
+	        		}
+	        	}};
+	    	
+	        	defX.setOnCheckedChangeListener(listener);
+	        	defY.setOnCheckedChangeListener(listener);
+	        	defZ.setOnCheckedChangeListener(listener);
+	        	
+	        	
 	        //Menu a tendina per la scelta della Frequenza
 	        spinner = (Spinner)findViewById(R.id.spinner1);
 	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -149,9 +180,11 @@ public class UI5 extends Activity {
 	                	
 	                }});
 	        	
-	        	
-	        	
-	} //Fine onCreate
+	
+	
+		
+
+	}//Fine onCreate
 	
 	
 	public static String campToString(int c){
