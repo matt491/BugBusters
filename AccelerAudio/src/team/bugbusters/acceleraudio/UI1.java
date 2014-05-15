@@ -107,6 +107,7 @@ public class UI1 extends Activity {
 	public void onClick(View view) {
 		Intent intent = new Intent(getApplicationContext(), UI3.class);
 		startActivity(intent);
+		finish();
 	}
 	
 	/*
@@ -131,7 +132,12 @@ public class UI1 extends Activity {
 		case R.id.Duplica:
 			String[] s = (String[]) lv.getAdapter().getItem(info.position);
 			duplica(Long.parseLong(s[0]));
-			((ArrayAdapter<String[]>)lv.getAdapter()).notifyDataSetChanged();
+			
+			List<String[]> data1 = dataToFill();
+	
+			CustomList cl = new CustomList(UI1.this, data1);
+			lv.setAdapter(cl);
+			
 			return(true);
 			
 		case R.id.Rinomina:
@@ -181,6 +187,7 @@ public class UI1 extends Activity {
 			//.myServiceID???
 			toUi4.putExtra(pkg + ".myServiceID", Long.parseLong(dati_sessione[0]));
 			startActivity(toUi4);
+			finish();
 			return(true);
 		}
 		
@@ -217,9 +224,9 @@ public class UI1 extends Activity {
 	       if(sovrac.equals("Scelta 3")) sovrac="Scelta 4";
 	       if(sovrac.equals("Scelta 4")) sovrac="Scelta 0";
 	       
-	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac,	datar, dataul, null);
-			String code = DataRecord.codifica(asseX, asseY, asseX, dataul, id_new);
-			db.updateRecordNameAndImage(id, n+id, code);
+	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac, datar, dataul, null);
+		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
+		   db.updateRecordNameAndImage(id, n+id, code);
 			
 		   c.close();
 		   db.close();
@@ -261,7 +268,7 @@ public class UI1 extends Activity {
 		
 		alertDialogBuilder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				UI1.this.finish();
+				finish();
 			}
 		});
 		
