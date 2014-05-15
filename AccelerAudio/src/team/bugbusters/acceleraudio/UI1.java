@@ -154,7 +154,7 @@ public class UI1 extends Activity {
 			final long id_to_rename=Long.parseLong(dati[0]);
 			final EditText input = new EditText(this);
 			input.setImeOptions(EditorInfo.IME_ACTION_SEND);
-			input.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+			input.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
 			alert.setView(input);
 			
 			alert.setPositiveButton(R.string.okAlert, new DialogInterface.OnClickListener() {
