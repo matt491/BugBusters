@@ -35,7 +35,7 @@ public class UI2 extends Activity {
     private boolean x_selected, y_selected, z_selected;
 	private long id_ric;
 	private String pkg_r;
-
+	
 	private DbAdapter dbHelper;
 	private Cursor cr;
 
@@ -189,7 +189,7 @@ public class UI2 extends Activity {
 	//Quando viene premuto il tasto Back
 	@Override
 	public void onBackPressed() {
-			Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
+			Intent returnIntent = new Intent(UI2.this, UI1.class);
         	startActivity(returnIntent);
         	finish();	
 	return;

@@ -63,6 +63,7 @@ public class UI1 extends Activity {
 			pkg = getPackageName();
 			intent.putExtra(pkg + ".myIdToUi2", musicSessionsId);
 			startActivity(intent);
+			finish();
 		}
 		});
 		
@@ -107,7 +108,7 @@ public class UI1 extends Activity {
 	 * Alla pressione del tasto +, si passa alla UI#3 dove e' possibile registrare una nuova sessione
 	 */
 	public void onClick(View view) {
-		Intent intent = new Intent(getApplicationContext(), UI3.class);
+		Intent intent = new Intent(UI1.this , UI3.class);
 		startActivity(intent);
 		finish();
 	}
