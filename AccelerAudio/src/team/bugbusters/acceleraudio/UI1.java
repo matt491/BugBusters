@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -159,18 +161,6 @@ public class UI1 extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					String nuovoNome = input.getText().toString();
-					if(sameName(nuovoNome)) {
-						Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG).show();
-					}
-					else {
-						db.open();
-						db.updateNameOnly(id_to_rename,nuovoNome);
-						db.close();
-						List<String[]> data1 = dataToFill();
-						CustomList cl = new CustomList(UI1.this, data1);
-						lv.setAdapter(cl);
-					}
 					
 				}
 			});
@@ -182,7 +172,30 @@ public class UI1 extends Activity {
 					dialog.cancel();
 				}
 			});
-			alert.show();
+			final AlertDialog dialog = alert.create();
+			dialog.show();
+			
+			dialog.getButton(Dialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String nuovoNome = input.getText().toString();
+					if(sameName(nuovoNome)) {
+						Toast toast = Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
+					else {
+						db.open();
+						db.updateNameOnly(id_to_rename,nuovoNome);
+						db.close();
+						List<String[]> data1 = dataToFill();
+						CustomList cl = new CustomList(UI1.this, data1);
+						lv.setAdapter(cl);
+						dialog.dismiss();
+					}
+					
+				}
+			});
 			return(true);
 		
 		case R.id.Elimina:
@@ -231,6 +244,7 @@ public class UI1 extends Activity {
 		
 		return (super.onOptionsItemSelected(item));
 	}
+	
 	
 	/*
 	 * Questo metodo per la duplicazione va messo nella UI1 quando ci sara'
