@@ -14,7 +14,7 @@
     <string name="Orientation_port">portrait</string>
     <string name="Orientation_land">landscape</string>
     <string name="Assi">Assi:</string>
-    <string name="toggleButtonString">Blocca orientazione schermo</string>
+    <string name="toggleButtonString">Blocca orientazione:</string>
     <string name="ifLocked">Sblocca</string>
     <string name="ifUnlocked">Blocca</string>
     <string name="time">Tempo:</string>
