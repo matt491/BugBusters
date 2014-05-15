@@ -16,16 +16,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textSize="17sp" />
 
-    <ToggleButton
-        android:id="@+id/toggleButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView1"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/textView1"
-        android:textOff="@string/ifUnlocked"
-        android:textOn="@string/ifLocked" />
-
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
@@ -213,5 +203,14 @@
         android:layout_above="@+id/avanz"
         android:layout_alignRight="@+id/z_axis"
         android:text="@string/stop" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/stop"
+        android:layout_alignParentTop="true"
+        android:textOff="@string/ifUnlocked"
+        android:textOn="@string/ifLocked" />
 
 </RelativeLayout>
