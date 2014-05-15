@@ -3,6 +3,7 @@ package team.bugbusters.acceleraudio;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -27,10 +29,12 @@ public class UI2 extends Activity {
 	private TextView ultimavar;
 	private TextView result;
 	private Button fineui2;
+	private ImageView iv;
 	private String timestamp_ric;
 	private String nome_ric;
 	private String sovra_ric;
 	private String dataulitmamodifica;
+	private String codifica;
     private boolean x_selected, y_selected, z_selected;
 	private long id_ric;
 	private String pkg_r;
@@ -57,6 +61,7 @@ public class UI2 extends Activity {
         chY=(CheckBox)findViewById(R.id.checkBoxY);
         chZ=(CheckBox)findViewById(R.id.checkBoxZ);
         sb = (SeekBar)findViewById(R.id.seekBar1);
+        iv = (ImageView) findViewById(R.id.thumbnail);
         
         
         OnCheckedChangeListener listener = new OnCheckedChangeListener() {
@@ -106,10 +111,17 @@ public class UI2 extends Activity {
         y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
         sovra_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
         
         //Chiusura Cursor e DB
         cr.close();
         dbHelper.close();
+        
+        int red = Integer.parseInt(codifica.substring(0, 3));
+        int green = Integer.parseInt(codifica.substring(3, 6));
+        int blue = Integer.parseInt(codifica.substring(6, 9));
+        
+        iv.setBackgroundColor(Color.rgb(red, green, blue));
         
         chX.setChecked(x_selected);
         chY.setChecked(y_selected);
