@@ -22,7 +22,10 @@
         <!-- 		SETTING UI1			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI1" android:label="Overview (UI#1)">
-            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity> 
         
         <!--			SETTING UI2			-->
@@ -35,10 +38,6 @@
         
         <activity android:name="team.bugbusters.acceleraudio.UI3"
             android:label="New Music Session (UI#3)">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         
         <!-- 		SETTING UI4			 -->

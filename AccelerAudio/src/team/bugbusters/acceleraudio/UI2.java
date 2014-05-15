@@ -3,8 +3,8 @@ package team.bugbusters.acceleraudio;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +12,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -25,11 +26,13 @@ public class UI2 extends Activity {
 	private TextView timevar;
 	private TextView ultimavar;
 	private TextView result;
+	private ImageView thumbnail;
 	private Button fineui2;
 	private String timestamp_ric;
 	private String nome_ric;
 	private String sovra_ric;
 	private String dataulitmamodifica;
+	private String codifica_thumbnail;
     private boolean x_selected, y_selected, z_selected;
 	private long id_ric;
 	private String pkg_r;
@@ -56,6 +59,7 @@ public class UI2 extends Activity {
         chY=(CheckBox)findViewById(R.id.checkBoxY);
         chZ=(CheckBox)findViewById(R.id.checkBoxZ);
         sb = (SeekBar)findViewById(R.id.seekBar1);
+        thumbnail = (ImageView)findViewById(R.id.thumbnail);
         
    
         id_ric=intent_r.getLongExtra(pkg_r+".myIdToUi2", -1);
@@ -73,11 +77,19 @@ public class UI2 extends Activity {
         y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
         sovra_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+        codifica_thumbnail = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
+        
         
         //Chiusura Cursor e DB
         cr.close();
         dbHelper.close();
         
+        //Dalla stringa codifica_thumnail ricavo i tre colori RGB per il background della thumbnail
+        int red = Integer.parseInt(codifica_thumbnail.substring(0, 3));
+        int green = Integer.parseInt(codifica_thumbnail.substring(3, 6));
+        int blue = Integer.parseInt(codifica_thumbnail.substring(6, 9));
+        
+        thumbnail.setBackgroundColor(Color.rgb(red, green, blue));
         chX.setChecked(x_selected);
         chY.setChecked(y_selected);
         chZ.setChecked(z_selected);

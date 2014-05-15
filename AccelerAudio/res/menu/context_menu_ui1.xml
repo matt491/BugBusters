@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/Duplica" android:title="@string/Duplicate"></item>
+    <item android:id="@+id/Rinomina" android:title="@string/Rename"></item>
+    <item android:id="@+id/Elimina" android:title="@string/Delete"></item>
+    <item android:id="@+id/Riproduci" android:title="@string/Play_Menu"></item>
+    
+
+</menu>

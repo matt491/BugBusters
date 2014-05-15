@@ -3,7 +3,7 @@
     <string name="app_name">AccelerAudio</string>
     <string name="SessionName">Sessione:</string>
     <string name="RecordDate">Data registrazione:</string>
-    <string name="LastModifiedDate">Ultima modifica:</string>
+    <string name="LastModifiedDate">Data ultima modifica:</string>
     <string name="AsseX">X</string>
     <string name="AsseY">Y</string>
     <string name="AsseZ">Z</string>
@@ -27,9 +27,23 @@
     <string name="stop">Stop</string>
     <string name="avanti">Avanti</string>
     <string name="alertTitle">Avviso!!!</string>
-    <string name="alertMessage">Sei sicuro di voler abbanadonare l\'applicazione?</string>
-    <string name="MaxDur">Durata Massima:</string>
+    <string name="alertMessage">Sei sicuro di voler abbandonare l\'applicazione?</string>
+    <string name="plusButtonDesc">La pressione permette di passare alla UI#3</string>
     <string name="Sampling">Campionamento:</string>
+    <string name="MaxDur">Durata:</string>
     <string name="save">Salva</string>
+    <string name="ListViewHeader">Music Sessions</string>
+    <string name="NoMusicSession">Nessuna music session! Premi il tasto + e comincia a registrare!</string>
+    <string name="Yes">Si</string>
+    <string name="No">No</string>
+    <string name="Duplicate">Duplica</string>
+    <string name="Rename">Rinomina</string>
+    <string name="Delete">Elimina</string>
+    <string name="Play_Menu">Riproduci</string>
+    <string name="renameAlert">Rinomina la sessione</string>
+    <string name="renameAlertMessage">Inserisci un nuovo nome per questa sessione:</string>
+    <string name="okAlert">Ok</string>
+    <string name="ToastAlertSameName">Questo nome esiste già!</string>
+    <string name="Cancel">Cancella</string>
 
 </resources>
