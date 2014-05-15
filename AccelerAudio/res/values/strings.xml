@@ -50,5 +50,6 @@
     <string name="lockScreen">Devi bloccare lo schermo!</string>
     <string name="validName">Immettere un nome valido!</string>
     <string name="registrationEnd">Registrazione terminata</string>
+    <string name="ImageDesc">Rappresenta la thumbnail della music session</string>
 
 </resources>
