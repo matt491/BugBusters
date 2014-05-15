@@ -138,8 +138,8 @@ public class DbAdapter {
   }
    
    public boolean updateRecordNameAndImage(long recordID, String name, String imm) {
-			ContentValues updateValuesNameAndImage = updateContentValuesNameImage(name, imm);
-			return database.update(DATABASE_TABLE, updateValuesNameAndImage, KEY_RECORDID + "==" + recordID, null) > 0;
+			ContentValues update = updateContentValuesNameImage(name, imm);
+			return database.update(DATABASE_TABLE, update, KEY_RECORDID + "==" + recordID, null) > 0;
 }
    
    
