@@ -21,7 +21,7 @@
         
         <!-- 		SETTING UI1			 -->
         
-        <activity android:name="team.bugbusters.acceleraudio.UI1" android:label="Overview (UI#1)">
+        <activity android:name="team.bugbusters.acceleraudio.UI1" android:label="Overview (UI#1)" android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
