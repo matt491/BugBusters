@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.Display;
@@ -31,7 +32,7 @@ public class UI3 extends Activity {
     private String datoX,datoY,datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
 	private int i,end_time;									
-    private float time;							
+    private long prec;							
     private String freq_curr;						
     private String nome; 								// Nome inserito dall'utente tramite EditText
     private String ts;
@@ -46,6 +47,7 @@ public class UI3 extends Activity {
     private IntentFilter filter;
     private ToggleButton toggle;
     private boolean in_pausa=false;
+    private MyCounter timer;
     		
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +122,8 @@ public class UI3 extends Activity {
             	if(!in_pausa){
             		pause_resume.setText("Riprendi");
             		in_pausa=true;
-            		
+            		prec=timer.last;
+            		timer.cancel();
             		stopService(intentToSer);
             	}
             	else {
@@ -131,9 +134,13 @@ public class UI3 extends Activity {
             		intentToSer.putExtra("VecchioZ", datoZ);
             		intentToSer.putExtra("attFreq", freq_curr);
             		intentToSer.putExtra("attFineTempo", end_time);
-            		intentToSer.putExtra("attTempo", time);
             		intentToSer.putExtra("attCamp", i);
             		in_pausa=false;
+            		         		
+            		timer=new MyCounter(end_time*1000-prec,100);
+            		timer.end=end_time*1000-prec;
+            		timer.previous=prec;
+            		timer.start();
             		startService(intentToSer);
             	}
             }
@@ -146,8 +153,8 @@ public class UI3 extends Activity {
             		avan.setEnabled(true);
             		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
+            		timer.cancel();
             		
-            		Toast.makeText(getApplicationContext(), "Registrazione Terminata", Toast.LENGTH_SHORT).show();
             		stopService(intentToSer);
             		
             	}
@@ -157,6 +164,8 @@ public class UI3 extends Activity {
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
             	if(toggle.isChecked()){
+            		
+            		
             		avan.setEnabled(false);
             		pause_resume.setEnabled(true);
             		stop.setEnabled(true);
@@ -164,6 +173,11 @@ public class UI3 extends Activity {
             		toggle.setEnabled(false);
             		end_time=prefs.getInt("duratadef", 50);
             		pb.setMax(end_time);
+            		
+            		timer=new MyCounter(end_time*1000,100);
+            		timer.end=end_time*1000;	
+            		timer.start();
+            		
             		intentToSer.putExtra("fromUI3", true);
             		startService(intentToSer);
             	}
@@ -187,7 +201,7 @@ public class UI3 extends Activity {
             	
             		dbHelper.open();           	
         		
-            		long id_to_ui2=dbHelper.createRecord(nome, ""+time, datoX.toString(), datoY.toString(), datoY.toString(),
+            		long id_to_ui2=dbHelper.createRecord(nome, "", datoX.toString(), datoY.toString(), datoZ.toString(),
             				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
         					i, UI5.campToString(prefs.getInt("sovrdef", 0)), ts, ts, null);
             		
@@ -249,13 +263,39 @@ public class UI3 extends Activity {
 	        return true;
 	}
 	
+	  public class MyCounter extends CountDownTimer{
+		 private long end;
+		 private long last;
+		 private long previous=0;
+	        public MyCounter(long millisInFuture, long countDownInterval) {
+	            super(millisInFuture, countDownInterval);
+	        }
+	 
+	        @Override
+	        public void onFinish() {
+	            t.setText((float)((end+previous)/100)/10+"");
+	            pb.setProgress((int)(end+previous)/1000);
+	            Toast.makeText(UI3.this, "Registrazione Terminata", Toast.LENGTH_SHORT).show();
+	            stopService(intentToSer);
+	            avan.setEnabled(true);
+        		pause_resume.setEnabled(false);
+        		stop.setEnabled(false);
+	        }
+	 
+	        @Override
+	        public void onTick(long millisUntilFinished) {
+	            t.setText((float)((previous+end-millisUntilFinished)/100)/10 +"");
+	            pb.setProgress((int)(previous+end-millisUntilFinished)/1000);
+	            last=previous+end-millisUntilFinished;
+	        }
+	    }
+	
 
 	   public class MyUI3Receiver extends BroadcastReceiver{
 
 		   public static final String PROCESS_RESPONSE = "team.bugbusters.acceleraudio.intent.action.PROCESS_RESPONSE";
 	        @Override
 	        public void onReceive(Context context, Intent intent) {
-	            pb.setProgress(intent.getIntExtra("intPb", 0));
 	            pbX.setProgress(intent.getIntExtra("intPbX", 0));
 	            pbY.setProgress(intent.getIntExtra("intPbY", 0));
 	            pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
@@ -267,15 +307,8 @@ public class UI3 extends Activity {
 	            datoZ=intent.getStringExtra("ValoreZ");
 	            freq_curr=intent.getStringExtra("serFreq");
 	            end_time=intent.getIntExtra("serDur",0);
-	            time=intent.getFloatExtra("serTempo", 0);
-	            t.setText(""+time);
-	            
-	            if(intent.getBooleanExtra("STOP", false)){
-	            	
-	            	avan.setEnabled(true);
-            		pause_resume.setEnabled(false);
-            		stop.setEnabled(false);
-	            }
+        
+	           
 	            
 	        }
 

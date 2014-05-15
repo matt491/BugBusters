@@ -12,9 +12,8 @@ public class AudioHelper
    public AudioHelper( )
    {
       int minSize =AudioTrack.getMinBufferSize( 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT );        
-      track = new AudioTrack( AudioManager.STREAM_MUSIC, 44100, 
-                                        AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 
-                                        minSize, AudioTrack.MODE_STREAM);
+      track = new AudioTrack( AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 
+    		  				  minSize, AudioTrack.MODE_STREAM);
       track.play();        
    }	   
  
