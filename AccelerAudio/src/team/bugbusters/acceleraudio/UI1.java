@@ -12,9 +12,12 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -126,16 +129,17 @@ public class UI1 extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		
+	
+		String[] dati;
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		
 		case R.id.Duplica:
-			String[] s = (String[]) lv.getAdapter().getItem(info.position);
-			duplica(Long.parseLong(s[0]));
+			dati = (String[]) lv.getAdapter().getItem(info.position);
+			duplica(Long.parseLong(dati[0]));
 			
-			List<String[]> data1 = dataToFill();
-	
-			CustomList cl = new CustomList(UI1.this, data1);
+			List<String[]> data = dataToFill();
+			CustomList cl = new CustomList(UI1.this, data);
 			lv.setAdapter(cl);
 			
 			return(true);
@@ -144,8 +148,11 @@ public class UI1 extends Activity {
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle(R.string.renameAlert);
 			alert.setMessage(R.string.renameAlertMessage);
-			
+			dati = (String[]) lv.getAdapter().getItem(info.position);
+			final long id_to_rename=Long.parseLong(dati[0]);
 			final EditText input = new EditText(this);
+			input.setImeOptions(EditorInfo.IME_ACTION_SEND);
+			input.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 			alert.setView(input);
 			
 			alert.setPositiveButton(R.string.okAlert, new DialogInterface.OnClickListener() {
@@ -157,9 +164,14 @@ public class UI1 extends Activity {
 						Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG).show();
 					}
 					else {
-						//qui bidogna aggiornare il nome nel database e nella listview
+						db.open();
+						db.updateNameOnly(id_to_rename,nuovoNome);
+						db.close();
+						List<String[]> data1 = dataToFill();
+						CustomList cl = new CustomList(UI1.this, data1);
+						lv.setAdapter(cl);
 					}
-	
+					
 				}
 			});
 			
@@ -174,17 +186,21 @@ public class UI1 extends Activity {
 			return(true);
 		
 		case R.id.Elimina:
-			String[] dati = (String[]) lv.getAdapter().getItem(info.position);
+			dati = (String[]) lv.getAdapter().getItem(info.position);
 			db.open();
 			db.deleteRecord(Long.parseLong(dati[0]));
 			db.close();
+			
+			List<String[]> data2 = dataToFill();
+			CustomList cl2 = new CustomList(UI1.this, data2);
+			lv.setAdapter(cl2);
+			
 			return(true);
 			
 		case R.id.Riproduci:
 			String[] dati_sessione = (String[]) lv.getAdapter().getItem(info.position);
 			Intent toUi4 = new Intent(this, UI4.class);
 			pkg = getPackageName();
-			//.myServiceID???
 			toUi4.putExtra(pkg + ".myServiceID", Long.parseLong(dati_sessione[0]));
 			startActivity(toUi4);
 			finish();
@@ -227,7 +243,7 @@ public class UI1 extends Activity {
 	       
 	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac_new, datar, dataul, null);
 		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
-		   db.updateRecordNameAndImage(id_new, n+"_"+id, code);
+		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
 			
 		   c.close();
 		   db.close();
@@ -253,6 +269,21 @@ public class UI1 extends Activity {
 				return false;
 		}
 	
+		
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add("Preferenze").setOnMenuItemClickListener(new OnMenuItemClickListener() {
+	          public boolean onMenuItemClick(MenuItem item) {
+	           		Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
+	                startActivity(prefIntentUI5);
+	                return true;
+	            }
+			});;
+
+		   return true;
+		}	
+		
+		
 	/*
 	 * Alla pressione del tasto back viene notificato all'utente che l'applicazione sta per chiudersi.
 	 * Se la risposta alla domanda "Sei sicuro di voler terminare l'app?" e' "Si", l'activity viene terminata;

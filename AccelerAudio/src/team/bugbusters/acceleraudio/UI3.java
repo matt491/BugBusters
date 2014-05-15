@@ -295,60 +295,30 @@ public class UI3 extends Activity {
 
 		   public static final String PROCESS_RESPONSE = "team.bugbusters.acceleraudio.intent.action.PROCESS_RESPONSE";
 	        @Override
-	        public void onReceive(Context context, Intent intent) {
-	            pbX.setProgress(intent.getIntExtra("intPbX", 0));
-	            pbY.setProgress(intent.getIntExtra("intPbY", 0));
-	            pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
+	        	public void onReceive(Context context, Intent intent) {
+	        		pbX.setProgress(intent.getIntExtra("intPbX", 0));
+	        		pbY.setProgress(intent.getIntExtra("intPbY", 0));
+	        		pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
 	            
-	            i=intent.getIntExtra("serCamp",0);
-	            varcamp.setText(""+i);
-	            datoX=intent.getStringExtra("ValoreX");
-	            datoY=intent.getStringExtra("ValoreY");
-	            datoZ=intent.getStringExtra("ValoreZ");
-	            freq_curr=intent.getStringExtra("serFreq");
-	            end_time=intent.getIntExtra("serDur",0);
-        
-	           
-	            
+	        		i=intent.getIntExtra("serCamp",0);
+	        		varcamp.setText(""+i);
+	        		datoX=intent.getStringExtra("ValoreX");
+	        		datoY=intent.getStringExtra("ValoreY");
+	        		datoZ=intent.getStringExtra("ValoreZ");
+	        		freq_curr=intent.getStringExtra("serFreq");
+	        		end_time=intent.getIntExtra("serDur",0);       
+	        	}
 	        }
 
-
-	        }
-
-	//Questo metodo per la duplicazione va messo nella UI1 quando ci sara'
-	   private void duplica(long id){
-		   dbHelper.open();
-		   Cursor c=dbHelper.fetchRecordById(id);
-		   c.moveToNext();
-		   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-	       String d=c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
-	       String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
-	       String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
-	       String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
-	       boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
-	       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
-	       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-	       int ncamp=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMP));
-	       String sovrac=c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
-	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
-	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-	       
-	       if(checkX==true) checkX=!checkX;
-	       if(checkY==false) checkY=!checkY;
-	       if(checkZ==true) checkZ=!checkZ;
-	       if(sovrac.equals("Scelta 0")) sovrac="Scelta 1";
-	       if(sovrac.equals("Scelta 1")) sovrac="Scelta 2";
-	       if(sovrac.equals("Scelta 2")) sovrac="Scelta 3";
-	       if(sovrac.equals("Scelta 3")) sovrac="Scelta 4";
-	       if(sovrac.equals("Scelta 4")) sovrac="Scelta 0";
-	       
-	       long id_new=dbHelper.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac,	datar, dataul, null);
-			String code = DataRecord.codifica(asseX, asseY, asseX, dataul, id_new);
-			dbHelper.updateRecordNameAndImage(id, n+id, code);
-			
-		   c.close();
-		   dbHelper.close();
-	   }
+	   
+		//Quando viene premuto il tasto Back
+		@Override
+		public void onBackPressed() {
+				Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
+	        	startActivity(returnIntent);
+	        	finish();	
+		return;
+		}
 	   
 	
 	}

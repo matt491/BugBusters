@@ -86,12 +86,17 @@ public class DbAdapter {
 	   return values;
 	  }
   
-  private ContentValues updateContentValuesImageCodeOnly(String name) {
+  private ContentValues updateContentValuesImageCodeOnly(String imm) {
 	    ContentValues values = new ContentValues();
-	    values.put( KEY_IMM, name );
-	    	    
+	    values.put( KEY_IMM, imm ); 	    
 	   return values;
 	  }
+  
+  private ContentValues updateContentValuesNameOnly(String name) {
+	    ContentValues values = new ContentValues();
+	    values.put( KEY_NAME, name );    
+	   return values;
+  }
   
   //crea una music session
   public long createRecord(String name, String dur, String assex, String assey, String assez, String checkx,
@@ -148,6 +153,10 @@ public class DbAdapter {
 			return database.update(DATABASE_TABLE, updateValuesImageCode, KEY_RECORDID + "==" + recordID, null) > 0;
 }
    
+   public boolean updateNameOnly(long recordID, String name) {
+			ContentValues updateName = updateContentValuesNameOnly(name);
+			return database.update(DATABASE_TABLE, updateName, KEY_RECORDID + "==" + recordID, null) > 0;
+}
    //Qua ci va il metodo di Mattia
   
   
