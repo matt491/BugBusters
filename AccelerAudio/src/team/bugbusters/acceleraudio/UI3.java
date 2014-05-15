@@ -181,7 +181,7 @@ public class UI3 extends Activity {
             		intentToSer.putExtra("fromUI3", true);
             		startService(intentToSer);
             	}
-            	else Toast.makeText(getApplicationContext(), "Devi bloccare lo Schermo", Toast.LENGTH_SHORT).show();
+            	else Toast.makeText(getApplicationContext(), R.string.lockScreen, Toast.LENGTH_SHORT).show();
             }
         });
         
@@ -191,10 +191,13 @@ public class UI3 extends Activity {
             	pkg=getPackageName();
             	String nomeinserito=nome_music.getText().toString();
             	
-            	//Se il nome inserito e la stringa vuota o  gia presente nel DB allora	
-            	if((nomeinserito.equals("")) || sameName(nomeinserito))
-            		Toast.makeText(getApplicationContext(), "Immetere un nome valido!", Toast.LENGTH_SHORT).show();
-            		
+            	//Se il nome inserito e la stringa vuota o  gia presente nel DB allora
+            	if(nomeinserito.contains("'")) {
+            		Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
+            	}
+            	else if((nomeinserito.equals("")) || sameName(nomeinserito)) {
+            		Toast.makeText(getApplicationContext(), R.string.validName, Toast.LENGTH_SHORT).show();
+            	}
             	else {	
             		nome = nome_music.getText().toString();
             		ts = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
@@ -275,7 +278,7 @@ public class UI3 extends Activity {
 	        public void onFinish() {
 	            t.setText((float)((end+previous)/100)/10+"");
 	            pb.setProgress((int)(end+previous)/1000);
-	            Toast.makeText(UI3.this, "Registrazione Terminata", Toast.LENGTH_SHORT).show();
+	            Toast.makeText(UI3.this, R.string.registrationEnd, Toast.LENGTH_SHORT).show();
 	            stopService(intentToSer);
 	            avan.setEnabled(true);
         		pause_resume.setEnabled(false);

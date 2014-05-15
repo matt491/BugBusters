@@ -42,9 +42,13 @@
     <string name="Play_Menu">Riproduci</string>
     <string name="renameAlert">Rinomina la sessione</string>
     <string name="renameAlertMessage">Inserisci un nuovo nome per questa sessione:</string>
-    <string name="okAlert">Ok</string>
+    <string name="okAlert">OK</string>
     <string name="ToastAlertSameName">Questo nome esiste già!</string>
     <string name="Cancel">Cancella</string>
     <string name="DeleteMessage">Sei sicuro di voler eliminare questa sessione?</string>
+    <string name="apiceNonConsentito">Il carattere  \'  non è consentito!</string>
+    <string name="lockScreen">Devi bloccare lo schermo!</string>
+    <string name="validName">Immettere un nome valido!</string>
+    <string name="registrationEnd">Registrazione terminata</string>
 
 </resources>

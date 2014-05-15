@@ -179,7 +179,10 @@ public class UI1 extends Activity {
 				@Override
 				public void onClick(View v) {
 					String nuovoNome = input.getText().toString();
-					if(sameName(nuovoNome)) {
+					if(nuovoNome.contains("'")) {
+						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
+					}
+					else if(sameName(nuovoNome)) {
 						Toast toast = Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();
