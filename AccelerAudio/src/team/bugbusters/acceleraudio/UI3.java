@@ -191,7 +191,7 @@ public class UI3 extends Activity {
             	String nomeinserito=nome_music.getText().toString();
             	
             	//Se il nome inserito e la stringa vuota o  gia presente nel DB allora
-            	if(nomeinserito.contains("'")) {
+            	if(nomeinserito.contains("'") || nomeinserito.contains("_")) {
             		Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
             	}
             	else if((nomeinserito.equals("")) || UI1.sameName(dbHelper,nomeinserito)) {

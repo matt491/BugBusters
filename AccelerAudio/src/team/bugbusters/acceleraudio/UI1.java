@@ -181,8 +181,8 @@ public class UI1 extends Activity {
 				@Override
 				public void onClick(View v) {
 					String nuovoNome = input.getText().toString();
-					if(!nuovoNome.equals(vecchioNome)){
-					if(nuovoNome.contains("'")) {
+					if(!nuovoNome.equals(vecchioNome))
+					if(nuovoNome.contains("'") || nuovoNome.contains("_")) {
 						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
 					}
 					else if(sameName(db, nuovoNome)) {
@@ -200,8 +200,7 @@ public class UI1 extends Activity {
 						dialog.dismiss();
 					}
 					
-				   }
-					dialog.dismiss();
+					else dialog.dismiss();
 				}
 			});
 			return(true);
