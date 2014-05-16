@@ -3,26 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/sbcampdef"
-        android:layout_alignParentLeft="true"
-        android:gravity="left"
-        android:paddingLeft="10dp"
-        android:text="@string/Upsampling"
-        android:textSize="15sp" />
-
-    <CheckBox
+    
+     <CheckBox
         android:id="@+id/checkXdef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="27dp"
-        android:layout_toLeftOf="@+id/checkYdef"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="25dp"
         android:text="@string/AsseX" />
 
     <CheckBox
@@ -30,8 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkXdef"
-        android:layout_alignBottom="@+id/checkXdef"
-        android:layout_alignLeft="@+id/salva_imp"
+        android:layout_toRightOf="@+id/checkXdef"
+        android:layout_marginLeft="25dp"
         android:text="@string/AsseY" />
 
     <CheckBox
@@ -39,88 +28,99 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkYdef"
-        android:layout_alignBottom="@+id/checkYdef"
-        android:layout_toRightOf="@+id/salva_imp"
+        android:layout_toRightOf="@+id/checkYdef"
+        android:layout_marginLeft="25dp"
         android:text="@string/AsseZ" />
+    
+    <TextView
+        android:id="@+id/tt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/checkXdef"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/Sampling"
+        android:textSize="15sp" />
+    
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tt1"
+        android:layout_toRightOf="@+id/tt1"
+        android:layout_marginLeft="10dp" />
+    
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/tt1"
+        android:layout_marginTop="75dp"
+        android:text="@string/MaxDur"
+        android:textSize="15sp" />
+    
+    <TextView
+        android:id="@+id/durmax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tt"
+        android:layout_toRightOf="@+id/tt"
+        android:layout_marginLeft="10dp"
+        android:text="dur"
+        android:textSize="15sp" />
+    
+    <SeekBar
+        android:id="@+id/durdef"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tt"
+        android:layout_marginTop="15dp"
+        android:max="120"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_centerVertical="true"
+        android:progress="1" />
+    
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/durdef"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/Upsampling"
+        android:textSize="15sp" />
+    
+    <TextView
+        android:id="@+id/sovradef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView1"
+        android:layout_toRightOf="@+id/textView1"
+        android:layout_marginLeft="10dp"
+        android:text="sovra" />
+   
 
     <SeekBar
         android:id="@+id/sbcampdef"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/sovradef"
-        android:layout_marginTop="25dp"
-        android:max="100"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:progress="1" />
-
-    <TextView
-        android:id="@+id/tt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tt1"
-        android:layout_marginTop="36dp"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:text="@string/MaxDur"
-        android:textSize="15sp" />
-
-    <SeekBar
-        android:id="@+id/durdef"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/durmax"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView1"
         android:layout_marginTop="15dp"
-        android:max="120"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="15dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_centerVertical="true"
+        android:max="100"
         android:progress="1" />
 
-    <TextView
-        android:id="@+id/tt1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/spinner1"
-        android:layout_alignTop="@+id/spinner1"
-        android:layout_marginBottom="20dp"
-        android:layout_toLeftOf="@+id/checkYdef"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:text="@string/Sampling"
-        android:textSize="15sp" />
-
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/checkZdef"
-        android:layout_marginTop="22dp"
-        android:layout_toRightOf="@+id/textView1" />
-
-    <TextView
-        android:id="@+id/durmax"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tt"
-        android:layout_alignBottom="@+id/tt"
-        android:layout_alignLeft="@+id/spinner1"
-        android:layout_marginLeft="19dp"
-        android:gravity="center"
-        android:text="dur "
-        android:textSize="15sp" />
-
-    <TextView
-        android:id="@+id/sovradef"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/durmax"
-        android:layout_below="@+id/durdef"
-        android:layout_marginTop="54dp"
-        android:text="sovra" />
 
     <Button
         android:id="@+id/salva_imp"
@@ -128,6 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/sbcampdef"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
         android:text="@string/save"
         android:textSize="15sp"
         android:textStyle="bold" />
