@@ -3,7 +3,7 @@
     <string name="app_name">AccelerAudio</string>
     <string name="SessionName">Sessione:</string>
     <string name="RecordDate">Data registrazione:</string>
-    <string name="LastModifiedDate">Data ultima modifica:</string>
+    <string name="LastModifiedDate">Ultima modifica:</string>
     <string name="AsseX">X</string>
     <string name="AsseY">Y</string>
     <string name="AsseZ">Z</string>

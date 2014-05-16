@@ -27,31 +27,12 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/nomeSessione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sessione"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="nome_sessione" />
-
-    <TextView
         android:id="@+id/datareg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/dataRegistrazione"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/dataRegistrazione"
-        android:text="data" />
-
-    <TextView
-        android:id="@+id/dataulmod"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/dataUltimaModifica"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/dataUltimaModifica"
         android:text="data" />
 
     <TextView
@@ -135,22 +116,45 @@
         android:text="sovracamp" />
 
     <TextView
+        android:id="@+id/dataRegistrazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/nomeSessione"
+        android:layout_toRightOf="@+id/checkBoxX"
+        android:text="@string/RecordDate"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/nomeSessione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/sessione"
+        android:layout_below="@+id/sessione"
+        android:layout_toLeftOf="@+id/checkBoxY"
+        android:ems="10"
+        android:text="nome_sessione"
+		android:imeOptions="actionSend"
+        android:inputType="textCapSentences">
+        <requestFocus />
+    </EditText>
+
+    <TextView
         android:id="@+id/dataUltimaModifica"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/dataRegistrazione"
-        android:layout_alignTop="@+id/nomeSessione"
+        android:layout_alignBaseline="@+id/nomeSessione"
+        android:layout_alignBottom="@+id/nomeSessione"
+        android:layout_alignRight="@+id/dataRegistrazione"
         android:text="@string/LastModifiedDate"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/dataRegistrazione"
+        android:id="@+id/dataulmod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/sessione"
-        android:layout_alignBottom="@+id/sessione"
-        android:layout_toRightOf="@+id/sovracampionamento"
-        android:text="@string/RecordDate"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_alignBaseline="@+id/dataUltimaModifica"
+        android:layout_alignBottom="@+id/dataUltimaModifica"
+        android:layout_alignLeft="@+id/datareg"
+        android:text="data" />
 
 </RelativeLayout>

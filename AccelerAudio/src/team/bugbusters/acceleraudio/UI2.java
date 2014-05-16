@@ -14,9 +14,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UI2 extends Activity {
 
@@ -52,7 +54,7 @@ public class UI2 extends Activity {
         
         dbHelper = new DbAdapter(this);
      
-        nomevar= (TextView)findViewById(R.id.nomeSessione);
+        nomevar= (EditText)findViewById(R.id.nomeSessione);
         timevar= (TextView)findViewById(R.id.datareg);
         ultimavar= (TextView)findViewById(R.id.dataulmod);
         result= (TextView)findViewById(R.id.res);
@@ -173,24 +175,40 @@ public class UI2 extends Activity {
         
         fineui2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	         	
-            if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected || sb.getProgress()!=UI5.stringToCamp(sovra_ric)){
+            
+            	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
+            		sb.getProgress()!=UI5.stringToCamp(sovra_ric) || !(nome_ric.equals(nomevar.getText().toString())) ){
+            	
+            		if(nomevar.getText().toString().contains("'"))
+            			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
+            	
+            		else if(!(nome_ric.equals(nomevar.getText().toString())) && UI1.sameName(dbHelper, nomevar.getText().toString()) )
+            			Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG).show();
+            	
+            			else {
+            				nome_ric=nomevar.getText().toString();
+            				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+            				dbHelper.open();
+            				dbHelper.updateRecord(id_ric, nome_ric, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
+            						UI5.campToString(sb.getProgress()), dataulitmamodifica);
+            				dbHelper.close();
             		
-            		dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-            		dbHelper.open();
-            		dbHelper.updateRecord(id_ric, nome_ric, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
-							UI5.campToString(sb.getProgress()), dataulitmamodifica);
-            		dbHelper.close();
+            
+            				//Alla UI4 viene spedito l'ID del record creato/aggiornato
+            				Intent intentToUI4=new Intent(UI2.this, UI4.class);
+            				intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
+            				startActivity(intentToUI4);
+            				finish();
+            			}
             	}
-            	
-            	//Alla UI4 viene spedito l'ID del record creato/aggiornato
-            	Intent intentToUI4=new Intent(UI2.this, UI4.class);
-            	
-            	intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
-                startActivity(intentToUI4);
-                finish();
+            	else {
+            		Intent intentToUI4=new Intent(UI2.this, UI4.class);
+            		intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
+            		startActivity(intentToUI4);
+            		finish();
             	}
-            });
+            }
+        });
 
                
 	} //Fine onCreate()

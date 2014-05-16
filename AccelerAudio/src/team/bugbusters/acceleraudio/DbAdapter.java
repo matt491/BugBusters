@@ -128,7 +128,7 @@ public class DbAdapter {
   public Cursor fetchRecordByFilter(String filter) {
 	  	Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
-                                    KEY_NAME + " like '%"+ filter + "%'", null, null, null, null, null);
+                                    KEY_NAME + " = '"+ filter + "'", null, null, null, null, null);
 	  	return mCursor;
     
   }

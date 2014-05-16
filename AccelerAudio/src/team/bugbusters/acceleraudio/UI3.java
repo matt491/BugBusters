@@ -195,7 +195,7 @@ public class UI3 extends Activity {
             	if(nomeinserito.contains("'")) {
             		Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
             	}
-            	else if((nomeinserito.equals("")) || sameName(nomeinserito)) {
+            	else if((nomeinserito.equals("")) || UI1.sameName(dbHelper,nomeinserito)) {
             		Toast.makeText(getApplicationContext(), R.string.validName, Toast.LENGTH_SHORT).show();
             	}
             	else {	
@@ -234,23 +234,6 @@ public class UI3 extends Activity {
          super.onDestroy();
      }
 
-	
-	//Metodo che controlla se e gia presente un NOME di una music session nel DB
-	public boolean sameName(String s){
-			dbHelper.open();
-			Cursor cursor=dbHelper.fetchRecordByFilter(s);
-			while (cursor.moveToNext()) {
-				String rNAME = cursor.getString(cursor.getColumnIndex(DbAdapter.KEY_NAME) );
-				if(s.equals(rNAME)) {
-					cursor.close();
-					dbHelper.close();
-					return true;
-				}
-			} 
-			cursor.close();
-			dbHelper.close();
-			return false;
-	}
 	 
 	//Menu Option, passa alla UI5
 	@Override

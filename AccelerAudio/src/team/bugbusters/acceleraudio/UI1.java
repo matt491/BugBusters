@@ -182,7 +182,7 @@ public class UI1 extends Activity {
 					if(nuovoNome.contains("'")) {
 						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
 					}
-					else if(sameName(nuovoNome)) {
+					else if(sameName(db, nuovoNome)) {
 						Toast toast = Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();
@@ -291,7 +291,7 @@ public class UI1 extends Activity {
 	 * Metodo che controlla se e gia' presente un NOME di una music session nel DB
 	 * --Preso in prestito da Loris-- :-)
 	 */
-		public boolean sameName(String s){
+		public static boolean sameName(DbAdapter db,String s){
 				db.open();
 				Cursor cursor=db.fetchRecordByFilter(s);
 				while (cursor.moveToNext()) {

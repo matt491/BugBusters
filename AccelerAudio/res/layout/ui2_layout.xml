@@ -16,25 +16,19 @@
         android:src="@drawable/ic_launcher"
         android:contentDescription="@string/ImageDesc" />
 
-    <TextView
-        android:id="@+id/sessione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="16dp"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/SessionName"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+   <EditText
+       android:id="@+id/nomeSessione"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_above="@+id/dataRegistrazione"
+       android:layout_alignRight="@+id/checkBoxZ"
+       android:layout_marginLeft="15dp"
+       android:layout_toRightOf="@+id/thumbnail"
+       android:ems="10"
+       android:imeOptions="actionSend"
+       android:inputType="textCapSentences" />
 
-    <TextView
-        android:id="@+id/nomeSessione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sessione"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/thumbnail" />
+   <requestFocus />
 
     <TextView
         android:id="@+id/dataRegistrazione"
@@ -152,5 +146,14 @@
         android:layout_alignBaseline="@+id/sovracampionamento"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/sovracampionamento" />
+
+    <TextView
+        android:id="@+id/sessione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/nomeSessione"
+        android:layout_alignLeft="@+id/nomeSessione"
+        android:text="@string/SessionName"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
