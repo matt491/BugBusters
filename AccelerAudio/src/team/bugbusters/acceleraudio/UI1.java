@@ -152,9 +152,11 @@ public class UI1 extends Activity {
 			alert.setMessage(R.string.renameAlertMessage);
 			dati = (String[]) lv.getAdapter().getItem(info.position);
 			final long id_to_rename=Long.parseLong(dati[0]);
+			final String vecchioNome=dati[2];
 			final EditText input = new EditText(this);
 			input.setImeOptions(EditorInfo.IME_ACTION_SEND);
 			input.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
+			input.setText(vecchioNome);
 			alert.setView(input);
 			
 			alert.setPositiveButton(R.string.okAlert, new DialogInterface.OnClickListener() {
@@ -179,6 +181,7 @@ public class UI1 extends Activity {
 				@Override
 				public void onClick(View v) {
 					String nuovoNome = input.getText().toString();
+					if(!nuovoNome.equals(vecchioNome)){
 					if(nuovoNome.contains("'")) {
 						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
 					}
@@ -197,6 +200,8 @@ public class UI1 extends Activity {
 						dialog.dismiss();
 					}
 					
+				   }
+					dialog.dismiss();
 				}
 			});
 			return(true);
