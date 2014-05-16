@@ -155,7 +155,7 @@ public class UI1 extends Activity {
 			final String vecchioNome=dati[2];
 			final EditText input = new EditText(this);
 			input.setImeOptions(EditorInfo.IME_ACTION_SEND);
-			input.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
+			input.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 			input.setText(vecchioNome);
 			alert.setView(input);
 			
@@ -185,7 +185,7 @@ public class UI1 extends Activity {
 					if(nuovoNome.contains("'") || nuovoNome.contains("_")) {
 						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
 					}
-					else if(sameName(db, nuovoNome)) {
+					else if(sameName(db, nuovoNome) || nuovoNome.equals("")) {
 						Toast toast = Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();

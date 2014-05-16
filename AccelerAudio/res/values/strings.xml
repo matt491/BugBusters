@@ -43,7 +43,7 @@
     <string name="renameAlert">Rinomina la sessione</string>
     <string name="renameAlertMessage">Inserisci un nuovo nome per questa sessione:</string>
     <string name="okAlert">OK</string>
-    <string name="ToastAlertSameName">Questo nome esiste già!</string>
+    <string name="ToastAlertSameName">Nome non valido!</string>
     <string name="Cancel">Cancella</string>
     <string name="DeleteMessage">Sei sicuro di voler eliminare questa sessione?</string>
     <string name="apiceNonConsentito">Il carattere  \'  non è consentito!</string>

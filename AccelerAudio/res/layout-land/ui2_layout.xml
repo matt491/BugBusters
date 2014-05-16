@@ -133,8 +133,9 @@
         android:layout_toLeftOf="@+id/checkBoxY"
         android:ems="10"
         android:text="nome_sessione"
+        android:hint="@string/hintName"
 		android:imeOptions="actionSend"
-        android:inputType="textCapSentences">
+        android:inputType="textCapSentences|textNoSuggestions">
         <requestFocus />
     </EditText>
 

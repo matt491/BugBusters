@@ -24,9 +24,10 @@
        android:layout_alignRight="@+id/checkBoxZ"
        android:layout_marginLeft="15dp"
        android:layout_toRightOf="@+id/thumbnail"
+       android:hint="@string/hintName"
        android:ems="10"
        android:imeOptions="actionSend"
-       android:inputType="textCapSentences" />
+       android:inputType="textCapSentences|textNoSuggestions" />
 
    <requestFocus />
 

@@ -175,18 +175,20 @@ public class UI2 extends Activity {
         
         fineui2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            
-            	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
-            		sb.getProgress()!=UI5.stringToCamp(sovra_ric) || !(nome_ric.equals(nomevar.getText().toString())) ){
             	
-            		if(nomevar.getText().toString().contains("'"))
+            	String nomeNuovo=nomevar.getText().toString();
+            	
+            	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
+            		sb.getProgress()!=UI5.stringToCamp(sovra_ric) || !(nome_ric.equals(nomeNuovo)) ){
+            	
+            		if(nomeNuovo.contains("'") || nomeNuovo.contains("_"))
             			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
             	
-            		else if(!(nome_ric.equals(nomevar.getText().toString())) && UI1.sameName(dbHelper, nomevar.getText().toString()) )
+            		else if((!(nome_ric.equals(nomeNuovo)) && UI1.sameName(dbHelper, nomeNuovo)) || nomeNuovo.equals(""))
             			Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG).show();
             	
             			else {
-            				nome_ric=nomevar.getText().toString();
+            				nome_ric=nomeNuovo;
             				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
             				dbHelper.open();
             				dbHelper.updateRecord(id_ric, nome_ric, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),

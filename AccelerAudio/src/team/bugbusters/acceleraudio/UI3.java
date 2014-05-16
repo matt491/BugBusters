@@ -207,7 +207,7 @@ public class UI3 extends Activity {
             				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
         					i, UI5.campToString(prefs.getInt("sovrdef", 0)), ts, ts, null);
             		
-            		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoY.toString(), ts, id_to_ui2);
+            		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
         		
             		//Update dei dati immagine
             		dbHelper.updateImageCode(id_to_ui2, cod);

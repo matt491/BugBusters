@@ -210,16 +210,17 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		if (s.charAt(7)==' ' || s.charAt(7)=='-') sb.append("8");
 			else sb.append(s.charAt(7));
 		if (p.charAt(7)==' ' || p.charAt(7)=='-') sb.append("4");
-		else sb.append(p.charAt(7));
+			else sb.append(p.charAt(7));
 		if (q.charAt(7)==' ' || q.charAt(7)=='-') sb.append("5");
-		else sb.append(q.charAt(7));
+			else sb.append(q.charAt(7));
 		sb.append(time.charAt(1));
 		sb.append(time.charAt(12));
 		sb.append(time.charAt(15));
-		sb.append(""+id%2);
+		sb.append(""+id%3);
 		sb.append(""+id%7);
-		sb.append(""+id%9);
+		sb.append(""+id%5);
 		return sb.toString();
+		//Potrebbe servire: (int)Math.random() * 9; genera numero intero da 0 a 9
 	}
 	
 	
