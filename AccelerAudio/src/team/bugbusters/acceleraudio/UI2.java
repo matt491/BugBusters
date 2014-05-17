@@ -181,7 +181,7 @@ public class UI2 extends Activity {
             	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
             		sb.getProgress()!=UI5.stringToCamp(sovra_ric) || !(nome_ric.equals(nomeNuovo)) ){
             	
-            		if(nomeNuovo.contains("'") || nomeNuovo.contains("_"))
+            		if(nomeNuovo.contains("'") || (nomeNuovo.contains("_") && !(nome_ric.equals(nomeNuovo))))
             			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
             	
             		else if((!(nome_ric.equals(nomeNuovo)) && UI1.sameName(dbHelper, nomeNuovo)) || nomeNuovo.equals(""))
