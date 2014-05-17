@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
@@ -121,8 +122,13 @@ public class UI1 extends Activity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		String[] dati = (String[]) lv.getAdapter().getItem(info.position);
+		menu.setHeaderTitle(dati[2]);
+		menu.setHeaderIcon(R.drawable.music);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.context_menu_ui1, menu);
+		
 	}
 	
 	/*
