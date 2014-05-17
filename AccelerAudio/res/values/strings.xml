@@ -40,7 +40,6 @@
     <string name="Rename">Rinomina</string>
     <string name="Delete">Elimina</string>
     <string name="Play_Menu">Riproduci</string>
-    <string name="renameAlert">Rinomina la sessione</string>
     <string name="renameAlertMessage">Inserisci un nuovo nome per questa sessione:</string>
     <string name="okAlert">OK</string>
     <string name="ToastAlertSameName">Nome non valido!</string>

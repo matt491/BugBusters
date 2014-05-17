@@ -9,7 +9,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
@@ -154,7 +153,8 @@ public class UI1 extends Activity {
 			
 		case R.id.Rinomina:
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setTitle(R.string.renameAlert);
+			alert.setTitle(R.string.Rename);
+			alert.setIcon(android.R.drawable.ic_menu_edit);
 			alert.setMessage(R.string.renameAlertMessage);
 			dati = (String[]) lv.getAdapter().getItem(info.position);
 			final long id_to_rename=Long.parseLong(dati[0]);
@@ -215,6 +215,7 @@ public class UI1 extends Activity {
 			
 			AlertDialog.Builder alert2 = new AlertDialog.Builder(this);
 			alert2.setTitle(R.string.Delete);
+			alert2.setIcon(android.R.drawable.ic_menu_delete);
 			alert2.setMessage(R.string.DeleteMessage);
 			dati = (String[]) lv.getAdapter().getItem(info.position);
 			final long id_to_delete=Long.parseLong(dati[0]);
