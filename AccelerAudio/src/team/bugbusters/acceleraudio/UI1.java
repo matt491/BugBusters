@@ -321,7 +321,7 @@ public class UI1 extends Activity {
 		
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add("Preferenze").setOnMenuItemClickListener(new OnMenuItemClickListener() {
+		menu.add("Preferenze").setIcon(android.R.drawable.ic_menu_preferences).setOnMenuItemClickListener(new OnMenuItemClickListener() {
 	          public boolean onMenuItemClick(MenuItem item) {
 	           		Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
 	                startActivity(prefIntentUI5);
