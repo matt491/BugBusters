@@ -14,15 +14,6 @@
         android:onClick="onClick"
         android:src="@android:drawable/ic_input_add"
         android:contentDescription="@string/plusButtonDesc" />
-    
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/addNew"
-        android:layout_alignParentLeft="true"
-        android:text="@string/ListViewHeader"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ListView
         android:id="@+id/listView1"
@@ -44,5 +35,15 @@
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/addNew"
+        android:layout_alignLeft="@+id/empty"
+        android:layout_marginLeft="36dp"
+        android:paddingBottom="12dp"
+        android:text="@string/ListViewHeader"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
