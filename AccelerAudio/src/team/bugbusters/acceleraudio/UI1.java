@@ -345,6 +345,7 @@ public class UI1 extends Activity {
 		
 		
 		alertDialogBuilder.setTitle(R.string.alertTitle);
+		alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
 		alertDialogBuilder.setMessage(R.string.alertMessage);
 		
 		alertDialogBuilder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
