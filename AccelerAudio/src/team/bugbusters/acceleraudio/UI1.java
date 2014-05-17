@@ -124,7 +124,7 @@ public class UI1 extends Activity {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		String[] dati = (String[]) lv.getAdapter().getItem(info.position);
 		menu.setHeaderTitle(dati[2]);
-		menu.setHeaderIcon(R.drawable.music);
+		menu.setHeaderIcon(android.R.drawable.ic_menu_more);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.context_menu_ui1, menu);
 		
