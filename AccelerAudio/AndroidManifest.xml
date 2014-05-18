@@ -25,6 +25,18 @@
     		<meta-data android:name="android.appwidget.provider"
         		       android:resource="@xml/widget_descriptor_big" />
 		</receiver>
+       
+        
+        <!-- SETTING THE LIL ONE WIDGET -->
+        
+        
+         <receiver android:name="widget_lil" >
+    		<intent-filter>
+        		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    		</intent-filter>
+    		<meta-data android:name="android.appwidget.provider"
+        		       android:resource="@xml/widget_descriptor_lil" />
+		</receiver>
         
         <service android:name="DataRecord"/>
         <service android:name="PlayRecord"/>

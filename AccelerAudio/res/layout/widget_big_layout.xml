@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="220dp"
+    android:layout_width="216dp"
     android:layout_height="112dp"
     android:background="@android:drawable/alert_dark_frame" >
 
@@ -38,12 +38,20 @@
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageButton1"
+        android:layout_width="144dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="3dp"
         android:layout_below="@+id/imageButton1"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/background_light" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignLeft="@+id/imageButton4"
+        android:layout_alignTop="@+id/textView1"
+        android:src="@drawable/ic_launcher" />
 
 </RelativeLayout>
