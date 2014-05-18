@@ -16,6 +16,16 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
+        <!-- SETTING THE BIG ONE WIDGET  -->
+        
+        <receiver android:name="widget_big" >
+    		<intent-filter>
+        		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    		</intent-filter>
+    		<meta-data android:name="android.appwidget.provider"
+        		       android:resource="@xml/widget_descriptor_big" />
+		</receiver>
+        
         <service android:name="DataRecord"/>
         <service android:name="PlayRecord"/>
         
