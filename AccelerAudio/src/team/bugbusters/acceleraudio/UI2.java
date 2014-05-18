@@ -215,7 +215,7 @@ public class UI2 extends Activity {
 	
 	public void onResume() {
 		super.onResume();
-		  dbHelper.open();
+			dbHelper.open();
 	        //Query al DB: dato l'ID recupero tutta la tupla
 	        cr=dbHelper.fetchRecordById(id_ric);
 	        cr.moveToNext();
@@ -233,7 +233,7 @@ public class UI2 extends Activity {
 	        //Chiusura Cursor e DB
 	        cr.close();
 	        dbHelper.close();
-		ultimavar.setText(dataulitmamodifica);
+	        ultimavar.setText(dataulitmamodifica);
 	}
 	
 	
