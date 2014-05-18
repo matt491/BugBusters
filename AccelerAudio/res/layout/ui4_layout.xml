@@ -87,7 +87,8 @@
         android:layout_below="@+id/seekBar1"
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
-        android:src="@android:drawable/ic_media_pause" />
+        android:src="@android:drawable/ic_media_pause"
+        android:contentDescription="@string/pauseButtonDesc" />
     
 <!-- Alla pressione di questo tasto parte la riproduzione della music session precedente, se c'è. (opzionale) -->
     <ImageButton
@@ -97,7 +98,8 @@
         android:layout_alignBottom="@+id/imageButton1"
         android:layout_toLeftOf="@+id/imageButton1"
         android:layout_marginRight="20dp"
-        android:src="@android:drawable/ic_media_previous" />
+        android:src="@android:drawable/ic_media_previous"
+        android:contentDescription="@string/previusButtonDesc" />
     
 <!-- Alla pressione di questo tasto parte la riproduzione della music session successiva, se c'è. (opzionale) -->
     <ImageButton
@@ -107,6 +109,7 @@
         android:layout_alignBottom="@+id/imageButton1"
         android:layout_toRightOf="@+id/imageButton1"
         android:layout_marginLeft="20dp"
-        android:src="@android:drawable/ic_media_next" />
+        android:src="@android:drawable/ic_media_next"
+        android:contentDescription="@string/nextButtonDesc" />
    
 </RelativeLayout>
