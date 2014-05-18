@@ -7,8 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -249,15 +249,22 @@ public class UI2 extends Activity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add("Preferenze").setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-            		Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
-                    startActivity(prefIntentUI5);
-                    return true;
-            }
-		});;
-
-	        return true;
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.option_menu, menu);
+		return true;
+		}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		
+		case R.id.Preferenze:
+			Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
+            startActivity(prefIntentUI5);
+            return(true);
+		}
+		
+		return (super.onOptionsItemSelected(item));
 	}
 
 }

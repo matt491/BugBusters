@@ -13,8 +13,8 @@ import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -235,18 +235,25 @@ public class UI3 extends Activity {
 
 	 
 	//Menu Option, passa alla UI5
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add("Preferenze").setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-            		Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
-                    startActivity(prefIntentUI5);
-                    return true;
-            }
-		});;
-
-	        return true;
-	}
+     @Override
+ 	public boolean onCreateOptionsMenu(Menu menu) {
+ 		MenuInflater menuInflater = getMenuInflater();
+ 		menuInflater.inflate(R.menu.option_menu, menu);
+ 		return true;
+ 		}
+ 	
+ 	@Override
+ 	public boolean onOptionsItemSelected(MenuItem item) {
+ 		switch(item.getItemId()) {
+ 		
+ 		case R.id.Preferenze:
+ 			Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
+             startActivity(prefIntentUI5);
+             return(true);
+ 		}
+ 		
+ 		return (super.onOptionsItemSelected(item));
+ 	}
 	
 	  public class MyCounter extends CountDownTimer{
 		 private long end;

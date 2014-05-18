@@ -50,5 +50,7 @@
     <string name="validName">Immettere un nome valido!</string>
     <string name="registrationEnd">Registrazione terminata</string>
     <string name="ImageDesc">Rappresenta la thumbnail della music session</string>
+    <string name="Duration">Durata:</string>
+    <string name="Preferences">Preferenze</string>
 
 </resources>
