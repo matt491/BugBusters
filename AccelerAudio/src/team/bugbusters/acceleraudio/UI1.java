@@ -251,7 +251,6 @@ public class UI1 extends Activity {
 			pkg = getPackageName();
 			toUi4.putExtra(pkg + ".myServiceID", Long.parseLong(dati_sessione[0]));
 			startActivity(toUi4);
-			finish();
 			return(true);
 		}
 		

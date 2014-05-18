@@ -200,14 +200,12 @@ public class UI2 extends Activity {
             				Intent intentToUI4=new Intent(UI2.this, UI4.class);
             				intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
             				startActivity(intentToUI4);
-            				finish();
-            			}
+              			}
             	}
             	else {
             		Intent intentToUI4=new Intent(UI2.this, UI4.class);
             		intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
             		startActivity(intentToUI4);
-            		finish();
             	}
             }
         });
@@ -215,7 +213,12 @@ public class UI2 extends Activity {
                
 	} //Fine onCreate()
 	
-
+	public void onResume() {
+		super.onResume();
+		ultimavar.setText(dataulitmamodifica);
+	}
+	
+	
 	
 	//Quando viene premuto il tasto Back
 	@Override
