@@ -5,7 +5,7 @@
     android:background="@android:drawable/alert_dark_frame" >
 
     <ImageButton
-        android:id="@+id/imageButton1"
+        android:id="@+id/play_big"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
@@ -13,45 +13,45 @@
         android:src="@android:drawable/ic_media_play" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/rec_big"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageButton1"
+        android:layout_toRightOf="@+id/play_big"
         android:src="@android:drawable/ic_btn_speak_now" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/backward_big"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageButton2"
+        android:layout_toRightOf="@+id/rec_big"
         android:src="@android:drawable/ic_media_previous" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/forward_big"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageButton3"
+        android:layout_toRightOf="@+id/forward_big"
         android:src="@android:drawable/ic_media_next" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/title_big"
         android:layout_width="144dp"
         android:layout_height="48dp"
         android:layout_marginLeft="3dp"
-        android:layout_below="@+id/imageButton1"
-        android:text="Large Text"
+        android:layout_below="@+id/play_big"
+        android:text="Title"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/background_light" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/image_big"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignLeft="@+id/imageButton4"
-        android:layout_alignTop="@+id/textView1"
+        android:layout_alignLeft="@+id/forward_big"
+        android:layout_alignTop="@+id/title_big"
         android:src="@drawable/ic_launcher" />
 
 </RelativeLayout>
