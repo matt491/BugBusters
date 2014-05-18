@@ -215,6 +215,24 @@ public class UI2 extends Activity {
 	
 	public void onResume() {
 		super.onResume();
+		  dbHelper.open();
+	        //Query al DB: dato l'ID recupero tutta la tupla
+	        cr=dbHelper.fetchRecordById(id_ric);
+	        cr.moveToNext();
+	        
+	        //Recupero delle informazioni dalla query fatta al DB
+	        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
+	        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
+	        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
+	        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
+	        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
+	        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+	        sovra_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+	        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
+	        
+	        //Chiusura Cursor e DB
+	        cr.close();
+	        dbHelper.close();
 		ultimavar.setText(dataulitmamodifica);
 	}
 	
