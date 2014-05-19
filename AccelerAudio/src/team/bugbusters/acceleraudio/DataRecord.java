@@ -207,11 +207,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
 	public static String codifica(String s, String p, String q, String time, long id) {
 		StringBuilder sb=new StringBuilder();
-		if (s.charAt(7)==' ' || s.charAt(7)=='-') sb.append("8");
+		if (s.charAt(7)==' ' || s.charAt(7)=='-') sb.append(""+((int)Math.random() * 2));
 			else sb.append(s.charAt(7));
-		if (p.charAt(7)==' ' || p.charAt(7)=='-') sb.append("4");
+		if (p.charAt(7)==' ' || p.charAt(7)=='-') sb.append(""+((int)Math.random() * 5));
 			else sb.append(p.charAt(7));
-		if (q.charAt(7)==' ' || q.charAt(7)=='-') sb.append("5");
+		if (q.charAt(7)==' ' || q.charAt(7)=='-') sb.append(""+((int)Math.random() * 5));
 			else sb.append(q.charAt(7));
 		sb.append(time.charAt(1));
 		sb.append(time.charAt(12));
