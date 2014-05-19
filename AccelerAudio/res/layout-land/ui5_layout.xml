@@ -40,16 +40,6 @@
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/tt1" />
 
-    <TextView
-        android:id="@+id/tt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/checkZdef"
-        android:layout_below="@+id/checkZdef"
-        android:layout_marginTop="5dp"
-        android:text="@string/MaxDur"
-        android:textSize="15sp" />
-
     <SeekBar
         android:id="@+id/sbcampdef"
         android:layout_width="match_parent"
@@ -93,6 +83,7 @@
         android:layout_alignBottom="@+id/checkXdef"
         android:layout_marginLeft="65dp"
         android:layout_toRightOf="@+id/checkXdef"
+        android:paddingTop="10dp"
         android:text="@string/Sampling"
         android:textSize="15sp" />
 
@@ -126,5 +117,14 @@
         android:text="@string/save"
         android:textSize="15sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/checkZdef"
+        android:layout_centerVertical="true"
+        android:text="@string/MaxDur"
+        android:textSize="15sp" />
 
 </RelativeLayout>

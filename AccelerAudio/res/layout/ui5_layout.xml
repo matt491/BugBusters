@@ -40,6 +40,7 @@
         android:layout_below="@+id/checkXdef"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="25dp"
+        android:paddingTop="10dp"
         android:text="@string/Sampling"
         android:textSize="15sp" />
     
@@ -50,17 +51,6 @@
         android:layout_alignTop="@+id/tt1"
         android:layout_toRightOf="@+id/tt1"
         android:layout_marginLeft="10dp" />
-    
-    <TextView
-        android:id="@+id/tt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
-        android:layout_below="@+id/tt1"
-        android:layout_marginTop="75dp"
-        android:text="@string/MaxDur"
-        android:textSize="15sp" />
     
     <TextView
         android:id="@+id/durmax"
@@ -132,5 +122,15 @@
         android:text="@string/save"
         android:textSize="15sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tt1"
+        android:layout_below="@+id/spinner1"
+        android:layout_marginTop="28dp"
+        android:text="@string/MaxDur"
+        android:textSize="15sp" />
 
 </RelativeLayout>
