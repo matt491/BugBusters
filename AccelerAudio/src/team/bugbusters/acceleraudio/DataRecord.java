@@ -211,30 +211,30 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		StringBuilder sb=new StringBuilder();
 		Random r=new Random();
 		
-		if (s.length()>=8) {
-			if (s.charAt(7)!=' ' && s.charAt(7)!='-') sb.append(s.charAt(7));
-			else sb.append(""+r.nextInt(2));
+		if (s.length()>=50) {
+			if (s.charAt(49)!=' ' && s.charAt(49)!='-') sb.append(s.charAt(49));
+			else sb.append(""+r.nextInt(3));
 		}
-		else sb.append(""+r.nextInt(2));
+		else sb.append(""+r.nextInt(3));
 		
-		if (p.length()>=8) {
-			if (p.charAt(7)!=' ' && p.charAt(7)!='-') sb.append(p.charAt(7));
-			else sb.append(""+r.nextInt(5));
+		if (p.length()>=50) {
+			if (p.charAt(49)!=' ' && p.charAt(49)!='-') sb.append(p.charAt(49));
+			else sb.append(""+r.nextInt(6));
 		}
-		else sb.append(""+r.nextInt(5));
+		else sb.append(""+r.nextInt(6));
 		
-		if (q.length()>=8) {
-			if (q.charAt(7)!=' ' && q.charAt(7)!='-') sb.append(q.charAt(7));
-			else sb.append(""+r.nextInt(5));
+		if (q.length()>=50) {
+			if (q.charAt(49)!=' ' && q.charAt(49)!='-') sb.append(q.charAt(49));
+			else sb.append(""+r.nextInt(6));
 		}
-		else sb.append(""+r.nextInt(5));
+		else sb.append(""+r.nextInt(6));
 
 		sb.append(time.charAt(1));
 		sb.append(time.charAt(12));
 		sb.append(time.charAt(15));
-		sb.append(""+id%3);
-		sb.append(""+id%7);
-		sb.append(""+id%5);
+		sb.append(""+id%(1+r.nextInt(9)));
+		sb.append(""+id%(1+r.nextInt(9)));
+		sb.append(""+id%(1+r.nextInt(9)));
 		return sb.toString();
 		//Potrebbe servire: (int)Math.random() * 9; genera numero intero da 0 a 9
 	}

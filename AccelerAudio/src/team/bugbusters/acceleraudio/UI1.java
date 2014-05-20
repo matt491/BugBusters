@@ -52,7 +52,7 @@ public class UI1 extends Activity {
 		lv.setAdapter(cl);
 		
 		/*
-		 * Alla pressione di un elemento della ListView si passa alla UI#2 dove sarˆ possibile visualizzarne (ed eventualmente modificarne) il dettaglio. 
+		 * Alla pressione di un elemento della ListView si passa alla UI#2 dove sarï¿½ possibile visualizzarne (ed eventualmente modificarne) il dettaglio. 
 		 */
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			
@@ -73,7 +73,7 @@ public class UI1 extends Activity {
 	
 	/*
 	 * Attraverso questo metodo vengono recuperati dal database ID, stringa di codifica dell'immagine, nome, data di ultima modifica e durata(?) di ciascuna music session presente nel database.
-	 * L'ID, che non viene visualizzato, sarˆ passato alla UI#2 tramite il relativo intent.
+	 * L'ID, che non viene visualizzato, sarï¿½ passato alla UI#2 tramite il relativo intent.
 	 * La durata (di riproduzione, non di registrazione) al momento non viene visualizzata. 
 	 */
 	private List<String[]> dataToFill() {
@@ -279,13 +279,13 @@ public class UI1 extends Activity {
 	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
 	       String sovrac_new;
 	       
-	       if(checkX==true) checkX=!checkX;
-	       if(checkY==false) checkY=!checkY;
-	       if(checkZ==true) checkZ=!checkZ;
+	       if(checkX) checkY=!checkY;
+	       if(checkY) checkZ=!checkZ;
+	       if(checkZ) checkX=!checkX;
 	       if(sovrac.equals("Scelta 0")) sovrac_new="Scelta 1";
-	       if(sovrac.equals("Scelta 1")) sovrac_new="Scelta 2";
-	       if(sovrac.equals("Scelta 2")) sovrac_new="Scelta 3";
-	       if(sovrac.equals("Scelta 3")) sovrac_new="Scelta 4";
+	       else if(sovrac.equals("Scelta 1")) sovrac_new="Scelta 2";
+	       else if(sovrac.equals("Scelta 2")) sovrac_new="Scelta 3";
+	       else if(sovrac.equals("Scelta 3")) sovrac_new="Scelta 4";
 	       else sovrac_new="Scelta 0";
 	       
 	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac_new, datar, dataul, null);
