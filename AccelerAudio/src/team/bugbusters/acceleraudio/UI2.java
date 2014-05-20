@@ -119,11 +119,13 @@ public class UI2 extends Activity {
         cr.close();
         dbHelper.close();
         
+        int alpha = Integer.parseInt(codifica.substring(0));
         int red = Integer.parseInt(codifica.substring(0, 3));
         int green = Integer.parseInt(codifica.substring(3, 6));
         int blue = Integer.parseInt(codifica.substring(6, 9));
         
-        iv.setBackgroundColor(Color.rgb(red, green, blue));
+        
+        iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
         
         chX.setChecked(x_selected);
         chY.setChecked(y_selected);
