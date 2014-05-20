@@ -170,7 +170,7 @@ public class UI3 extends Activity {
             		stop.setEnabled(true);
             		rec.setEnabled(false);
             		toggle.setEnabled(false);
-            		end_time=prefs.getInt("duratadef", 50);
+            		end_time=prefs.getInt("duratadef", 30);
             		pb.setMax(end_time);
             		
             		timer=new MyCounter(end_time*1000,100);

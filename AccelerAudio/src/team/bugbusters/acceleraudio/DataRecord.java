@@ -1,5 +1,7 @@
 package team.bugbusters.acceleraudio;
 
+import java.util.Random;
+
 import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.IntentService;
 import android.content.Context;
@@ -63,9 +65,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	datoX=new StringBuilder();
 	        	datoY=new StringBuilder();
 	        	datoZ=new StringBuilder();
-	        	freq=prefs.getString("Campion", "Molto lento");
+	        	freq=prefs.getString("Campion", "Normale");
 
-	        	durata_def=prefs.getInt("duratadef", 50);
+	        	durata_def=prefs.getInt("duratadef", 30);
 	        
 	        }
 
@@ -207,12 +209,26 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
 	public static String codifica(String s, String p, String q, String time, long id) {
 		StringBuilder sb=new StringBuilder();
-		if (s.charAt(7)==' ' || s.charAt(7)=='-') sb.append(""+((int)Math.random() * 2));
-			else sb.append(s.charAt(7));
-		if (p.charAt(7)==' ' || p.charAt(7)=='-') sb.append(""+((int)Math.random() * 5));
-			else sb.append(p.charAt(7));
-		if (q.charAt(7)==' ' || q.charAt(7)=='-') sb.append(""+((int)Math.random() * 5));
-			else sb.append(q.charAt(7));
+		Random r=new Random();
+		
+		if (s.length()>=8) {
+			if (s.charAt(7)!=' ' && s.charAt(7)!='-') sb.append(s.charAt(7));
+			else sb.append(""+r.nextInt(2));
+		}
+		else sb.append(""+r.nextInt(2));
+		
+		if (p.length()>=8) {
+			if (p.charAt(7)!=' ' && p.charAt(7)!='-') sb.append(p.charAt(7));
+			else sb.append(""+r.nextInt(5));
+		}
+		else sb.append(""+r.nextInt(5));
+		
+		if (q.length()>=8) {
+			if (q.charAt(7)!=' ' && q.charAt(7)!='-') sb.append(q.charAt(7));
+			else sb.append(""+r.nextInt(5));
+		}
+		else sb.append(""+r.nextInt(5));
+
 		sb.append(time.charAt(1));
 		sb.append(time.charAt(12));
 		sb.append(time.charAt(15));

@@ -102,9 +102,9 @@ public class UI5 extends Activity {
 	        	defX.setChecked(prefs.getBoolean("Xselect", true));
 	        	defY.setChecked(prefs.getBoolean("Yselect", true));
 	        	defZ.setChecked(prefs.getBoolean("Zselect", true));
-	        	sbdurdef.setProgress(prefs.getInt("duratadef", 50));
+	        	sbdurdef.setProgress(prefs.getInt("duratadef", 30));
 	        	sbsovradef.setProgress(prefs.getInt("sovrdef", 0));
-	        	spinner.setSelection(stringToFreq(prefs.getString("Campion", "Molto lento")));
+	        	spinner.setSelection(stringToFreq(prefs.getString("Campion", "Normale")));
 	        	dmax.setText(sbdurdef.getProgress()+" secondi");
 	        	scampdef.setText(campToString(sbsovradef.getProgress()));
 	
@@ -186,6 +186,14 @@ public class UI5 extends Activity {
 
 	}//Fine onCreate
 	
+	
+	//Quando viene premuto il tasto Back
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+        	finish();	
+	return;
+	}
 	
 	public static String campToString(int c){
 		if(c==0) return "Scelta 0";
