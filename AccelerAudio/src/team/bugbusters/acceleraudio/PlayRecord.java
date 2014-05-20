@@ -187,6 +187,7 @@ public class PlayRecord extends IntentService {
 		           		 
 		           	 at.write(samples, 0, samples.length);
 		            }
+		        break;
 	        } //Fine case 0 "Scelta 0" durata uguale per tutti
 	    
 	        case 1: {
@@ -208,11 +209,11 @@ public class PlayRecord extends IntentService {
 	        	if(checkZ)
 	        		for(int j=0;j<z.length;j++) {
 	        			for(i=0;i<s.length;i++)
-	        				s[i]=(short) (z[j]*Math.sin(((double)i)/10)+y[j]/10);			 
+	        				s[i]=(short) (z[j]*Math.sin(((double)i)/10)+z[j]/10);			 
 		           	 at.write(s, 0, s.length);
 		            }
 	        	
-	        	
+	        	break;
 	        }
 	        
         } //Fine switch
