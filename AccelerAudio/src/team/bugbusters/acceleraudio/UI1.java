@@ -188,10 +188,10 @@ public class UI1 extends Activity {
 					String nuovoNome = input.getText().toString();
 					if(!nuovoNome.equals(vecchioNome))
 					if(nuovoNome.contains("'") || nuovoNome.contains("_")) {
-						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
 					}
 					else if(sameName(db, nuovoNome) || nuovoNome.equals("")) {
-						Toast toast = Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG);
+						Toast toast = Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_SHORT);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();
 					}

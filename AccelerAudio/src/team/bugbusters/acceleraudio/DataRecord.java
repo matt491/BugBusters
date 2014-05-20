@@ -202,7 +202,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	protected static short converti(float x){
 		if(x>32.767) return 32767;
 		if(x<-32.768) return -32768;
-		else return (short)Math.round(x*1000);
+		else return (short)Math.round(x*100);
 	}
 	
 	

@@ -23,7 +23,7 @@ public class PlayRecord extends IntentService {
  	private short[] x,y,z,w;
 	private Thread t;
 	private boolean isRunning = true;
-	private int k;
+	private int k,minsize;
 	
 	public PlayRecord() {
 		super("PlayRecord");
@@ -87,14 +87,154 @@ public class PlayRecord extends IntentService {
     		z[i]=Short.parseShort(q[i]);
       
         	
-        //Qui lavoro sull'audiotrack
-        Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
+
+
         // start a new thread to synthesise audio
-        t = new Thread() {
+     /*   t = new Thread() {
          public void run() {
          setPriority(Thread.MAX_PRIORITY);
-      
-        int minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+      */
+        
+     /*    
+         for(i=0;i<x.length;i++)
+				x[i]=(short) (x[i]*Math.sin(((double)i)/100));
+         for(i=0;i<y.length;i++)
+				y[i]=(short) (y[i]*Math.sin(((double)i)/100));
+         for(i=0;i<z.length;i++)
+				z[i]=(short) (z[i]*Math.sin(((double)i)/100));
+     */    
+         
+         minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+         
+         AudioTrack at = new AudioTrack(AudioManager.STREAM_MUSIC,44100, AudioFormat.CHANNEL_OUT_MONO,
+                                   AudioFormat.ENCODING_PCM_16BIT, minsize, AudioTrack.MODE_STREAM);
+
+         short[] samples = new short[2*minsize];
+
+         // start audio
+        at.play();
+        
+        switch(k){
+	        
+	        case 0: {
+	           
+		        if(checkX)
+		            if(x.length >= minsize)
+		           	 at.write(x, 0, x.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=x[j];
+		           		 j++;
+		           		 if(j==x.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		            }
+		         
+		        if(checkZ)
+		            if(z.length >= minsize)
+		           	 at.write(z, 0, z.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=z[j];
+		           		 j++;
+		           		 if(j==z.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		            }
+		         
+		        if(checkY)	 
+		         if(y.length >= minsize)
+		        	 at.write(y, 0, y.length);
+		         else {
+		        	 int j=0;
+		        	 for(i=0;i<samples.length;i++){
+		        		 samples[i]=y[j];
+		        		 j++;
+		        		 if(j==y.length) j=0;
+		        	 }
+		        		 
+		        	 at.write(samples, 0, samples.length);
+		         }
+		        
+		        if(checkZ)
+		            if(z.length >= minsize)
+		           	 at.write(z, 0, z.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=z[j];
+		           		 j++;
+		           		 if(j==z.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		            }
+		        
+		        if(checkX)
+		            if(x.length >= minsize)
+		           	 at.write(x, 0, x.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=x[j];
+		           		 j++;
+		           		 if(j==x.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		            }
+	        } //Fine case 0 "Scelta 0" durata uguale per tutti
+	    
+	        case 1: {
+	        	short[] s = new short[minsize];
+	        	if(checkX)
+	        		for(int j=0;j<x.length;j++) {
+	        			for(i=0;i<s.length;i++)
+	        				s[i]=(short) (x[j]*Math.sin(((double)i)/10)+x[j]/10);		 
+		           	 at.write(s, 0, s.length);
+		            }
+	        	
+	        	if(checkY)
+	        		for(int j=0;j<y.length;j++) {
+	        			for(i=0;i<s.length;i++)
+	        				s[i]=(short) (y[j]*Math.sin(((double)i)/10)+y[j]/10);			 
+		           	 at.write(s, 0, s.length);
+		            }
+	        	
+	        	if(checkZ)
+	        		for(int j=0;j<z.length;j++) {
+	        			for(i=0;i<s.length;i++)
+	        				s[i]=(short) (z[j]*Math.sin(((double)i)/10)+y[j]/10);			 
+		           	 at.write(s, 0, s.length);
+		            }
+	        	
+	        	
+	        }
+	        
+        } //Fine switch
+        
+        
+        
+         
+	}
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+      /*  int minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
         
         AudioTrack at = new AudioTrack(AudioManager.STREAM_MUSIC,44100, AudioFormat.CHANNEL_OUT_MONO,
                                   AudioFormat.ENCODING_PCM_16BIT, minsize, AudioTrack.MODE_STREAM);
@@ -113,7 +253,7 @@ public class PlayRecord extends IntentService {
        			for(int i=0;i<60;i++)
        				at.write(z, 50, z.length);
        			
-       			if(checkY)
+       			if(checkZ)
        			for(int i=0;i<60;i++)
        				at.write(y, 50, y.length);
        
@@ -142,47 +282,12 @@ public class PlayRecord extends IntentService {
     	   
        }
 
-       // synthesis loop
-  /*     while(isRunning){
-    	 if(x.length < minsize)
-    		 samples = new short[x.length];
-    	 
-        for(int i=0; i<samples.length-1; i=i+2){
-    	   samples[i]=x[i];
-           samples[i+1]=x[i];
-        }
-        at.write(samples, 0, samples.length);
-        
-        
-        if(y.length < minsize)
-		 samples = new short[y.length];
-	 
-        for(int i=0; i<samples.length-1; i=i+2){
-     	    samples[i]=y[i];
-            samples[i+1]=y[i];
-         }
-        at.write(samples, 0, samples.length);
-        
-        if(y.length < minsize)
-   		 samples = new short[z.length];
-        for(int i=0; i<samples.length-1; i=i+2){
-     	    samples[i]=z[i];
-            samples[i+1]=z[i];
-         }
-        at.write(samples, 0, samples.length);
-        
-        isRunning=false;
-       }
-       
-       
-       	at.stop();
-      		at.release();
-         		*/
+    
        
        at.stop();
        at.release();
-       
-         }
+    */   
+  /*       }
         	};
         	
    		t.start();        
@@ -191,12 +296,18 @@ public class PlayRecord extends IntentService {
              
               
            }
-     
+     */
        
         
-        
-        
-	}
+  public void onDestroy(){
+	  
+	  Toast.makeText(getApplicationContext(), ""+minsize, Toast.LENGTH_SHORT).show();
+	  
+  }
+	
+	
+	
+ }
 	
                  
             
