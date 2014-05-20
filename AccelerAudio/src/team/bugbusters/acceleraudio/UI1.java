@@ -332,7 +332,12 @@ public class UI1 extends Activity {
 				Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
 	            startActivity(prefIntentUI5);
 	            return(true);
+	            
+			case R.id.Ordina:
+				//Qui ci va il metodo che ordina alfabeticamente le music session
+				return(true);
 			}
+			
 			
 			return (super.onOptionsItemSelected(item));
 		}	

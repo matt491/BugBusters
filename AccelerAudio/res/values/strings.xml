@@ -55,5 +55,6 @@
     <string name="pauseButtonDesc">Alla pressione di questo tasto la riproduzione si mette in pausa.</string>
     <string name="previusButtonDesc">Alla pressione di questo tasto comincia la riproduzione della traccia precedente, se c\'è.</string>
     <string name="nextButtonDesc">Alla pressione di questo tasto comincia la riproduzione della traccia successiva, se c\'è.</string>
+    <string name="SortAlphabetically">Ordina sessioni alfabeticamente</string>
 
 </resources>

@@ -241,6 +241,14 @@ public class UI3 extends Activity {
  		menuInflater.inflate(R.menu.option_menu, menu);
  		return true;
  		}
+     
+     @Override
+ 	public boolean onPrepareOptionsMenu(Menu menu) {
+ 		MenuItem ordina = menu.findItem(R.id.Ordina);
+ 		ordina.setVisible(false);
+ 		
+ 		return super.onPrepareOptionsMenu(menu);
+ 	}
  	
  	@Override
  	public boolean onOptionsItemSelected(MenuItem item) {

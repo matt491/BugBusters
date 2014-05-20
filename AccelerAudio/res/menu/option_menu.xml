@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/Preferenze" android:title="@string/Preferences" android:icon="@android:drawable/ic_menu_preferences" android:showAsAction="ifRoom|withText"></item>
+    <item android:id="@+id/Preferenze"
+          android:title="@string/Preferences"
+          android:icon="@android:drawable/ic_menu_preferences"
+          android:showAsAction="never"></item>
+    <item android:id="@+id/Ordina" android:title="@string/SortAlphabetically" android:showAsAction="ifRoom|withText" android:icon="@android:drawable/ic_menu_sort_alphabetically"></item>
     
 
 </menu>

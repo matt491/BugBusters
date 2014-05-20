@@ -255,6 +255,14 @@ public class UI2 extends Activity {
 		}
 	
 	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem ordina = menu.findItem(R.id.Ordina);
+		ordina.setVisible(false);
+		
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		
