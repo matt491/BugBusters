@@ -2,7 +2,6 @@ package team.bugbusters.acceleraudio;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -10,8 +9,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -32,6 +34,7 @@ public class UI1 extends Activity {
 	private ListView lv;
 	private DbAdapter db;
 	private String pkg;
+	private SharedPreferences prefs;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,8 +44,14 @@ public class UI1 extends Activity {
 		lv = (ListView) findViewById(R.id.listView1);
 		
 		db = new DbAdapter(UI1.this);
-		
-		List<String[]> data = dataToFill();
+		List<String[]> data;
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if(prefs.getBoolean("sorted", false) == false) {
+		 data = dataToFill();
+		}
+		else {
+			data = sortedDataToFill();
+		}
 		
 		//View header = getLayoutInflater().inflate(R.layout.header, null);
 		//lv.addHeaderView(header);
@@ -380,6 +389,8 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
+				Editor prefsEditor = prefs.edit();
+				prefsEditor.putBoolean("sorted", true).commit();
 				List<String[]> sortedData = sortedDataToFill();
 				CustomList cl = new CustomList(UI1.this, sortedData);
 				lv.setAdapter(cl);
