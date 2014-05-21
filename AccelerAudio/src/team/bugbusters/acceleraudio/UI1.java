@@ -1,6 +1,8 @@
 package team.bugbusters.acceleraudio;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -100,6 +102,50 @@ public class UI1 extends Activity {
 			myList.add(row);
 		}
 		
+		c.close();
+		db.close();
+		
+		return myList;
+	}
+	
+	/*
+	 * Questo metodo, come quello precedente, recupera dal database i dati da visualizzare nella lista, con la differenza che qui i nomi
+	 * delle music session sono ordinati alfabeticamente. 
+	 */
+	private List<String[]> sortedDataToFill() {
+		db.open();
+		
+		Cursor c = db.fetchAllRecord();
+		
+		List<String[]> myList = new ArrayList<String[]>();
+		
+		
+		int idIndex = c.getColumnIndex(DbAdapter.KEY_RECORDID);
+		int thumbnailIndex = c.getColumnIndex(DbAdapter.KEY_IMM);
+		int nameIndex = c.getColumnIndex(DbAdapter.KEY_NAME);
+		int lastIndex = c.getColumnIndex(DbAdapter.KEY_LAST);
+		int durationIndex = c.getColumnIndex(DbAdapter.KEY_DURATION);
+		
+		List<String> names = new ArrayList<String>();
+		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+			names.add(c.getString(nameIndex));	
+		}
+		
+		Collections.sort(names, String.CASE_INSENSITIVE_ORDER);
+		
+		int i = 0;
+		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+			String[] row = new String[5];
+			row[0] = c.getString(idIndex);
+			row[1] = c.getString(thumbnailIndex);
+			row[2] = (String)names.get(i);
+			i++;
+			row[3] = c.getString(lastIndex);
+			row[4] = c.getString(durationIndex);
+			myList.add(row);
+		}
+		
+		c.close();
 		db.close();
 		
 		return myList;
@@ -259,7 +305,7 @@ public class UI1 extends Activity {
 	
 	
 	/*
-	 * Questo metodo per la duplicazione va messo nella UI1 quando ci sara'
+	 * Con questo metodo viene duplicata una music session nel database
 	 */
 	   private void duplica(long id){
 		   db.open();
@@ -334,7 +380,9 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
-				//Qui ci va il metodo che ordina alfabeticamente le music session
+				List<String[]> sortedData = sortedDataToFill();
+				CustomList cl = new CustomList(UI1.this, sortedData);
+				lv.setAdapter(cl);
 				return(true);
 			}
 			
