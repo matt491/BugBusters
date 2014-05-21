@@ -8,8 +8,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -30,6 +33,7 @@ public class UI1 extends Activity {
 	private ListView lv;
 	private DbAdapter db;
 	private String pkg;
+	private SharedPreferences prefs;
 	
 	
 	@Override
@@ -41,7 +45,16 @@ public class UI1 extends Activity {
 		
 		db = new DbAdapter(UI1.this);
 		
-		List<String[]> data = dataToFill();
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		List<String[]> data;
+		if(prefs.getBoolean("sorted", false) == false) {
+			data = dataToFill();
+		}
+		else {
+			data = sortedDataToFill();
+		}
+		 
 		
 		
 		//View header = getLayoutInflater().inflate(R.layout.header, null);
@@ -109,6 +122,39 @@ public class UI1 extends Activity {
 	}
 	
 	/*
+	 * Come sopra, solo ordinati per nome.
+	 */
+	private List<String[]> sortedDataToFill() {
+		db.open();
+		
+		Cursor c = db.fetchAllRecordSortedByName();
+		
+		List<String[]> myList = new ArrayList<String[]>();
+		
+		
+		int idIndex = c.getColumnIndex(DbAdapter.KEY_RECORDID);
+		int thumbnailIndex = c.getColumnIndex(DbAdapter.KEY_IMM);
+		int nameIndex = c.getColumnIndex(DbAdapter.KEY_NAME);
+		int lastIndex = c.getColumnIndex(DbAdapter.KEY_LAST);
+		int durationIndex = c.getColumnIndex(DbAdapter.KEY_DURATION);
+		
+		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+			String[] row = new String[5];
+			row[0] = c.getString(idIndex);
+			row[1] = c.getString(thumbnailIndex);
+			row[2] = c.getString(nameIndex);
+			row[3] = c.getString(lastIndex);
+			row[4] = c.getString(durationIndex);
+			myList.add(row);
+		}
+		
+		c.close();
+		db.close();
+		
+		return myList;
+	}
+	
+	/*
 	 * Alla pressione del tasto +, si passa alla UI#3 dove e' possibile registrare una nuova sessione
 	 */
 	public void onClick(View view) {
@@ -147,7 +193,13 @@ public class UI1 extends Activity {
 			dati = (String[]) lv.getAdapter().getItem(info.position);
 			duplica(Long.parseLong(dati[0]));
 			
-			List<String[]> data = dataToFill();
+			List<String[]> data;
+			if(prefs.getBoolean("sorted", false) == false) {
+				data = dataToFill();
+			}
+			else {
+				data = sortedDataToFill();
+			}
 			CustomList cl = new CustomList(UI1.this, data);
 			lv.setAdapter(cl);
 			
@@ -202,7 +254,13 @@ public class UI1 extends Activity {
 						db.open();
 						db.updateNameOnly(id_to_rename,nuovoNome);
 						db.close();
-						List<String[]> data1 = dataToFill();
+						List<String[]> data1;
+						if(prefs.getBoolean("sorted", false) == false) {
+							data1 = dataToFill();
+						}
+						else {
+							data1 = sortedDataToFill();
+						}
 						CustomList cl = new CustomList(UI1.this, data1);
 						lv.setAdapter(cl);
 						dialog.dismiss();
@@ -230,7 +288,13 @@ public class UI1 extends Activity {
 					db.deleteRecord(id_to_delete);
 					db.close();
 					
-					List<String[]> data2 = dataToFill();
+					List<String[]> data2;
+					if(prefs.getBoolean("sorted", false) == false) {
+						data2 = dataToFill();
+					}
+					else {
+						data2 = sortedDataToFill();
+					}
 					CustomList cl2 = new CustomList(UI1.this, data2);
 					lv.setAdapter(cl2);	
 				}
@@ -337,7 +401,11 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
-				//da implementare
+				Editor prefsEditor = prefs.edit();
+				prefsEditor.putBoolean("sorted", true).commit();
+				List<String[]> sortedDataToFill = sortedDataToFill();
+				CustomList cl = new CustomList(UI1.this, sortedDataToFill);
+				lv.setAdapter(cl);
 				return(true);
 			}
 			
