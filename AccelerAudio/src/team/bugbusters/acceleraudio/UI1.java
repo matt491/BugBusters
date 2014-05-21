@@ -1,7 +1,6 @@
 package team.bugbusters.acceleraudio;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -9,11 +8,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -34,7 +30,7 @@ public class UI1 extends Activity {
 	private ListView lv;
 	private DbAdapter db;
 	private String pkg;
-	private SharedPreferences prefs;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,14 +40,9 @@ public class UI1 extends Activity {
 		lv = (ListView) findViewById(R.id.listView1);
 		
 		db = new DbAdapter(UI1.this);
-		List<String[]> data;
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if(prefs.getBoolean("sorted", false) == false) {
-		 data = dataToFill();
-		}
-		else {
-			data = sortedDataToFill();
-		}
+		
+		List<String[]> data = dataToFill();
+		
 		
 		//View header = getLayoutInflater().inflate(R.layout.header, null);
 		//lv.addHeaderView(header);
@@ -106,49 +97,6 @@ public class UI1 extends Activity {
 			row[0] = c.getString(idIndex);
 			row[1] = c.getString(thumbnailIndex);
 			row[2] = c.getString(nameIndex);
-			row[3] = c.getString(lastIndex);
-			row[4] = c.getString(durationIndex);
-			myList.add(row);
-		}
-		
-		c.close();
-		db.close();
-		
-		return myList;
-	}
-	
-	/*
-	 * Questo metodo, come quello precedente, recupera dal database i dati da visualizzare nella lista, con la differenza che qui i nomi
-	 * delle music session sono ordinati alfabeticamente. 
-	 */
-	private List<String[]> sortedDataToFill() {
-		db.open();
-		
-		Cursor c = db.fetchAllRecord();
-		
-		List<String[]> myList = new ArrayList<String[]>();
-		
-		
-		int idIndex = c.getColumnIndex(DbAdapter.KEY_RECORDID);
-		int thumbnailIndex = c.getColumnIndex(DbAdapter.KEY_IMM);
-		int nameIndex = c.getColumnIndex(DbAdapter.KEY_NAME);
-		int lastIndex = c.getColumnIndex(DbAdapter.KEY_LAST);
-		int durationIndex = c.getColumnIndex(DbAdapter.KEY_DURATION);
-		
-		List<String> names = new ArrayList<String>();
-		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			names.add(c.getString(nameIndex));	
-		}
-		
-		Collections.sort(names, String.CASE_INSENSITIVE_ORDER);
-		
-		int i = 0;
-		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			String[] row = new String[5];
-			row[0] = c.getString(idIndex);
-			row[1] = c.getString(thumbnailIndex);
-			row[2] = (String)names.get(i);
-			i++;
 			row[3] = c.getString(lastIndex);
 			row[4] = c.getString(durationIndex);
 			myList.add(row);
@@ -389,11 +337,7 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
-				Editor prefsEditor = prefs.edit();
-				prefsEditor.putBoolean("sorted", true).commit();
-				List<String[]> sortedData = sortedDataToFill();
-				CustomList cl = new CustomList(UI1.this, sortedData);
-				lv.setAdapter(cl);
+				//da implementare
 				return(true);
 			}
 			
