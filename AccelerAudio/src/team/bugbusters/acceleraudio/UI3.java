@@ -219,11 +219,11 @@ public class UI3 extends Activity {
             		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
             		
             		//Decommentando queste due righe di codice si fa si che quando si torna alla UI#1 la music session appena registrata compare in fondo alla 
-<<<<<<< HEAD
+
             		//lista (e l'INTERA lista torna in disordine anche se la si era ordinata precedentemente). Lasciandole commentate invece la lista resta
-=======
+
             		//lista (e l'intera lista torna in disordine anche se la si era ordinata precedentemente). Lasciandole commentate invece la lista resta
->>>>>>> branch 'master' of https://github.com/matt491/BugBusters.git
+
             		//disordinata se non la si era ordinata oppure resta ordinata e la music session appena registrata viene aggiunta al giusto posto nella lista se la si era precedentemente ordinata.
             		//Come è meglio fare? Boh. Il punto è che per fare una cosa fatta bene, ogni volta che si preme su ordina dovrebbe essere ordinato anche l'intero database... ma probabilmente è un casino!
             		
