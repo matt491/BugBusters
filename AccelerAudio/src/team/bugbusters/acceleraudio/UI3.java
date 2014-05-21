@@ -314,6 +314,8 @@ public class UI3 extends Activity {
 		//Quando viene premuto il tasto Back
 		@Override
 		public void onBackPressed() {
+				timer.cancel();
+    			stopService(intentToSer);
 				Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
 	        	startActivity(returnIntent);
 	        	finish();	

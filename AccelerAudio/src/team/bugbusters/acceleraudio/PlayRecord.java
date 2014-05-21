@@ -1,7 +1,11 @@
 package team.bugbusters.acceleraudio;
 
+import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -22,16 +26,26 @@ public class PlayRecord extends IntentService {
 	private String[] s,p,q;
  	private short[] x,y,z,w;
 	private Thread t;
-	private boolean isRunning = true;
+	private boolean isRunning = true, pausa,riprendi;
 	private int k,minsize;
+    private MyPlayerReceiver receiver;
+    private IntentFilter filter;
+    private Intent intentToUI4;
+	private AudioTrack at;
+
 	
 	public PlayRecord() {
 		super("PlayRecord");
 	}
 
+
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		
+        receiver = new MyPlayerReceiver();
+        intentToUI4 = new Intent(this, UI4.class);
+        filter = new IntentFilter(MyPlayerReceiver.THREAD_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(receiver,filter);
         
         dbHelper = new DbAdapter(this);
         
@@ -90,27 +104,19 @@ public class PlayRecord extends IntentService {
 
 
         // start a new thread to synthesise audio
-     /*   t = new Thread() {
+   /*     t = new Thread() {
          public void run() {
          setPriority(Thread.MAX_PRIORITY);
-      */
+         int i;
         
-     /*    
-         for(i=0;i<x.length;i++)
-				x[i]=(short) (x[i]*Math.sin(((double)i)/100));
-         for(i=0;i<y.length;i++)
-				y[i]=(short) (y[i]*Math.sin(((double)i)/100));
-         for(i=0;i<z.length;i++)
-				z[i]=(short) (z[i]*Math.sin(((double)i)/100));
-     */    
-         
+      */ 
          minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
          
-         AudioTrack at = new AudioTrack(AudioManager.STREAM_MUSIC,44100, AudioFormat.CHANNEL_OUT_MONO,
+         at = new AudioTrack(AudioManager.STREAM_MUSIC,44100, AudioFormat.CHANNEL_OUT_MONO,
                                    AudioFormat.ENCODING_PCM_16BIT, minsize, AudioTrack.MODE_STREAM);
 
          short[] samples = new short[2*minsize];
-
+         
          // start audio
         at.play();
         
@@ -195,21 +201,21 @@ public class PlayRecord extends IntentService {
 	        	if(checkX)
 	        		for(int j=0;j<x.length;j++) {
 	        			for(i=0;i<s.length;i++)
-	        				s[i]=(short) (x[j]*Math.sin(((double)i)/10)+x[j]/10);		 
+	        				s[i]=(short) (x[j]*Math.sin(((double)i)/5)+x[j]/10);		 
 		           	 at.write(s, 0, s.length);
 		            }
 	        	
 	        	if(checkY)
 	        		for(int j=0;j<y.length;j++) {
 	        			for(i=0;i<s.length;i++)
-	        				s[i]=(short) (y[j]*Math.sin(((double)i)/10)+y[j]/10);			 
+	        				s[i]=(short) (y[j]*Math.sin(((double)i)/5)+y[j]/10);			 
 		           	 at.write(s, 0, s.length);
 		            }
 	        	
 	        	if(checkZ)
 	        		for(int j=0;j<z.length;j++) {
 	        			for(i=0;i<s.length;i++)
-	        				s[i]=(short) (z[j]*Math.sin(((double)i)/10)+z[j]/10);			 
+	        				s[i]=(short) (z[j]*Math.sin(((double)i)/5)+z[j]/10);			 
 		           	 at.write(s, 0, s.length);
 		            }
 	        	
@@ -218,86 +224,25 @@ public class PlayRecord extends IntentService {
 	        
         } //Fine switch
         
-        
-        
-         
-	}
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-      /*  int minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
-        
-        AudioTrack at = new AudioTrack(AudioManager.STREAM_MUSIC,44100, AudioFormat.CHANNEL_OUT_MONO,
-                                  AudioFormat.ENCODING_PCM_16BIT, minsize, AudioTrack.MODE_STREAM);
-
-        short samples[] = new short[minsize];
-
-        // start audio
-       at.play();
-       switch(k) {
-       		case 0:{ //Sovracampionamento "Scelta 0"
-       			if(checkX)
-       			for(int i=0;i<60;i++)
-       				at.write(x, 0, x.length);
-       			
-       			if(checkY)
-       			for(int i=0;i<60;i++)
-       				at.write(z, 50, z.length);
-       			
-       			if(checkZ)
-       			for(int i=0;i<60;i++)
-       				at.write(y, 50, y.length);
        
-       		
-       			break;
-       		}
-       		case 1: {
-       			short[] w=new short[x.length+y.length+z.length];
-       			for(int u=0;u<x.length+y.length+z.length-2;u++)	{
-       				if(u<x.length)	w[u]=x[u];
-       				
-       				if(u<y.length) w[u+1]=y[u];
-       				
-       				if(u<z.length) w[u+2]=z[u];
-       			}
-       					
-       					
-       			for(int j=0; j<50; j++){
-       				at.write(w, 0, w.length);
-       			}
-       			
-       			
-       			
-       			break;
-       		}
-    	   
-       }
-
-    
-       
-       at.stop();
-       at.release();
-    */   
-  /*       }
-        	};
+   /*      } //Fine RUN
+         
+        	}; //Fine Thread
         	
    		t.start();        
-
-          
+   		
+      
+   		
+   		
+   		
              
               
-           }
-     */
+
+	
+   		SystemClock.sleep(10000000);*/
+	
+	}
+     
        
         
   public void onDestroy(){
@@ -305,6 +250,28 @@ public class PlayRecord extends IntentService {
 	  Toast.makeText(getApplicationContext(), ""+minsize, Toast.LENGTH_SHORT).show();
 	  
   }
+  
+  
+  
+  public class MyPlayerReceiver extends BroadcastReceiver{
+
+	   public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
+       @Override
+       	public void onReceive(Context context, Intent intent) {
+       		    pausa=intent.getBooleanExtra("Pausa", false);
+       		    riprendi=intent.getBooleanExtra("Riprendi", false);
+       		       
+       		       if(pausa) at.pause();
+				/*	try {t.wait();} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+       		    */   
+       		       if(riprendi) at.play();
+       		       
+       		       
+       	}
+       }
 	
 	
 	

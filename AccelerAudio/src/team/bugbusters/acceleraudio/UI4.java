@@ -1,5 +1,7 @@
 package team.bugbusters.acceleraudio;
 
+import team.bugbusters.acceleraudio.PlayRecord.MyPlayerReceiver;
+import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
@@ -16,6 +19,8 @@ public class UI4 extends Activity {
 	private String pkg_r;
 	private Intent playIntentService;
 	private Button play;
+	private ImageButton pause;
+	private Intent broadcastIntent;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,10 +28,14 @@ public class UI4 extends Activity {
         
         setContentView(R.layout.ui4_layout);
         play=(Button)findViewById(R.id.playbutton);
-        
+        pause=(ImageButton)findViewById(R.id.imageButton1);
         
         pkg_r=getPackageName();   
         id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
+        
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(MyPlayerReceiver.THREAD_RESPONSE);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         
         
         
@@ -40,13 +49,23 @@ public class UI4 extends Activity {
             }});  
         
         
+        pause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	broadcastIntent.putExtra("Pausa", true);
+            	sendBroadcast(broadcastIntent);
+            	
+            	
+            }});
+        
+        
 	} //FINE onCreate()
 	
 	//Quando viene premuto il tasto Back
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-        	finish();	
+		stopService(playIntentService);
+        finish();	
 	return;
 	}
 	
