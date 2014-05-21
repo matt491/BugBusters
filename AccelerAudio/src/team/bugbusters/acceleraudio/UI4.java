@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
@@ -64,7 +65,9 @@ public class UI4 extends Activity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		stopService(playIntentService);
+		broadcastIntent.putExtra("Stop", true);
+    	sendBroadcast(broadcastIntent);
+    	
         finish();	
 	return;
 	}

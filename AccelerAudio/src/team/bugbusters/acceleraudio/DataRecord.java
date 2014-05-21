@@ -200,8 +200,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
         
 	//Metodo per la conversione in short che servira' all'AudioTrack
 	protected static short converti(float x){
-		if(x>32.767) return 32767;
-		if(x<-32.768) return -32768;
+		if(x>32.767) return 3276;
+		if(x<-32.768) return -3276;
 		else return (short)Math.round(x*100);
 	}
 	

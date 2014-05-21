@@ -1,6 +1,5 @@
 package team.bugbusters.acceleraudio;
 
-import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.IntentService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,7 +25,7 @@ public class PlayRecord extends IntentService {
 	private String[] s,p,q;
  	private short[] x,y,z,w;
 	private Thread t;
-	private boolean isRunning = true, pausa,riprendi;
+	private boolean isRunning = true, pausa,riprendi,stop;
 	private int k,minsize;
     private MyPlayerReceiver receiver;
     private IntentFilter filter;
@@ -104,26 +103,28 @@ public class PlayRecord extends IntentService {
 
 
         // start a new thread to synthesise audio
-   /*     t = new Thread() {
+     /*   t = new Thread("PROVA") {
          public void run() {
          setPriority(Thread.MAX_PRIORITY);
          int i;
-        
-      */ 
+        */
+       
          minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
          
          at = new AudioTrack(AudioManager.STREAM_MUSIC,44100, AudioFormat.CHANNEL_OUT_MONO,
                                    AudioFormat.ENCODING_PCM_16BIT, minsize, AudioTrack.MODE_STREAM);
 
-         short[] samples = new short[2*minsize];
+         
          
          // start audio
         at.play();
+        short[] samples;
         
+        while(true){
         switch(k){
 	        
 	        case 0: {
-	           
+	        	samples = new short[2*minsize];
 		        if(checkX)
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
@@ -139,7 +140,7 @@ public class PlayRecord extends IntentService {
 		            }
 		         
 		        if(checkZ)
-		            if(z.length >= minsize)
+		        	if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
 		           	 int j=0;
@@ -192,11 +193,122 @@ public class PlayRecord extends IntentService {
 		           	 }
 		           		 
 		           	 at.write(samples, 0, samples.length);
+		           	 
 		            }
+		           	 
+		           	if(checkY)	 
+				         if(y.length >= minsize)
+				        	 at.write(y, 0, y.length);
+				         else {
+				        	 int j=0;
+				        	 for(i=0;i<samples.length;i++){
+				        		 samples[i]=y[j];
+				        		 j++;
+				        		 if(j==y.length) j=0;
+				        	 }
+				        		 
+				        	 at.write(samples, 0, samples.length);    
+		            }
+				         
 		        break;
-	        } //Fine case 0 "Scelta 0" durata uguale per tutti
+	        } //Fine case 0 "Scelta 0" durata=6*2*minsize/44100 uguale per tutti <-- FISSO --> ALCATEL=2.29s con 3 assi
 	    
 	        case 1: {
+	        	samples = new short[2*minsize+20*x.length];
+		        if(checkX)
+		            if(x.length >= minsize)
+		           	 at.write(x, 0, x.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=x[j];
+		           		 j++;
+		           		 if(j==x.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		            }
+		        
+		        samples = new short[2*minsize+20*z.length];
+		        if(checkZ)
+		        	if(z.length >= minsize)
+		           	 at.write(z, 0, z.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=z[j];
+		           		 j++;
+		           		 if(j==z.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		            }
+		        
+		        samples = new short[2*minsize+20*y.length]; 
+		        if(checkY)	 
+		         if(y.length >= minsize)
+		        	 at.write(y, 0, y.length);
+		         else {
+		        	 int j=0;
+		        	 for(i=0;i<samples.length;i++){
+		        		 samples[i]=y[j];
+		        		 j++;
+		        		 if(j==y.length) j=0;
+		        	 }
+		        		 
+		        	 at.write(samples, 0, samples.length);
+		         }
+		        
+		        samples = new short[2*minsize+20*z.length];
+		        if(checkZ)
+		            if(z.length >= minsize)
+		           	 at.write(z, 0, z.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=z[j];
+		           		 j++;
+		           		 if(j==z.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		            }
+		        
+		        samples = new short[2*minsize+20*x.length];
+		        if(checkX)
+		            if(x.length >= minsize)
+		           	 at.write(x, 0, x.length);
+		            else {
+		           	 int j=0;
+		           	 for(i=0;i<samples.length;i++){
+		           		 samples[i]=x[j];
+		           		 j++;
+		           		 if(j==x.length) j=0;
+		           	 }
+		           		 
+		           	 at.write(samples, 0, samples.length);
+		           	 
+		            }
+		        samples = new short[2*minsize+20*y.length]; 
+		        if(checkY)	 
+				    if(y.length >= minsize)
+			        	 at.write(y, 0, y.length);
+			         else {
+			        	 int j=0;
+			        	 for(i=0;i<samples.length;i++){
+			        		 samples[i]=y[j];
+			        		 j++;
+			        		 if(j==y.length) j=0;
+			        	 }
+			        		 
+			        	 at.write(samples, 0, samples.length);    
+		            }
+	        	
+	        	break;
+	        	
+	        } //Fine case 1 "Scelta 1" durata=6*(2*minsize+20*numcamp)/44100  <-- VARIABILE -->
+	        
+	        case 2: {
 	        	short[] s = new short[minsize];
 	        	if(checkX)
 	        		for(int j=0;j<x.length;j++) {
@@ -220,12 +332,13 @@ public class PlayRecord extends IntentService {
 		            }
 	        	
 	        	break;
-	        }
+	        } //Fine case 2 "Scelta 2" durata=ncamp*minsize/44100  <-- LUNGO/PSICADELICO -->
 	        
+	       	        
         } //Fine switch
         
        
-   /*      } //Fine RUN
+     /*    } //Fine RUN
          
         	}; //Fine Thread
         	
@@ -233,20 +346,23 @@ public class PlayRecord extends IntentService {
    		
       
    		
-   		
+   		*/
    		
              
               
 
 	
-   		SystemClock.sleep(10000000);*/
+        }
 	
 	}
      
        
         
   public void onDestroy(){
-	  
+	  at.pause();
+	  at.flush();
+	  at.release();
+	  this.unregisterReceiver(receiver);
 	  Toast.makeText(getApplicationContext(), ""+minsize, Toast.LENGTH_SHORT).show();
 	  
   }
@@ -260,13 +376,17 @@ public class PlayRecord extends IntentService {
        	public void onReceive(Context context, Intent intent) {
        		    pausa=intent.getBooleanExtra("Pausa", false);
        		    riprendi=intent.getBooleanExtra("Riprendi", false);
-       		       
-       		       if(pausa) at.pause();
-				/*	try {t.wait();} catch (InterruptedException e) {
+       		    stop=intent.getBooleanExtra("Stop", false);
+       		     
+       		       if(stop) onDestroy();
+       		    
+       		       if(pausa) //at.pause();
+					synchronized("AudioTrack"){
+       		    	   try {at.wait();} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-       		    */   
+					}
        		       if(riprendi) at.play();
        		       
        		       
