@@ -407,8 +407,16 @@ public class UI1 extends Activity {
 				CustomList cl = new CustomList(UI1.this, sortedDataToFill);
 				lv.setAdapter(cl);
 				return(true);
-			}
 			
+
+			case R.id.Numera:
+				Editor prefsEditor1 = prefs.edit();
+				prefsEditor1.putBoolean("sorted", false).commit();
+				List<String[]> dataToFill = dataToFill();
+				CustomList cl1 = new CustomList(UI1.this, dataToFill);
+				lv.setAdapter(cl1);
+				return(true);
+			}
 			
 			return (super.onOptionsItemSelected(item));
 		}	

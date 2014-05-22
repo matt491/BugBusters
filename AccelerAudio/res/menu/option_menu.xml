@@ -5,6 +5,6 @@
           android:icon="@android:drawable/ic_menu_preferences"
           android:showAsAction="never"></item>
     <item android:id="@+id/Ordina" android:title="@string/SortAlphabetically" android:showAsAction="ifRoom|withText" android:icon="@android:drawable/ic_menu_sort_alphabetically"></item>
-    
+    <item android:id="@+id/Numera" android:title="@string/SortById" android:showAsAction="ifRoom|withText" android:icon="@android:drawable/ic_menu_sort_by_size"></item>
 
 </menu>
