@@ -211,6 +211,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		StringBuilder sb=new StringBuilder();
 		Random r=new Random();
 		
+		sb.append(""+r.nextInt(3));
+		sb.append(""+r.nextInt(6));
+		sb.append(""+r.nextInt(6));
+		
 		if (s.length()>=50) {
 			if (s.charAt(49)!=' ' && s.charAt(49)!='-') sb.append(s.charAt(49));
 			else sb.append(""+r.nextInt(3));
@@ -232,11 +236,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		sb.append(time.charAt(1));
 		sb.append(time.charAt(12));
 		sb.append(time.charAt(15));
-		sb.append(""+id%(1+r.nextInt(9)));
-		sb.append(""+id%(1+r.nextInt(9)));
-		sb.append(""+id%(1+r.nextInt(9)));
+		sb.append(""+id%(1+r.nextInt(3)));
+		sb.append(""+id%(1+r.nextInt(6)));
+		sb.append(""+id%(1+r.nextInt(6)));
 		return sb.toString();
-		//Potrebbe servire: (int)Math.random() * 9; genera numero intero da 0 a 9
 	}
 	
 	

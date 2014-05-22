@@ -121,6 +121,7 @@ public class PlayRecord extends IntentService {
         short[] samples;
         
         while(true){
+        	
         switch(k){
 	        
 	        case 0: {
@@ -361,7 +362,7 @@ public class PlayRecord extends IntentService {
   public void onDestroy(){
 	  at.pause();
 	  at.flush();
-	  at.release();
+	 // at.release();
 	  this.unregisterReceiver(receiver);
 	  Toast.makeText(getApplicationContext(), ""+minsize, Toast.LENGTH_SHORT).show();
 	  
@@ -380,13 +381,13 @@ public class PlayRecord extends IntentService {
        		     
        		       if(stop) onDestroy();
        		    
-       		       if(pausa) //at.pause();
-					synchronized("AudioTrack"){
+       		       if(pausa) at.pause();
+					/*synchronized("AudioTrack"){
        		    	   try {at.wait();} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
-					}
+						}
+					}*/
        		       if(riprendi) at.play();
        		       
        		       

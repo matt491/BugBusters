@@ -47,10 +47,10 @@ public class CustomList extends ArrayAdapter<String[]> {
 		
 		ViewHolder holder = (ViewHolder) rowView.getTag();
 		String[] s = toFill.get(position);
-		int alpha = Integer.parseInt(s[1].substring(0));
-		int red = Integer.parseInt(s[1].substring(0, 3));
-		int green = Integer.parseInt(s[1].substring(3, 6));
-		int blue = Integer.parseInt(s[1].substring(6, 9));
+		int alpha = Integer.parseInt(s[1].substring(0, 3));
+		int red = Integer.parseInt(s[1].substring(3, 6));
+		int green = Integer.parseInt(s[1].substring(6, 9));
+		int blue = Integer.parseInt(s[1].substring(9, 12));
 		holder.thumbnail.setBackgroundColor(Color.argb(alpha, red, green, blue));
 		holder.nameText.setText(s[2]);
 		holder.lastText.setText(s[3]);
