@@ -211,9 +211,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		StringBuilder sb=new StringBuilder();
 		Random r=new Random();
 		
-		sb.append(""+r.nextInt(3));
-		sb.append(""+r.nextInt(6));
-		sb.append(""+r.nextInt(6));
+		int c=r.nextInt(256);
+		if(c<10) sb.append("00"+c);
+		else if (c>=10 && c<100) sb.append("0"+c);
+		else sb.append(""+c);
 		
 		if (s.length()>=50) {
 			if (s.charAt(49)!=' ' && s.charAt(49)!='-') sb.append(s.charAt(49));
@@ -236,9 +237,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		sb.append(time.charAt(1));
 		sb.append(time.charAt(12));
 		sb.append(time.charAt(15));
-		sb.append(""+id%(1+r.nextInt(3)));
-		sb.append(""+id%(1+r.nextInt(6)));
-		sb.append(""+id%(1+r.nextInt(6)));
+		long l=id%(1+r.nextInt(255));
+		if(l<10) sb.append("00"+l);
+		else if (l>=10 && l<100) sb.append("0"+l);
+		else sb.append(""+l);
 		return sb.toString();
 	}
 	
