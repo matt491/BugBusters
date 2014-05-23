@@ -26,7 +26,7 @@ public class UI2 extends Activity {
 	private CheckBox chY;
 	private CheckBox chZ;
 	private SeekBar sb;
-	private TextView nomevar;
+	private EditText nomevar;
 	private TextView timevar;
 	private TextView ultimavar;
 	private TextView result;
@@ -126,10 +126,44 @@ public class UI2 extends Activity {
         
         iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
         
+        switch(Integer.parseInt(codifica.substring(11))) {
+		case 0:
+			iv.setImageResource(R.drawable.ic_music_0);
+			break;
+		case 1:
+			iv.setImageResource(R.drawable.ic_music_1);
+			break;
+		case 2:
+			iv.setImageResource(R.drawable.ic_music_2);
+			break;
+		case 3:
+			iv.setImageResource(R.drawable.ic_music_3);
+			break;
+		case 4:
+			iv.setImageResource(R.drawable.ic_music_4);
+			break;
+		case 5: 
+			iv.setImageResource(R.drawable.ic_music_5);
+			break;
+		case 6:
+			iv.setImageResource(R.drawable.ic_music_6);
+			break;
+		case 7:
+			iv.setImageResource(R.drawable.ic_music_7);
+			break;
+		case 8:
+			iv.setImageResource(R.drawable.ic_music_8);
+			break;
+		case 9:
+			iv.setImageResource(R.drawable.ic_music_9);
+			break;
+		}
+        
         chX.setChecked(x_selected);
         chY.setChecked(y_selected);
         chZ.setChecked(z_selected);
         nomevar.setText(nome_ric);
+        nomevar.setSelection(nomevar.getText().length());
         timevar.setText(timestamp_ric);
         ultimavar.setText(dataulitmamodifica);
         result.setText(sovra_ric);

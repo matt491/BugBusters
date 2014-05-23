@@ -213,6 +213,7 @@ public class UI1 extends Activity {
 			input.setImeOptions(EditorInfo.IME_ACTION_SEND);
 			input.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 			input.setText(vecchioNome);
+			input.setSelection(input.getText().length());
 			alert.setView(input);
 			
 			alert.setPositiveButton(R.string.okAlert, new DialogInterface.OnClickListener() {
