@@ -52,6 +52,40 @@ public class CustomList extends ArrayAdapter<String[]> {
 		int green = Integer.parseInt(s[1].substring(6, 9));
 		int blue = Integer.parseInt(s[1].substring(9, 12));
 		holder.thumbnail.setBackgroundColor(Color.argb(alpha, red, green, blue));
+		
+		switch(Integer.parseInt(s[1].substring(11))) {
+		case 0:
+			holder.thumbnail.setImageResource(R.drawable.ic_mask_moon);
+			break;
+		case 1:
+			holder.thumbnail.setImageResource(R.drawable.ic_mask_pawprint);
+			break;
+		case 2:
+			holder.thumbnail.setImageResource(R.drawable.ic_tasmanianote);
+			break;
+		case 3:
+			holder.thumbnail.setImageResource(R.drawable.ic_flower);
+			break;
+		case 4:
+			holder.thumbnail.setImageResource(R.drawable.ic_twocircles);
+			break;
+		case 5: 
+			holder.thumbnail.setImageResource(R.drawable.ic_peace);
+			break;
+		case 6:
+			holder.thumbnail.setImageResource(R.drawable.ic_musicnotes);
+			break;
+		case 7:
+			holder.thumbnail.setImageResource(R.drawable.ic_earth);
+			break;
+		case 8:
+			holder.thumbnail.setImageResource(R.drawable.ic_tribalsun);
+			break;
+		case 9:
+			holder.thumbnail.setImageResource(R.drawable.ic_trib);
+			break;
+		}
+		
 		holder.nameText.setText(s[2]);
 		holder.lastText.setText(s[3]);
 		holder.durationText.setText(s[4]);
