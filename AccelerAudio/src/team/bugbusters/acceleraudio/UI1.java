@@ -185,23 +185,19 @@ public class UI1 extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		
 	
-		String[] dati;
+		final String[] dati;
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		
 		case R.id.Duplica:
 			dati = (String[]) lv.getAdapter().getItem(info.position);
-			duplica(Long.parseLong(dati[0]));
 			
-			List<String[]> data;
-			if(prefs.getBoolean("sorted", false) == false) {
-				data = dataToFill();
-			}
-			else {
-				data = sortedDataToFill();
-			}
-			CustomList cl = new CustomList(UI1.this, data);
-			lv.setAdapter(cl);
+			
+			String[] nuoviDati = duplica(Long.parseLong(dati[0]));
+			
+			CustomList runningCl = (CustomList) lv.getAdapter();
+			runningCl.add(nuoviDati);
+			runningCl.notifyDataSetChanged();
 			
 			return(true);
 			
@@ -251,18 +247,16 @@ public class UI1 extends Activity {
 						toast.show();
 					}
 					else {
+						CustomList runningCl =(CustomList) lv.getAdapter();
+						int pos = runningCl.getPosition(dati);
+						runningCl.remove(dati);
+						dati[2] = nuovoNome;
+						runningCl.insert(dati, pos);
+						runningCl.notifyDataSetChanged();
 						db.open();
 						db.updateNameOnly(id_to_rename,nuovoNome);
 						db.close();
-						List<String[]> data1;
-						if(prefs.getBoolean("sorted", false) == false) {
-							data1 = dataToFill();
-						}
-						else {
-							data1 = sortedDataToFill();
-						}
-						CustomList cl = new CustomList(UI1.this, data1);
-						lv.setAdapter(cl);
+						
 						dialog.dismiss();
 					}
 					
@@ -284,19 +278,12 @@ public class UI1 extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					CustomList runningCl = (CustomList) lv.getAdapter();
+					runningCl.remove(dati);
+					runningCl.notifyDataSetChanged();
 					db.open();
 					db.deleteRecord(id_to_delete);
-					db.close();
-					
-					List<String[]> data2;
-					if(prefs.getBoolean("sorted", false) == false) {
-						data2 = dataToFill();
-					}
-					else {
-						data2 = sortedDataToFill();
-					}
-					CustomList cl2 = new CustomList(UI1.this, data2);
-					lv.setAdapter(cl2);	
+					db.close();	
 				}
 			});
 			
@@ -328,7 +315,7 @@ public class UI1 extends Activity {
 	/*
 	 * Con questo metodo viene duplicata una music session nel database
 	 */
-	   private void duplica(long id){
+	   private String[] duplica(long id){
 		   db.open();
 		   Cursor c=db.fetchRecordById(id);
 		   c.moveToNext();
@@ -361,6 +348,15 @@ public class UI1 extends Activity {
 			
 		   c.close();
 		   db.close();
+		   
+		   String[] ret = new String[5];
+		   ret[0] = "" + id_new;
+		   ret[1] = code;
+		   ret[2] = n + "_" + id_new;
+		   ret[3] = dataul;
+		   ret[4] = d;
+		   
+		   return ret;
 	   }
 	
 	/*
@@ -408,7 +404,6 @@ public class UI1 extends Activity {
 				lv.setAdapter(cl);
 				return(true);
 			
-
 			case R.id.Numera:
 				Editor prefsEditor1 = prefs.edit();
 				prefsEditor1.putBoolean("sorted", false).commit();
