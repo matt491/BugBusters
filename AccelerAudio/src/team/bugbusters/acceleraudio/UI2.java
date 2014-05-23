@@ -257,7 +257,7 @@ public class UI2 extends Activity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem ordina = menu.findItem(R.id.Ordina);
+		MenuItem ordina = menu.findItem(R.id.Or);
 		ordina.setVisible(false);
 		
 		return super.onPrepareOptionsMenu(menu);
