@@ -20,7 +20,7 @@ public class UI4 extends Activity {
 	private String pkg_r;
 	private Intent playIntentService;
 	private Button play;
-	private ImageButton pause;
+	private ImageButton pause,riprendi;
 	private Intent broadcastIntent;
 	
 	@Override
@@ -30,6 +30,7 @@ public class UI4 extends Activity {
         setContentView(R.layout.ui4_layout);
         play=(Button)findViewById(R.id.playbutton);
         pause=(ImageButton)findViewById(R.id.imageButton1);
+        riprendi=(ImageButton)findViewById(R.id.imageButton3);
         
         pkg_r=getPackageName();   
         id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
@@ -46,16 +47,19 @@ public class UI4 extends Activity {
             	playIntentService.putExtra("ID", id);
             	playIntentService.putExtra("fromUI4", true);
             	startService(playIntentService);
-            	
             }});  
         
         
         pause.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	broadcastIntent.putExtra("Pausa", true);
-            	sendBroadcast(broadcastIntent);
-            	
-            	
+            	sendBroadcast(broadcastIntent);	
+            }});
+        
+        riprendi.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	broadcastIntent.putExtra("Riprendi", true);
+            	sendBroadcast(broadcastIntent);	
             }});
         
         
