@@ -55,34 +55,34 @@ public class CustomList extends ArrayAdapter<String[]> {
 		
 		switch(Integer.parseInt(s[1].substring(11))) {
 		case 0:
-			holder.thumbnail.setImageResource(R.drawable.ic_mask_moon);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_0);
 			break;
 		case 1:
-			holder.thumbnail.setImageResource(R.drawable.ic_mask_pawprint);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_1);
 			break;
 		case 2:
-			holder.thumbnail.setImageResource(R.drawable.ic_tasmanianote);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_2);
 			break;
 		case 3:
-			holder.thumbnail.setImageResource(R.drawable.ic_flower);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_3);
 			break;
 		case 4:
-			holder.thumbnail.setImageResource(R.drawable.ic_twocircles);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_4);
 			break;
 		case 5: 
-			holder.thumbnail.setImageResource(R.drawable.ic_peace);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_5);
 			break;
 		case 6:
-			holder.thumbnail.setImageResource(R.drawable.ic_musicnotes);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_6);
 			break;
 		case 7:
-			holder.thumbnail.setImageResource(R.drawable.ic_earth);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_7);
 			break;
 		case 8:
-			holder.thumbnail.setImageResource(R.drawable.ic_tribalsun);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_8);
 			break;
 		case 9:
-			holder.thumbnail.setImageResource(R.drawable.ic_trib);
+			holder.thumbnail.setImageResource(R.drawable.ic_music_9);
 			break;
 		}
 		
