@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.widget.Toast;
 
@@ -26,12 +27,12 @@ public class PlayRecord extends IntentService {
  	private short[] x,y,z,w;
 	private Thread t;
 	private boolean isRunning = true, pausa,riprendi,stop;
-	private int k,minsize;
+	private int g,k,minsize;
     private MyPlayerReceiver receiver;
     private IntentFilter filter;
     private Intent intentToUI4;
 	private AudioTrack at;
-
+	private String f;
 	
 	public PlayRecord() {
 		super("PlayRecord");
@@ -41,7 +42,7 @@ public class PlayRecord extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
         receiver = new MyPlayerReceiver();
-        intentToUI4 = new Intent(this, UI4.class);
+        intentToUI4 = new Intent(getApplicationContext(), UI4.class);
         filter = new IntentFilter(MyPlayerReceiver.THREAD_RESPONSE);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiver,filter);
@@ -111,106 +112,127 @@ public class PlayRecord extends IntentService {
        
          minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
          
-         at = new AudioTrack(AudioManager.STREAM_MUSIC,44100, AudioFormat.CHANNEL_OUT_MONO,
-                                   AudioFormat.ENCODING_PCM_16BIT, minsize, AudioTrack.MODE_STREAM);
+         at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO,
+                                   AudioFormat.ENCODING_PCM_16BIT, 1000*minsize, AudioTrack.MODE_STATIC);
 
          
          
          // start audio
-        at.play();
-        short[] samples;
         
-        while(true){
+        short[] samples;
+        short[] finale = new short[0];
+        
+      //  while(true){
         	
         switch(k){
 	        
 	        case 0: {
-	        	samples = new short[2*minsize];
+	        	short[] s1 = new short[0];
 		        if(checkX)
+		        	s1 = new short[minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
 		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=x[j];
+		           	 for(i=0;i<s.length;i++){
+		           		 s1[i]=x[j];
 		           		 j++;
 		           		 if(j==x.length) j=0;
 		           	 }
 		           		 
-		           	 at.write(samples, 0, samples.length);
+		         //  	 at.write(samples, 0, samples.length);
+		           	
 		            }
 		         
-		        if(checkZ)
+		        short[] s2 =new short[0];
+				if(checkZ)
+					s2 =new short[minsize];
 		        	if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
 		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=z[j];
+		           	 for(i=0;i<s2.length;i++){
+		           		s2[i]=z[j];
 		           		 j++;
 		           		 if(j==z.length) j=0;
 		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
+		          
+		           
 		            }
-		         
+		        
+		        short[] s3 =new short[0];	
 		        if(checkY)	 
+		         s3 =new short[minsize];
 		         if(y.length >= minsize)
 		        	 at.write(y, 0, y.length);
 		         else {
 		        	 int j=0;
-		        	 for(i=0;i<samples.length;i++){
-		        		 samples[i]=y[j];
+		        	 for(i=0;i<s3.length;i++){
+		        		 s3[i]=y[j];
 		        		 j++;
 		        		 if(j==y.length) j=0;
 		        	 }
 		        		 
-		        	 at.write(samples, 0, samples.length);
+		        	// at.write(samples, 0, samples.length);
 		         }
 		        
+		        short[] s4 =new short[0];	 
 		        if(checkZ)
+		        	s4 =new short[minsize];
 		            if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
 		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=z[j];
+		           	 for(i=0;i<s4.length;i++){
+		           		s4[i]=z[j];
 		           		 j++;
 		           		 if(j==z.length) j=0;
 		           	 }
 		           		 
-		           	 at.write(samples, 0, samples.length);
+		           	// at.write(samples, 0, samples.length);
 		            }
 		        
+		        short[] s5 =new short[0];    
 		        if(checkX)
+		        	s5 =new short[minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
 		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=x[j];
+		           	 for(i=0;i<s5.length;i++){
+		           		s5[i]=x[j];
 		           		 j++;
 		           		 if(j==x.length) j=0;
 		           	 }
 		           		 
-		           	 at.write(samples, 0, samples.length);
+		           //	 at.write(samples, 0, samples.length);
 		           	 
 		            }
-		           	 
-		           	if(checkY)	 
+		            
+		            short[] s6 =new short[0];    
+		           	if(checkY)	
+		           		s6 =new short[minsize];  
 				         if(y.length >= minsize)
 				        	 at.write(y, 0, y.length);
 				         else {
 				        	 int j=0;
-				        	 for(i=0;i<samples.length;i++){
-				        		 samples[i]=y[j];
+				        	 for(i=0;i<s6.length;i++){
+				        		 s6[i]=y[j];
 				        		 j++;
 				        		 if(j==y.length) j=0;
 				        	 }
 				        		 
-				        	 at.write(samples, 0, samples.length);    
+				        	// at.write(samples, 0, samples.length);    
 		            }
 				         
+		         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
+		         System.arraycopy(s1, 0, finale, 0, s1.length);	
+		         System.arraycopy(s2, 0, finale, s1.length, s2.length);	
+		         System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
+		         System.arraycopy(s4, 0, finale, s1.length+s2.length+s3.length, s4.length);
+		         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
+		         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
+		         
 		        break;
 	        } //Fine case 0 "Scelta 0" durata=6*2*minsize/44100 uguale per tutti <-- FISSO --> ALCATEL=2.29s con 3 assi
 	    
@@ -348,23 +370,29 @@ public class PlayRecord extends IntentService {
       
    		
    		*/
-   		
-             
+    	at.write(finale, 0, finale.length); 
+        at.play();
               
-
+      /*  SystemClock.sleep(500);
+        at.pause();
+      
+        SystemClock.sleep(200);
+       // at.reloadStaticData();
+        at.setPlaybackHeadPosition(g);
+        at.play();
+        */
+        SystemClock.sleep(10000);
 	
-        }
+       // }
 	
 	}
      
        
         
   public void onDestroy(){
-	  at.pause();
-	  at.flush();
-	 // at.release();
+	 
 	  this.unregisterReceiver(receiver);
-	  Toast.makeText(getApplicationContext(), ""+minsize, Toast.LENGTH_SHORT).show();
+	  Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
 	  
   }
   
@@ -379,16 +407,36 @@ public class PlayRecord extends IntentService {
        		    riprendi=intent.getBooleanExtra("Riprendi", false);
        		    stop=intent.getBooleanExtra("Stop", false);
        		     
-       		       if(stop) onDestroy();
+       		       if(stop){
+       		           stop=false;
+       		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+	       		    	   at.pause();
+	       		    	   at.flush();
+	       		    	   at.release();
+       		           }
+       		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+       		    		at.flush();
+	       		    	at.release();
+       		        	}
+       		    	       		           
+       		           	
+       		       }
+       		        
        		    
-       		       if(pausa) at.pause();
-					/*synchronized("AudioTrack"){
-       		    	   try {at.wait();} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						}
-					}*/
-       		       if(riprendi) at.play();
+       		       if(pausa) {
+       		    	   pausa=false; 
+       		    	   
+       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+       		    	   	at.pause(); 
+       		       		g=at.getPlaybackHeadPosition();
+       		       }
+					
+       		       if(riprendi) {
+       		    	   riprendi=false;
+       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) 
+       		    	   at.setPlaybackHeadPosition(g);
+       		    	   at.play();    
+       		       }
        		       
        		       
        	}
