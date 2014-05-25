@@ -1,12 +1,18 @@
 package team.bugbusters.acceleraudio;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class widget_big extends AppWidgetProvider {
+	
+	/*-- Declaring intents/services we are going to use --*/
+	
+	Intent iplay,irec,iforward,iback;
 	
 	@Override
 	/*-- Handles the first instance of the widget --*/
@@ -28,12 +34,34 @@ public class widget_big extends AppWidgetProvider {
 	{
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 		/* -- Handles the refreshing of the widgets and/or his components --*/
-		for (int i = 0; i < appWidgetIds.length;i++)
-		{
-			int Id = appWidgetIds[i];
-			RemoteViews view = new RemoteViews (context.getPackageName(), R.layout.widget_big_layout);
-			appWidgetManager.updateAppWidget(Id, view); // Call the update method
-		}
+		/*
+		 * -- for (int i = 0; i < appWidgetIds.length;i++)
+		 * 
+		 * -- this for loop is meant to update more than 1 instance of our widget in the home screen
+		 * -- though we are assuming we can instance only 1 widget per test so the for loop is no necessary
+		 */
+		
+		/*-- setting the view which we are going to update --*/
+		
+		RemoteViews view = new RemoteViews(context.getPackageName(),R.layout.widget_big_layout);
+
+		/*-- Intents --*/
+		
+		iplay = new Intent (context,PlayRecord.class);
+		irec = new Intent(context,DataRecord.class);
+		
+		/*-- Pending intents --*/
+		
+		PendingIntent pplay = PendingIntent.getService(context, 0, iplay, 0);
+		PendingIntent prec = PendingIntent.getService(context, 0, irec, 0);
+		
+		/*-- Performing the action --*/
+		
+		view.setOnClickPendingIntent(R.id.play_big, pplay);
+		view.setOnClickPendingIntent(R.id.rec_big, prec);
+		
+		/*-- Updating the widget --*/
+		appWidgetManager.updateAppWidget(appWidgetIds[0], view);
 		
 	}
 

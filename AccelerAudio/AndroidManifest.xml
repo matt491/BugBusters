@@ -18,12 +18,12 @@
         
         <!-- SETTING THE BIG ONE WIDGET  -->
         
-        <receiver android:name="widget_big" >
-    		<intent-filter>
+        <receiver android:name="widget_big" >	<!-- Linking the .class which have the core of the actions we want our widget to perform -->
+    		<intent-filter>	<!-- Declaring that we are setting ad UPDATE widget type -->
         		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
     		</intent-filter>
     		<meta-data android:name="android.appwidget.provider"
-        		       android:resource="@xml/widget_descriptor_big" />
+        		       android:resource="@xml/widget_descriptor_big" />	<!-- Linking the "provider descriptor" which contains the provider specifics -->
 		</receiver>
        
         
