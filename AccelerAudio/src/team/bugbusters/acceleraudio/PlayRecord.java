@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.widget.Toast;
 
@@ -43,10 +42,12 @@ public class PlayRecord extends IntentService {
 	protected void onHandleIntent(Intent intent) {
         receiver = new MyPlayerReceiver();
         intentToUI4 = new Intent(getApplicationContext(), UI4.class);
+        
         filter = new IntentFilter(MyPlayerReceiver.THREAD_RESPONSE);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiver,filter);
         
+        pausa=riprendi=stop=false;
         dbHelper = new DbAdapter(this);
         
         id_to_process=intent.getLongExtra("ID", -1);
@@ -372,27 +373,39 @@ public class PlayRecord extends IntentService {
    		*/
     	at.write(finale, 0, finale.length); 
         at.play();
-              
+       
+
       /*  SystemClock.sleep(500);
         at.pause();
       
         SystemClock.sleep(200);
-       // at.reloadStaticData();
+        at.reloadStaticData();
         at.setPlaybackHeadPosition(g);
         at.play();
         */
-        SystemClock.sleep(10000);
+        SystemClock.sleep(5000);
+        
 	
        // }
 	
 	}
+	
+  public int pausa(AudioTrack track){
+	  int l=-1;
+	  if(track.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+		  l=track.getPlaybackHeadPosition();
+		  track.pause();
+		  }
+	  return l;
+  }
      
        
         
   public void onDestroy(){
 	 
 	  this.unregisterReceiver(receiver);
-	  Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+	  Toast.makeText(getApplicationContext(), "Servizio Terminato", Toast.LENGTH_SHORT).show();
+	  super.onDestroy();
 	  
   }
   
@@ -409,12 +422,12 @@ public class PlayRecord extends IntentService {
        		     
        		       if(stop){
        		           stop=false;
-       		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+       		           if(at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
 	       		    	   at.pause();
 	       		    	   at.flush();
 	       		    	   at.release();
        		           }
-       		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+       		       else if(at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
        		    		at.flush();
 	       		    	at.release();
        		        	}
@@ -427,13 +440,14 @@ public class PlayRecord extends IntentService {
        		    	   pausa=false; 
        		    	   
        		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-       		    	   	at.pause(); 
-       		       		g=at.getPlaybackHeadPosition();
+       		    	   	g=at.getPlaybackHeadPosition();
+       		    	   	at.pause(); 	
+       		    	 
        		       }
 					
        		       if(riprendi) {
        		    	   riprendi=false;
-       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) 
+       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
        		    	   at.setPlaybackHeadPosition(g);
        		    	   at.play();    
        		       }

@@ -237,7 +237,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		sb.append(time.charAt(1));
 		sb.append(time.charAt(12));
 		sb.append(time.charAt(15));
-		long l=id%(1+r.nextInt(255));
+		int l=(int) Math.abs(Math.sin(((double)id)/10)*255);
 		if(l<10) sb.append("00"+l);
 		else if (l>=10 && l<100) sb.append("0"+l);
 		else sb.append(""+l);
