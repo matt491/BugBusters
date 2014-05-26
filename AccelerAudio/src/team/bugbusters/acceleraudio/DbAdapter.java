@@ -117,18 +117,29 @@ public class DbAdapter {
 	  			return database.delete(DATABASE_TABLE, KEY_RECORDID + "==" + recordID, null) > 0;
   }
  
-  //Query che restituisce tutti i record
+  //Query che restituisce tutti i record (in ordine di inserimento)
   public Cursor fetchAllRecord() {
 	  			return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, null);
     }
   
-  //Query che restituisce tutti i record ordinati in ordine alfabetico
+  //Query che restituisce tutti i record ordinati per nome
   public Cursor fetchAllRecordSortedByName() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_NAME + " ASC");
   }
  
+//Query che restituisce tutti i record ordinati per data
+  public Cursor fetchAllRecordSortedByDate() {
+	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DATE + " ASC");
+  }
+  
+//Query che restituisce tutti i record ordinati per durata
+  public Cursor fetchAllRecordSortedByDuration() {
+	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DURATION + " ASC");
+  }
   
   //Query che restituisce un record(cursor) dato un NOME
   public Cursor fetchRecordByFilter(String filter) {
