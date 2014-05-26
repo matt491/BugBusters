@@ -178,14 +178,48 @@ public class UI1 extends Activity {
 		switch(item.getItemId()) {
 		
 		case R.id.Duplica:
-			//dati = (String[]) lv.getAdapter().getItem(info.position);
-			
 			
 			String[] nuoviDati = duplica(Long.parseLong(dati[0]));
 			
 			CustomList runningCl = (CustomList) lv.getAdapter();
-			runningCl.add(nuoviDati);
+			List<String[]> nuovaLista = new ArrayList<String[]>();
+			for(int i = 0; i < runningCl.getCount(); i++) {
+				nuovaLista.add(runningCl.getItem(i));
+			}
+			nuovaLista.add(nuoviDati);
+			
+			if(prefs.getBoolean("sortedByName", false)) {
+			Collections.sort(nuovaLista, new Comparator<String[]>() {
+				@Override
+				public int compare(String[] s1, String[] s2) {
+					return s1[2].compareToIgnoreCase(s2[2]);
+				}
+			});
+			}
+			else if(prefs.getBoolean("sortedByDate", false)) {
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[3].compareTo(s2[3]);
+					}
+				});
+			}
+			else if(prefs.getBoolean("sortedByDuration", false)) {
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[4].compareTo(s2[4]);
+					}
+				});
+			}
+			
+			int pos = nuovaLista.indexOf(nuoviDati);
+			
+			runningCl.clear();
+			runningCl.addAll(nuovaLista);
 			runningCl.notifyDataSetChanged();
+			//lv.smoothScrollToPosition(pos);
+			lv.setSelection(pos);
 			
 			return(true);
 			
@@ -194,7 +228,6 @@ public class UI1 extends Activity {
 			alert.setTitle(R.string.Rename);
 			alert.setIcon(android.R.drawable.ic_menu_edit);
 			alert.setMessage(R.string.renameAlertMessage);
-			//dati = (String[]) lv.getAdapter().getItem(info.position);
 			final long id_to_rename=Long.parseLong(dati[0]);
 			final String vecchioNome=dati[2];
 			final EditText input = new EditText(this);
@@ -274,10 +307,10 @@ public class UI1 extends Activity {
 						runningCl.clear();
 						runningCl.addAll(nuovaLista);
 						runningCl.notifyDataSetChanged();
-						lv.smoothScrollToPosition(pos);
-						//In alternativa:
-						//lv.setSelection(pos);
 						
+						lv.setSelection(pos);
+						//In alternativa:
+						//lv.smoothScrollToPosition(pos);
 						
 						db.open();
 						db.updateNameOnly(id_to_rename,nuovoNome);
@@ -297,7 +330,6 @@ public class UI1 extends Activity {
 			alert2.setTitle(R.string.Delete);
 			alert2.setIcon(android.R.drawable.ic_menu_delete);
 			alert2.setMessage(R.string.DeleteMessage);
-			//dati = (String[]) lv.getAdapter().getItem(info.position);
 			final long id_to_delete=Long.parseLong(dati[0]);
 			
 			alert2.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
@@ -310,8 +342,6 @@ public class UI1 extends Activity {
 					db.open();
 					db.deleteRecord(id_to_delete);
 					db.close();
-					//lv.setSelection(runningCl.getCount());
-					//lv.smoothScrollToPosition(runningCl.getCount());
 				}
 			});
 			
@@ -432,6 +462,8 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
+				if(prefs.getBoolean("sortedByName", false))
+					break;
 				prefsEditor.putBoolean("sortedByName", true).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -449,6 +481,8 @@ public class UI1 extends Activity {
 				return(true);
 			
 			case R.id.Numera:
+				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false))
+					break;
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -466,6 +500,8 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaData:
+				if(prefs.getBoolean("sortedByDate", false))
+					break;
 				prefsEditor.putBoolean("sortedByDate", true).commit();
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -483,6 +519,8 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaDurata:
+				if(prefs.getBoolean("sortedByDuration", false))
+					break;
 				prefsEditor.putBoolean("sortedByDuration", true).commit();
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
