@@ -4,6 +4,7 @@ import java.util.Random;
 
 import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,6 +35,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	public DataRecord() {
 		super("DataRecord");
+		
+		
 	}
 	
 	 @Override
@@ -81,7 +84,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	//Ogni 25 ms si controlla se il tempo trascorso supera la durata massima impostata
 	        	SystemClock.sleep(1000*durata_def);
 
-	        
+	        /*-- trying to link with the widget --*/
+	        			
 	 	}
 	 
 	 

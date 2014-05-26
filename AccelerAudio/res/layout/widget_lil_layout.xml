@@ -7,7 +7,7 @@
     android:orientation="vertical" >
 
     <ImageButton
-        android:id="@+id/play_lil"
+        android:id="@+id/rec_lil"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
@@ -19,7 +19,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/play_lil"
+        android:layout_toRightOf="@+id/rec_lil"
         android:src="@android:drawable/ic_media_pause" />
 
 </RelativeLayout>

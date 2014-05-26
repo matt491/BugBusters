@@ -1,8 +1,10 @@
 package team.bugbusters.acceleraudio;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -32,7 +34,22 @@ public class widget_lil extends AppWidgetProvider {
 		{
 			int Id = appWidgetIds[i];
 			RemoteViews view = new RemoteViews (context.getPackageName(), R.layout.widget_lil_layout);
-			appWidgetManager.updateAppWidget(Id, view); // Call the update method
+			
+			/*-- Setting  Intent --*/
+			Intent irec = new Intent(context,DataRecord.class);
+			
+			/*-- Pending Intents --*/
+			
+			PendingIntent prec = PendingIntent.getService(context, 0, irec, 0);
+			
+			/*-- Action Performed --*/
+			
+			view.setOnClickPendingIntent(R.id.rec_lil, prec);
+			
+			/*-- Update the widget --*/
+			
+			appWidgetManager.updateAppWidget(Id, view); 
+			
 		}
 		
 	}

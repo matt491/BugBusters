@@ -1,8 +1,10 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
@@ -32,15 +34,14 @@ public class widget_big extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int [] appWidgetIds)
 	{
+		
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 		/* -- Handles the refreshing of the widgets and/or his components --*/
-		/*
-		 * -- for (int i = 0; i < appWidgetIds.length;i++)
-		 * 
-		 * -- this for loop is meant to update more than 1 instance of our widget in the home screen
-		 * -- though we are assuming we can instance only 1 widget per test so the for loop is no necessary
-		 */
-		
+
+		for (int i = 0; i < appWidgetIds.length;i++)
+		{
+		Toast.makeText(context,"Lunghezza" + appWidgetIds.length, Toast.LENGTH_SHORT).show();
+	
 		/*-- setting the view which we are going to update --*/
 		
 		RemoteViews view = new RemoteViews(context.getPackageName(),R.layout.widget_big_layout);
@@ -62,6 +63,7 @@ public class widget_big extends AppWidgetProvider {
 		
 		/*-- Updating the widget --*/
 		appWidgetManager.updateAppWidget(appWidgetIds[0], view);
+		}
 		
 	}
 
