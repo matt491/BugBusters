@@ -132,7 +132,7 @@ public class DbAdapter {
 //Query che restituisce tutti i record ordinati per data
   public Cursor fetchAllRecordSortedByDate() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
-    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DATE + " ASC");
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DATE + " DESC");
   }
   
 //Query che restituisce tutti i record ordinati per durata

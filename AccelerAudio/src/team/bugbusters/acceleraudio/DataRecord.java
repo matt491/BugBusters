@@ -216,7 +216,30 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		else if (c>=10 && c<100) sb.append("0"+c);
 		else sb.append(""+c);
 		
-		if (s.length()>=50) {
+		if (s.length()>=50 && p.length()>=50 && q.length()>=50)
+		try {
+			int k=Integer.parseInt(s.charAt(49) + "" + p.charAt(49) + ""+ q.charAt(49));
+			k=Math.abs(Integer.valueOf(k+r.nextInt(10000)).byteValue() & 0xFF);
+			if(k<10) sb.append("00"+k);
+			else if (k>=10 && k<100) sb.append("0"+k);
+			else sb.append(""+k);	
+		} 
+		catch (NumberFormatException e) {
+			int k=Math.abs(Integer.valueOf(r.nextInt(10000)).byteValue() & 0xFF);
+			if(k<10) sb.append("00"+k);
+			else if (k>=10 && k<100) sb.append("0"+k);
+			else sb.append(""+k);	
+		}
+		
+		
+		else{
+			int k=Math.abs(Integer.valueOf(r.nextInt(10000)).byteValue() & 0xFF);
+			if(k<10) sb.append("00"+k);
+			else if (k>=10 && k<100) sb.append("0"+k);
+			else sb.append(""+k);	
+		}
+		
+	/*	if (s.length()>=50) {
 			if (s.charAt(49)!=' ' && s.charAt(49)!='-') sb.append(s.charAt(49));
 			else sb.append(""+r.nextInt(3));
 		}
@@ -232,11 +255,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			if (q.charAt(49)!=' ' && q.charAt(49)!='-') sb.append(q.charAt(49));
 			else sb.append(""+r.nextInt(6));
 		}
-		else sb.append(""+r.nextInt(6));
+		else sb.append(""+r.nextInt(6));*/
+		
+		int h=Integer.parseInt(time.charAt(1)+""+time.charAt(12)+""+time.charAt(15));
+		h=Math.abs(Integer.valueOf(h+r.nextInt(10000)).byteValue() & 0xFF);
+		if(h<10) sb.append("00"+h);
+		else if (h>=10 && h<100) sb.append("0"+h);
+		else sb.append(""+h);
 
-		sb.append(time.charAt(1));
-		sb.append(time.charAt(12));
-		sb.append(time.charAt(15));
 		int l=(int) Math.abs(Math.sin(((double)id)/10)*255);
 		if(l<10) sb.append("00"+l);
 		else if (l>=10 && l<100) sb.append("0"+l);
