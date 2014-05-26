@@ -200,7 +200,7 @@ public class UI1 extends Activity {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						return s1[3].compareTo(s2[3]);
+						return s2[3].compareTo(s1[3]);
 					}
 				});
 			}
@@ -289,7 +289,7 @@ public class UI1 extends Activity {
 							Collections.sort(nuovaLista, new Comparator<String[]>() {
 								@Override
 								public int compare(String[] s1, String[] s2) {
-									return s1[3].compareTo(s2[3]);
+									return s2[3].compareTo(s1[3]);
 								}
 							});
 						}
@@ -462,8 +462,10 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
-				if(prefs.getBoolean("sortedByName", false))
+				if(prefs.getBoolean("sortedByName", false)) {
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByName, Toast.LENGTH_SHORT).show();
 					break;
+			}
 				prefsEditor.putBoolean("sortedByName", true).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -481,8 +483,10 @@ public class UI1 extends Activity {
 				return(true);
 			
 			case R.id.Numera:
-				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false))
+				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false)) {
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByInsertion, Toast.LENGTH_SHORT).show();
 					break;
+				}
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -500,8 +504,10 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaData:
-				if(prefs.getBoolean("sortedByDate", false))
+				if(prefs.getBoolean("sortedByDate", false)) {
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDate, Toast.LENGTH_SHORT).show();
 					break;
+				}
 				prefsEditor.putBoolean("sortedByDate", true).commit();
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -509,7 +515,7 @@ public class UI1 extends Activity {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						return s1[3].compareTo(s2[3]);
+						return s2[3].compareTo(s1[3]);
 					}
 				});
 				
@@ -519,8 +525,10 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaDurata:
-				if(prefs.getBoolean("sortedByDuration", false))
+				if(prefs.getBoolean("sortedByDuration", false)){
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDuration, Toast.LENGTH_SHORT).show();
 					break;
+				}
 				prefsEditor.putBoolean("sortedByDuration", true).commit();
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
