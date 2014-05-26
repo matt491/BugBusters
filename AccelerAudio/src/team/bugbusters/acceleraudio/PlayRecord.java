@@ -390,13 +390,10 @@ public class PlayRecord extends IntentService {
 	
 	}
 	
-  public int pausa(AudioTrack track){
-	  int l=-1;
-	  if(track.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
-		  l=track.getPlaybackHeadPosition();
-		  track.pause();
-		  }
-	  return l;
+  public void pausacall(){
+	  if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+	    	   	g=at.getPlaybackHeadPosition();
+	    	   	at.pause(); 	
   }
      
        
@@ -439,9 +436,7 @@ public class PlayRecord extends IntentService {
        		       if(pausa) {
        		    	   pausa=false; 
        		    	   
-       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-       		    	   	g=at.getPlaybackHeadPosition();
-       		    	   	at.pause(); 	
+       		       pausacall();
        		    	 
        		       }
 					

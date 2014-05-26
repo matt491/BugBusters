@@ -1,6 +1,8 @@
 package team.bugbusters.acceleraudio;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -34,6 +36,10 @@ public class UI1 extends Activity {
 	private DbAdapter db;
 	private String pkg;
 	private SharedPreferences prefs;
+	private static final int BY_INSERTION = -1; //Default
+	private static final int BY_NAME = 0;
+	private static final int BY_DATE = 1;
+	private static final int BY_DURATION = 2;
 	
 	
 	@Override
@@ -47,19 +53,22 @@ public class UI1 extends Activity {
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		List<String[]> data;
-		if(prefs.getBoolean("sorted", false) == false) {
-			data = dataToFill();
+		int way;
+		
+		if(prefs.getBoolean("sortedByName", false)) {
+			way = BY_NAME;
+		}
+		else if(prefs.getBoolean("sortedByDate", false)) {
+			way = BY_DATE;
+		}
+		else if(prefs.getBoolean("sortedByDuration", false)) {
+			way = BY_DURATION;
 		}
 		else {
-			data = sortedDataToFill();
+			way = BY_INSERTION;  //Default
 		}
-		 
 		
-		
-		//View header = getLayoutInflater().inflate(R.layout.header, null);
-		//lv.addHeaderView(header);
-		
+		List<String[]> data = dataToFill(way);
 		
 		lv.setEmptyView(findViewById(R.id.empty));
 		
@@ -67,7 +76,7 @@ public class UI1 extends Activity {
 		lv.setAdapter(cl);
 		
 		/*
-		 * Alla pressione di un elemento della ListView si passa alla UI#2 dove sar� possibile visualizzarne (ed eventualmente modificarne) il dettaglio. 
+		 * Alla pressione di un elemento della ListView si passa alla UI#2 dove sara' possibile visualizzarne (ed eventualmente modificarne) il dettaglio. 
 		 */
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			
@@ -91,13 +100,25 @@ public class UI1 extends Activity {
 	 * L'ID, che non viene visualizzato, sar� passato alla UI#2 tramite il relativo intent.
 	 * La durata (di riproduzione, non di registrazione) al momento non viene visualizzata. 
 	 */
-	private List<String[]> dataToFill() {
+	private List<String[]> dataToFill(int way) {
 		db.open();
+		Cursor c;
 		
-		Cursor c = db.fetchAllRecord();
-		
+		switch(way) {
+		case BY_NAME:
+			c = db.fetchAllRecordSortedByName();
+			break;
+		case BY_DATE:
+			c = db.fetchAllRecordSortedByDate();
+			break;
+		case BY_DURATION:
+			c = db.fetchAllRecordSortedByDuration();
+			break;
+		default:  //case BY_INSERTION
+			c = db.fetchAllRecord();
+			break;
+		}
 		List<String[]> myList = new ArrayList<String[]>();
-		
 		
 		int idIndex = c.getColumnIndex(DbAdapter.KEY_RECORDID);
 		int thumbnailIndex = c.getColumnIndex(DbAdapter.KEY_IMM);
@@ -121,38 +142,6 @@ public class UI1 extends Activity {
 		return myList;
 	}
 	
-	/*
-	 * Come sopra, solo ordinati per nome.
-	 */
-	private List<String[]> sortedDataToFill() {
-		db.open();
-		
-		Cursor c = db.fetchAllRecordSortedByName();
-		
-		List<String[]> myList = new ArrayList<String[]>();
-		
-		
-		int idIndex = c.getColumnIndex(DbAdapter.KEY_RECORDID);
-		int thumbnailIndex = c.getColumnIndex(DbAdapter.KEY_IMM);
-		int nameIndex = c.getColumnIndex(DbAdapter.KEY_NAME);
-		int lastIndex = c.getColumnIndex(DbAdapter.KEY_LAST);
-		int durationIndex = c.getColumnIndex(DbAdapter.KEY_DURATION);
-		
-		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			String[] row = new String[5];
-			row[0] = c.getString(idIndex);
-			row[1] = c.getString(thumbnailIndex);
-			row[2] = c.getString(nameIndex);
-			row[3] = c.getString(lastIndex);
-			row[4] = c.getString(durationIndex);
-			myList.add(row);
-		}
-		
-		c.close();
-		db.close();
-		
-		return myList;
-	}
 	
 	/*
 	 * Alla pressione del tasto +, si passa alla UI#3 dove e' possibile registrare una nuova sessione
@@ -184,20 +173,53 @@ public class UI1 extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		
-	
-		final String[] dati;
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		final String[] dati = (String[]) lv.getAdapter().getItem(info.position);
 		switch(item.getItemId()) {
 		
 		case R.id.Duplica:
-			dati = (String[]) lv.getAdapter().getItem(info.position);
-			
 			
 			String[] nuoviDati = duplica(Long.parseLong(dati[0]));
 			
 			CustomList runningCl = (CustomList) lv.getAdapter();
-			runningCl.add(nuoviDati);
+			List<String[]> nuovaLista = new ArrayList<String[]>();
+			for(int i = 0; i < runningCl.getCount(); i++) {
+				nuovaLista.add(runningCl.getItem(i));
+			}
+			nuovaLista.add(nuoviDati);
+			
+			if(prefs.getBoolean("sortedByName", false)) {
+			Collections.sort(nuovaLista, new Comparator<String[]>() {
+				@Override
+				public int compare(String[] s1, String[] s2) {
+					return s1[2].compareToIgnoreCase(s2[2]);
+				}
+			});
+			}
+			else if(prefs.getBoolean("sortedByDate", false)) {
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[3].compareTo(s2[3]);
+					}
+				});
+			}
+			else if(prefs.getBoolean("sortedByDuration", false)) {
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[4].compareTo(s2[4]);
+					}
+				});
+			}
+			
+			int pos = nuovaLista.indexOf(nuoviDati);
+			
+			runningCl.clear();
+			runningCl.addAll(nuovaLista);
 			runningCl.notifyDataSetChanged();
+			//lv.smoothScrollToPosition(pos);
+			lv.setSelection(pos);
 			
 			return(true);
 			
@@ -206,7 +228,6 @@ public class UI1 extends Activity {
 			alert.setTitle(R.string.Rename);
 			alert.setIcon(android.R.drawable.ic_menu_edit);
 			alert.setMessage(R.string.renameAlertMessage);
-			dati = (String[]) lv.getAdapter().getItem(info.position);
 			final long id_to_rename=Long.parseLong(dati[0]);
 			final String vecchioNome=dati[2];
 			final EditText input = new EditText(this);
@@ -248,12 +269,49 @@ public class UI1 extends Activity {
 						toast.show();
 					}
 					else {
-						CustomList runningCl =(CustomList) lv.getAdapter();
-						int pos = runningCl.getPosition(dati);
+						CustomList runningCl = (CustomList) lv.getAdapter();
 						runningCl.remove(dati);
-						dati[2] = nuovoNome;
-						runningCl.insert(dati, pos);
+						dati[2] = nuovoNome; 
+						List<String[]> nuovaLista = new ArrayList<String[]>();
+						for(int i = 0; i < runningCl.getCount(); i++) {
+							nuovaLista.add(runningCl.getItem(i));
+						}
+						nuovaLista.add(dati);
+						if(prefs.getBoolean("sortedByName", false)) {
+						Collections.sort(nuovaLista, new Comparator<String[]>() {
+							@Override
+							public int compare(String[] s1, String[] s2) {
+								return s1[2].compareToIgnoreCase(s2[2]);
+							}
+						});
+						}
+						else if(prefs.getBoolean("sortedByDate", false)) {
+							Collections.sort(nuovaLista, new Comparator<String[]>() {
+								@Override
+								public int compare(String[] s1, String[] s2) {
+									return s1[3].compareTo(s2[3]);
+								}
+							});
+						}
+						else if(prefs.getBoolean("sortedByDuration", false)) {
+							Collections.sort(nuovaLista, new Comparator<String[]>() {
+								@Override
+								public int compare(String[] s1, String[] s2) {
+									return s1[4].compareTo(s2[4]);
+								}
+							});
+						}
+						
+						int pos = nuovaLista.indexOf(dati);
+						
+						runningCl.clear();
+						runningCl.addAll(nuovaLista);
 						runningCl.notifyDataSetChanged();
+						
+						lv.setSelection(pos);
+						//In alternativa:
+						//lv.smoothScrollToPosition(pos);
+						
 						db.open();
 						db.updateNameOnly(id_to_rename,nuovoNome);
 						db.close();
@@ -272,7 +330,6 @@ public class UI1 extends Activity {
 			alert2.setTitle(R.string.Delete);
 			alert2.setIcon(android.R.drawable.ic_menu_delete);
 			alert2.setMessage(R.string.DeleteMessage);
-			dati = (String[]) lv.getAdapter().getItem(info.position);
 			final long id_to_delete=Long.parseLong(dati[0]);
 			
 			alert2.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
@@ -284,7 +341,7 @@ public class UI1 extends Activity {
 					runningCl.notifyDataSetChanged();
 					db.open();
 					db.deleteRecord(id_to_delete);
-					db.close();	
+					db.close();
 				}
 			});
 			
@@ -390,6 +447,13 @@ public class UI1 extends Activity {
 		
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
+			final Editor prefsEditor = prefs.edit();;
+			final CustomList runningCl = (CustomList) lv.getAdapter();
+			final List<String[]> nuovaLista = new ArrayList<String[]>();
+			for(int i = 0; i < runningCl.getCount(); i++) {
+				nuovaLista.add(i, runningCl.getItem(i));
+			}
+			
 			switch(item.getItemId()) {
 			
 			case R.id.Preferenze:
@@ -398,19 +462,79 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
-				Editor prefsEditor = prefs.edit();
-				prefsEditor.putBoolean("sorted", true).commit();
-				List<String[]> sortedDataToFill = sortedDataToFill();
-				CustomList cl = new CustomList(UI1.this, sortedDataToFill);
-				lv.setAdapter(cl);
+				if(prefs.getBoolean("sortedByName", false))
+					break;
+				prefsEditor.putBoolean("sortedByName", true).commit();
+				prefsEditor.putBoolean("sortedByDate", false).commit();
+				prefsEditor.putBoolean("sortedByDuration", false).commit();
+				
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[2].compareToIgnoreCase(s2[2]);
+					}
+				});
+				
+				runningCl.clear();
+				runningCl.addAll(nuovaLista);
+				runningCl.notifyDataSetChanged();
 				return(true);
 			
 			case R.id.Numera:
-				Editor prefsEditor1 = prefs.edit();
-				prefsEditor1.putBoolean("sorted", false).commit();
-				List<String[]> dataToFill = dataToFill();
-				CustomList cl1 = new CustomList(UI1.this, dataToFill);
-				lv.setAdapter(cl1);
+				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false))
+					break;
+				prefsEditor.putBoolean("sortedByName", false).commit();
+				prefsEditor.putBoolean("sortedByDate", false).commit();
+				prefsEditor.putBoolean("sortedByDuration", false).commit();
+				
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[0].compareTo(s2[0]);
+					}
+				});
+				
+				runningCl.clear();
+				runningCl.addAll(nuovaLista);
+				runningCl.notifyDataSetChanged();
+				return(true);
+				
+			case R.id.OrdinaData:
+				if(prefs.getBoolean("sortedByDate", false))
+					break;
+				prefsEditor.putBoolean("sortedByDate", true).commit();
+				prefsEditor.putBoolean("sortedByName", false).commit();
+				prefsEditor.putBoolean("sortedByDuration", false).commit();
+				
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[3].compareTo(s2[3]);
+					}
+				});
+				
+				runningCl.clear();
+				runningCl.addAll(nuovaLista);
+				runningCl.notifyDataSetChanged();
+				return(true);
+				
+			case R.id.OrdinaDurata:
+				if(prefs.getBoolean("sortedByDuration", false))
+					break;
+				prefsEditor.putBoolean("sortedByDuration", true).commit();
+				prefsEditor.putBoolean("sortedByName", false).commit();
+				prefsEditor.putBoolean("sortedByDate", false).commit();
+				
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[4].compareTo(s2[4]);
+					}
+				});
+				
+				runningCl.clear();
+				runningCl.addAll(nuovaLista);
+				runningCl.notifyDataSetChanged();
 				return(true);
 			}
 			
