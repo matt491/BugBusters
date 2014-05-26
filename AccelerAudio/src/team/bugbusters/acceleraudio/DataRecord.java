@@ -211,7 +211,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		StringBuilder sb=new StringBuilder();
 		Random r=new Random();
 		
-		int c=r.nextInt(256);
+		int c=110+r.nextInt(146);
 		if(c<10) sb.append("00"+c);
 		else if (c>=10 && c<100) sb.append("0"+c);
 		else sb.append(""+c);

@@ -65,7 +65,6 @@ public class UI2 extends Activity {
         sb = (SeekBar)findViewById(R.id.seekBar1);
         iv = (ImageView) findViewById(R.id.thumbnail);
         
-        
         OnCheckedChangeListener listener = new OnCheckedChangeListener() {
         	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
         		if(!isChecked){

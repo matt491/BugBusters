@@ -1,7 +1,6 @@
 package team.bugbusters.acceleraudio;
 
 import team.bugbusters.acceleraudio.PlayRecord.MyPlayerReceiver;
-import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,10 +42,12 @@ public class UI4 extends Activity {
         
         play.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	playIntentService=new Intent(UI4.this, PlayRecord.class);
+            	/*playIntentService=new Intent(UI4.this, PlayRecord.class);
             	playIntentService.putExtra("ID", id);
             	playIntentService.putExtra("fromUI4", true);
-            	startService(playIntentService);
+            	startService(playIntentService);*/
+            	broadcastIntent.putExtra("Play", true);
+            	sendBroadcast(broadcastIntent);	
             }});  
         
         

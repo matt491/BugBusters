@@ -25,13 +25,13 @@ public class PlayRecord extends IntentService {
 	private String[] s,p,q;
  	private short[] x,y,z,w;
 	private Thread t;
-	private boolean isRunning = true, pausa,riprendi,stop;
+	private boolean isRunning = true, pausa,riprendi,stop,play;
 	private int g,k,minsize;
-    private MyPlayerReceiver receiver;
+    private MyPlayerReceiver receiver= new MyPlayerReceiver();
     private IntentFilter filter;
     private Intent intentToUI4;
-	private AudioTrack at;
-	private String f;
+	private static AudioTrack at;
+	private short[] finale = new short[0];
 	
 	public PlayRecord() {
 		super("PlayRecord");
@@ -40,7 +40,7 @@ public class PlayRecord extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-        receiver = new MyPlayerReceiver();
+        
         intentToUI4 = new Intent(getApplicationContext(), UI4.class);
         
         filter = new IntentFilter(MyPlayerReceiver.THREAD_RESPONSE);
@@ -121,7 +121,7 @@ public class PlayRecord extends IntentService {
          // start audio
         
         short[] samples;
-        short[] finale = new short[0];
+        
         
       //  while(true){
         	
@@ -129,7 +129,7 @@ public class PlayRecord extends IntentService {
 	        
 	        case 0: {
 	        	short[] s1 = new short[0];
-		        if(checkX)
+		        if(checkX){
 		        	s1 = new short[minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
@@ -144,9 +144,10 @@ public class PlayRecord extends IntentService {
 		         //  	 at.write(samples, 0, samples.length);
 		           	
 		            }
+		        }
 		         
 		        short[] s2 =new short[0];
-				if(checkZ)
+				if(checkZ){
 					s2 =new short[minsize];
 		        	if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
@@ -158,11 +159,11 @@ public class PlayRecord extends IntentService {
 		           		 if(j==z.length) j=0;
 		           	 }
 		          
-		           
+		            } 
 		            }
 		        
 		        short[] s3 =new short[0];	
-		        if(checkY)	 
+		        if(checkY)	{ 
 		         s3 =new short[minsize];
 		         if(y.length >= minsize)
 		        	 at.write(y, 0, y.length);
@@ -176,9 +177,10 @@ public class PlayRecord extends IntentService {
 		        		 
 		        	// at.write(samples, 0, samples.length);
 		         }
+		        }
 		        
 		        short[] s4 =new short[0];	 
-		        if(checkZ)
+		        if(checkZ){
 		        	s4 =new short[minsize];
 		            if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
@@ -192,9 +194,10 @@ public class PlayRecord extends IntentService {
 		           		 
 		           	// at.write(samples, 0, samples.length);
 		            }
+		        }
 		        
 		        short[] s5 =new short[0];    
-		        if(checkX)
+		        if(checkX){
 		        	s5 =new short[minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
@@ -207,11 +210,11 @@ public class PlayRecord extends IntentService {
 		           	 }
 		           		 
 		           //	 at.write(samples, 0, samples.length);
-		           	 
+		            }
 		            }
 		            
 		            short[] s6 =new short[0];    
-		           	if(checkY)	
+		           	if(checkY)	{
 		           		s6 =new short[minsize];  
 				         if(y.length >= minsize)
 				        	 at.write(y, 0, y.length);
@@ -225,6 +228,7 @@ public class PlayRecord extends IntentService {
 				        		 
 				        	// at.write(samples, 0, samples.length);    
 		            }
+		           	}
 				         
 		         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
 		         System.arraycopy(s1, 0, finale, 0, s1.length);	
@@ -371,8 +375,7 @@ public class PlayRecord extends IntentService {
       
    		
    		*/
-    	at.write(finale, 0, finale.length); 
-        at.play();
+    	
        
 
       /*  SystemClock.sleep(500);
@@ -383,18 +386,14 @@ public class PlayRecord extends IntentService {
         at.setPlaybackHeadPosition(g);
         at.play();
         */
-        SystemClock.sleep(5000);
+        at.write(finale, 0, finale.length); 
+        SystemClock.sleep(50000);
         
 	
        // }
 	
 	}
 	
-  public void pausacall(){
-	  if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-	    	   	g=at.getPlaybackHeadPosition();
-	    	   	at.pause(); 	
-  }
      
        
         
@@ -416,27 +415,30 @@ public class PlayRecord extends IntentService {
        		    pausa=intent.getBooleanExtra("Pausa", false);
        		    riprendi=intent.getBooleanExtra("Riprendi", false);
        		    stop=intent.getBooleanExtra("Stop", false);
-       		     
+       		    play=intent.getBooleanExtra("Play", false);
+       		    
        		       if(stop){
        		           stop=false;
-       		           if(at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+       		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
 	       		    	   at.pause();
 	       		    	   at.flush();
 	       		    	   at.release();
        		           }
-       		       else if(at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+       		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
        		    		at.flush();
 	       		    	at.release();
        		        	}
        		    	       		           
        		           	
        		       }
-       		        
+       		       
        		    
        		       if(pausa) {
        		    	   pausa=false; 
-       		    	   
-       		       pausacall();
+       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+       		    	   	g=at.getPlaybackHeadPosition();
+       		    	   	at.pause();  
+       		    
        		    	 
        		       }
 					
@@ -445,6 +447,12 @@ public class PlayRecord extends IntentService {
        		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
        		    	   at.setPlaybackHeadPosition(g);
        		    	   at.play();    
+       		       }
+       		       
+       		       if(play){
+       		    	   play=false;
+       		    	
+       		        at.play();
        		       }
        		       
        		       
