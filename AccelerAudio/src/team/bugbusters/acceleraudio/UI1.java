@@ -157,6 +157,7 @@ public class UI1 extends Activity {
 	 */
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		String[] dati = (String[]) lv.getAdapter().getItem(info.position);
@@ -164,7 +165,6 @@ public class UI1 extends Activity {
 		menu.setHeaderIcon(android.R.drawable.ic_menu_more);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.context_menu_ui1, menu);
-		
 	}
 	
 	/*
@@ -177,55 +177,25 @@ public class UI1 extends Activity {
 		final String[] dati = (String[]) lv.getAdapter().getItem(info.position);
 		final CustomList runningCl = (CustomList) lv.getAdapter();
 		final List<String[]> nuovaLista = runningCl.getList();
+		
 		switch(item.getItemId()) {
 		
 		case R.id.Duplica:
 			
 			String[] nuoviDati = duplica(Long.parseLong(dati[0]));
-			
-			
-			//List<String[]> nuovaLista = new ArrayList<String[]>();
-			/*for(int i = 0; i < runningCl.getCount(); i++) {
-				nuovaLista.add(runningCl.getItem(i));
-			}*/
 			nuovaLista.add(nuoviDati);
 			
-			if(prefs.getBoolean("sortedByName", false)) {
-			Collections.sort(nuovaLista, new Comparator<String[]>() {
-				@Override
-				public int compare(String[] s1, String[] s2) {
-					return s1[2].compareToIgnoreCase(s2[2]);
-				}
-			});
-			}
-			else if(prefs.getBoolean("sortedByDate", false)) {
-				Collections.sort(nuovaLista, new Comparator<String[]>() {
-					@Override
-					public int compare(String[] s1, String[] s2) {
-						return s2[3].compareTo(s1[3]);
-					}
-				});
-			}
-			else if(prefs.getBoolean("sortedByDuration", false)) {
-				Collections.sort(nuovaLista, new Comparator<String[]>() {
-					@Override
-					public int compare(String[] s1, String[] s2) {
-						return s1[4].compareTo(s2[4]);
-					}
-				});
-			}
+			ordinaLista(nuovaLista);
 			
 			int pos = nuovaLista.indexOf(nuoviDati);
 			
-			//runningCl.clear();
-			//runningCl.addAll(nuovaLista);
 			runningCl.notifyDataSetChanged();
-			//lv.smoothScrollToPosition(pos);
 			lv.setSelection(pos);
 			
 			return(true);
 			
 		case R.id.Rinomina:
+			
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle(R.string.Rename);
 			alert.setIcon(android.R.drawable.ic_menu_edit);
@@ -271,53 +241,16 @@ public class UI1 extends Activity {
 						toast.show();
 					}
 					else {
-						/*CustomList runningCl = (CustomList) lv.getAdapter();
-						runningCl.remove(dati);*/
-						//dati[2] = nuovoNome;
 						int dove = nuovaLista.indexOf(dati);
-						/*String[] toBeUpdated = nuovaLista.remove(dove);
-						toBeUpdated[2] = nuovoNome;
-						nuovaLista.add(toBeUpdated);*/
 						nuovaLista.get(dove)[2] = nuovoNome;
-						//List<String[]> nuovaLista = new ArrayList<String[]>();
-						/*for(int i = 0; i < runningCl.getCount(); i++) {
-							nuovaLista.add(runningCl.getItem(i));
-						}
-						nuovaLista.add(dati);*/
-						if(prefs.getBoolean("sortedByName", false)) {
-						Collections.sort(nuovaLista, new Comparator<String[]>() {
-							@Override
-							public int compare(String[] s1, String[] s2) {
-								return s1[2].compareToIgnoreCase(s2[2]);
-							}
-						});
-						}
-						else if(prefs.getBoolean("sortedByDate", false)) {
-							Collections.sort(nuovaLista, new Comparator<String[]>() {
-								@Override
-								public int compare(String[] s1, String[] s2) {
-									return s2[3].compareTo(s1[3]);
-								}
-							});
-						}
-						else if(prefs.getBoolean("sortedByDuration", false)) {
-							Collections.sort(nuovaLista, new Comparator<String[]>() {
-								@Override
-								public int compare(String[] s1, String[] s2) {
-									return s1[4].compareTo(s2[4]);
-								}
-							});
-						}
+						
+						ordinaLista(nuovaLista);
 						
 						int pos = nuovaLista.indexOf(dati);
 						
-						//runningCl.clear();
-						//runningCl.addAll(nuovaLista);
 						runningCl.notifyDataSetChanged();
 						
 						lv.setSelection(pos);
-						//In alternativa:
-						//lv.smoothScrollToPosition(pos);
 						
 						db.open();
 						db.updateNameOnly(id_to_rename,nuovoNome);
@@ -427,7 +360,6 @@ public class UI1 extends Activity {
 	
 	/*
 	 * Metodo che controlla se e gia' presente un NOME di una music session nel DB
-	 * --Preso in prestito da Loris-- :-)
 	 */
 		public static boolean sameName(DbAdapter db,String s){
 				db.open();
@@ -444,6 +376,33 @@ public class UI1 extends Activity {
 				db.close();
 				return false;
 		}
+		
+		public void ordinaLista(List<String[]> nuovaLista) {
+			if(prefs.getBoolean("sortedByName", false)) {
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[2].compareToIgnoreCase(s2[2]);
+					}
+				});
+				}
+				else if(prefs.getBoolean("sortedByDate", false)) {
+					Collections.sort(nuovaLista, new Comparator<String[]>() {
+						@Override
+						public int compare(String[] s1, String[] s2) {
+							return s2[3].compareTo(s1[3]);
+						}
+					});
+				}
+				else if(prefs.getBoolean("sortedByDuration", false)) {
+					Collections.sort(nuovaLista, new Comparator<String[]>() {
+						@Override
+						public int compare(String[] s1, String[] s2) {
+							return s1[4].compareTo(s2[4]);
+						}
+					});
+				}
+		}
 	
 		
 		@Override
@@ -457,11 +416,8 @@ public class UI1 extends Activity {
 		public boolean onOptionsItemSelected(MenuItem item) {
 			final Editor prefsEditor = prefs.edit();;
 			final CustomList runningCl = (CustomList) lv.getAdapter();
-			/*final List<String[]> nuovaLista = new ArrayList<String[]>();
-			for(int i = 0; i < runningCl.getCount(); i++) {
-				nuovaLista.add(i, runningCl.getItem(i));
-			}*/
-			List<String[]> nuovaLista = runningCl.getList();
+			final List<String[]> nuovaLista = runningCl.getList();
+			
 			switch(item.getItemId()) {
 			
 			case R.id.Preferenze:
@@ -486,8 +442,6 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				//runningCl.clear();
-				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 			
@@ -507,8 +461,6 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				//runningCl.clear();
-				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 				
@@ -528,8 +480,6 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				//runningCl.clear();
-				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 				
@@ -549,8 +499,6 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				//runningCl.clear();
-				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 			}
