@@ -175,17 +175,19 @@ public class UI1 extends Activity {
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		final String[] dati = (String[]) lv.getAdapter().getItem(info.position);
+		final CustomList runningCl = (CustomList) lv.getAdapter();
+		final List<String[]> nuovaLista = runningCl.getList();
 		switch(item.getItemId()) {
 		
 		case R.id.Duplica:
 			
 			String[] nuoviDati = duplica(Long.parseLong(dati[0]));
 			
-			CustomList runningCl = (CustomList) lv.getAdapter();
-			List<String[]> nuovaLista = new ArrayList<String[]>();
-			for(int i = 0; i < runningCl.getCount(); i++) {
+			
+			//List<String[]> nuovaLista = new ArrayList<String[]>();
+			/*for(int i = 0; i < runningCl.getCount(); i++) {
 				nuovaLista.add(runningCl.getItem(i));
-			}
+			}*/
 			nuovaLista.add(nuoviDati);
 			
 			if(prefs.getBoolean("sortedByName", false)) {
@@ -215,8 +217,8 @@ public class UI1 extends Activity {
 			
 			int pos = nuovaLista.indexOf(nuoviDati);
 			
-			runningCl.clear();
-			runningCl.addAll(nuovaLista);
+			//runningCl.clear();
+			//runningCl.addAll(nuovaLista);
 			runningCl.notifyDataSetChanged();
 			//lv.smoothScrollToPosition(pos);
 			lv.setSelection(pos);
@@ -269,14 +271,19 @@ public class UI1 extends Activity {
 						toast.show();
 					}
 					else {
-						CustomList runningCl = (CustomList) lv.getAdapter();
-						runningCl.remove(dati);
-						dati[2] = nuovoNome; 
-						List<String[]> nuovaLista = new ArrayList<String[]>();
-						for(int i = 0; i < runningCl.getCount(); i++) {
+						/*CustomList runningCl = (CustomList) lv.getAdapter();
+						runningCl.remove(dati);*/
+						//dati[2] = nuovoNome;
+						int dove = nuovaLista.indexOf(dati);
+						/*String[] toBeUpdated = nuovaLista.remove(dove);
+						toBeUpdated[2] = nuovoNome;
+						nuovaLista.add(toBeUpdated);*/
+						nuovaLista.get(dove)[2] = nuovoNome;
+						//List<String[]> nuovaLista = new ArrayList<String[]>();
+						/*for(int i = 0; i < runningCl.getCount(); i++) {
 							nuovaLista.add(runningCl.getItem(i));
 						}
-						nuovaLista.add(dati);
+						nuovaLista.add(dati);*/
 						if(prefs.getBoolean("sortedByName", false)) {
 						Collections.sort(nuovaLista, new Comparator<String[]>() {
 							@Override
@@ -304,8 +311,8 @@ public class UI1 extends Activity {
 						
 						int pos = nuovaLista.indexOf(dati);
 						
-						runningCl.clear();
-						runningCl.addAll(nuovaLista);
+						//runningCl.clear();
+						//runningCl.addAll(nuovaLista);
 						runningCl.notifyDataSetChanged();
 						
 						lv.setSelection(pos);
@@ -336,8 +343,9 @@ public class UI1 extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					CustomList runningCl = (CustomList) lv.getAdapter();
-					runningCl.remove(dati);
+					/*CustomList runningCl = (CustomList) lv.getAdapter();
+					runningCl.remove(dati);*/
+					nuovaLista.remove(dati);
 					runningCl.notifyDataSetChanged();
 					db.open();
 					db.deleteRecord(id_to_delete);
@@ -449,11 +457,11 @@ public class UI1 extends Activity {
 		public boolean onOptionsItemSelected(MenuItem item) {
 			final Editor prefsEditor = prefs.edit();;
 			final CustomList runningCl = (CustomList) lv.getAdapter();
-			final List<String[]> nuovaLista = new ArrayList<String[]>();
+			/*final List<String[]> nuovaLista = new ArrayList<String[]>();
 			for(int i = 0; i < runningCl.getCount(); i++) {
 				nuovaLista.add(i, runningCl.getItem(i));
-			}
-			
+			}*/
+			List<String[]> nuovaLista = runningCl.getList();
 			switch(item.getItemId()) {
 			
 			case R.id.Preferenze:
@@ -470,6 +478,7 @@ public class UI1 extends Activity {
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
 				
+				
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
@@ -477,8 +486,8 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
+				//runningCl.clear();
+				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 			
@@ -498,8 +507,8 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
+				//runningCl.clear();
+				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 				
@@ -519,8 +528,8 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
+				//runningCl.clear();
+				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 				
@@ -540,8 +549,8 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
+				//runningCl.clear();
+				//runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 			}

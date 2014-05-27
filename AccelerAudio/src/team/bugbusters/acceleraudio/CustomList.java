@@ -91,6 +91,10 @@ public class CustomList extends ArrayAdapter<String[]> {
 		holder.durationText.setText(s[4]);
 		
 		return rowView;
-	}	
+	}
+	
+	public List<String[]> getList(){
+		return this.toFill;
+	}
 
 }
