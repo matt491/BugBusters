@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.widget.Toast;
 
@@ -23,29 +24,72 @@ public class PlayRecord extends IntentService {
 	private int ncamp;
 	private String sovrac;
 	private String[] s,p,q;
- 	private short[] x,y,z,w;
-	private Thread t;
-	private boolean isRunning = true, pausa,riprendi,stop,play;
+ 	private short[] x,y,z;
+	private boolean  pausa,riprendi,stop,play;
 	private int g,k,minsize;
-    private MyPlayerReceiver receiver= new MyPlayerReceiver();
-    private IntentFilter filter;
-    private Intent intentToUI4;
-	private static AudioTrack at;
+	private AudioTrack at;
 	private short[] finale = new short[0];
+	
+	private BroadcastReceiver receiver=new BroadcastReceiver(){
+		  
+		public void onReceive(Context context, Intent intent) {
+			pausa=intent.getBooleanExtra("Pausa", false);
+   		    riprendi=intent.getBooleanExtra("Riprendi", false);
+   		    stop=intent.getBooleanExtra("Stop", false);
+   		    play=intent.getBooleanExtra("Play", false);
+   		    
+   		       if(stop){
+   		           stop=false;
+   		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+       		    	   at.pause();
+       		    	   at.flush();
+       		    	   at.release();
+   		           }
+   		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+   		    		at.flush();
+       		    	at.release();
+   		        	}
+   		    	       		           
+   		           	
+   		       }
+   		       
+   		       if(pausa) {
+   		    	   pausa=false; 
+   		    	//   pausacall();
+   		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+   		    	   	g=at.getPlaybackHeadPosition();
+   		    	   	at.pause();  
+   		    	 
+   		       }
+				
+   		    if(riprendi) {
+		    	   riprendi=false;
+		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
+		    	   at.setPlaybackHeadPosition(g);
+		    	   at.play();    
+		       }
+   		       
+
+			
+		}
+		
+	};
 	
 	public PlayRecord() {
 		super("PlayRecord");
 	}
 
+    
+ /*   protected void pausacall(){
+    	  if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+		    	   	g=at.getPlaybackHeadPosition();
+		    	   	at.pause();  
+    }*/
+
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-        
-        intentToUI4 = new Intent(getApplicationContext(), UI4.class);
-        
-        filter = new IntentFilter(MyPlayerReceiver.THREAD_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiver,filter);
+        registerReceiver(receiver,new IntentFilter(UI4.THREAD_RESPONSE));
         
         pausa=riprendi=stop=false;
         dbHelper = new DbAdapter(this);
@@ -101,15 +145,7 @@ public class PlayRecord extends IntentService {
         for(i=0;i<q.length;i++)
     		z[i]=Short.parseShort(q[i]);
       
-        	
 
-
-        // start a new thread to synthesise audio
-     /*   t = new Thread("PROVA") {
-         public void run() {
-         setPriority(Thread.MAX_PRIORITY);
-         int i;
-        */
        
          minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
          
@@ -118,19 +154,19 @@ public class PlayRecord extends IntentService {
 
          
          
-         // start audio
+
         
         short[] samples;
         
         
-      //  while(true){
+
         	
         switch(k){
 	        
 	        case 0: {
 	        	short[] s1 = new short[0];
 		        if(checkX){
-		        	s1 = new short[minsize];
+		        	s1 = new short[2*minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
@@ -140,15 +176,13 @@ public class PlayRecord extends IntentService {
 		           		 j++;
 		           		 if(j==x.length) j=0;
 		           	 }
-		           		 
-		         //  	 at.write(samples, 0, samples.length);
 		           	
 		            }
 		        }
 		         
 		        short[] s2 =new short[0];
 				if(checkZ){
-					s2 =new short[minsize];
+					s2 =new short[2*minsize];
 		        	if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
@@ -164,7 +198,7 @@ public class PlayRecord extends IntentService {
 		        
 		        short[] s3 =new short[0];	
 		        if(checkY)	{ 
-		         s3 =new short[minsize];
+		         s3 =new short[2*minsize];
 		         if(y.length >= minsize)
 		        	 at.write(y, 0, y.length);
 		         else {
@@ -175,13 +209,12 @@ public class PlayRecord extends IntentService {
 		        		 if(j==y.length) j=0;
 		        	 }
 		        		 
-		        	// at.write(samples, 0, samples.length);
 		         }
 		        }
 		        
 		        short[] s4 =new short[0];	 
 		        if(checkZ){
-		        	s4 =new short[minsize];
+		        	s4 =new short[2*minsize];
 		            if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
@@ -191,14 +224,13 @@ public class PlayRecord extends IntentService {
 		           		 j++;
 		           		 if(j==z.length) j=0;
 		           	 }
-		           		 
-		           	// at.write(samples, 0, samples.length);
+
 		            }
 		        }
 		        
 		        short[] s5 =new short[0];    
 		        if(checkX){
-		        	s5 =new short[minsize];
+		        	s5 =new short[2*minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
@@ -208,14 +240,13 @@ public class PlayRecord extends IntentService {
 		           		 j++;
 		           		 if(j==x.length) j=0;
 		           	 }
-		           		 
-		           //	 at.write(samples, 0, samples.length);
+
 		            }
 		            }
 		            
 		            short[] s6 =new short[0];    
 		           	if(checkY)	{
-		           		s6 =new short[minsize];  
+		           		s6 =new short[2*minsize];  
 				         if(y.length >= minsize)
 				        	 at.write(y, 0, y.length);
 				         else {
@@ -225,8 +256,7 @@ public class PlayRecord extends IntentService {
 				        		 j++;
 				        		 if(j==y.length) j=0;
 				        	 }
-				        		 
-				        	// at.write(samples, 0, samples.length);    
+
 		            }
 		           	}
 				         
@@ -366,36 +396,18 @@ public class PlayRecord extends IntentService {
         } //Fine switch
         
        
-     /*    } //Fine RUN
-         
-        	}; //Fine Thread
-        	
-   		t.start();        
-   		
-      
-   		
-   		*/
-    	
-       
 
-      /*  SystemClock.sleep(500);
-        at.pause();
-      
-        SystemClock.sleep(200);
-        at.reloadStaticData();
-        at.setPlaybackHeadPosition(g);
-        at.play();
-        */
-        at.write(finale, 0, finale.length); 
-        SystemClock.sleep(50000);
         
+        at.write(finale, 0, finale.length); 
+        at.play();
+        
+        at.setLoopPoints(0, finale.length, -1);
+        Looper.loop();
 	
-       // }
+      
 	
 	}
-	
-     
-       
+	  
         
   public void onDestroy(){
 	 
@@ -405,61 +417,7 @@ public class PlayRecord extends IntentService {
 	  
   }
   
-  
-  
-  public class MyPlayerReceiver extends BroadcastReceiver{
-
-	   public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
-       @Override
-       	public void onReceive(Context context, Intent intent) {
-       		    pausa=intent.getBooleanExtra("Pausa", false);
-       		    riprendi=intent.getBooleanExtra("Riprendi", false);
-       		    stop=intent.getBooleanExtra("Stop", false);
-       		    play=intent.getBooleanExtra("Play", false);
-       		    
-       		       if(stop){
-       		           stop=false;
-       		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
-	       		    	   at.pause();
-	       		    	   at.flush();
-	       		    	   at.release();
-       		           }
-       		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
-       		    		at.flush();
-	       		    	at.release();
-       		        	}
-       		    	       		           
-       		           	
-       		       }
-       		       
-       		    
-       		       if(pausa) {
-       		    	   pausa=false; 
-       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-       		    	   	g=at.getPlaybackHeadPosition();
-       		    	   	at.pause();  
-       		    
-       		    	 
-       		       }
-					
-       		       if(riprendi) {
-       		    	   riprendi=false;
-       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-       		    	   at.setPlaybackHeadPosition(g);
-       		    	   at.play();    
-       		       }
-       		       
-       		       if(play){
-       		    	   play=false;
-       		    	
-       		        at.play();
-       		       }
-       		       
-       		       
-       	}
-       }
-	
-	
+  	
 	
  }
 	

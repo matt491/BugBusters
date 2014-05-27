@@ -1,6 +1,6 @@
 package team.bugbusters.acceleraudio;
 
-import team.bugbusters.acceleraudio.PlayRecord.MyPlayerReceiver;
+//import team.bugbusters.acceleraudio.PlayRecord.MyPlayerReceiver;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ public class UI4 extends Activity {
 	private Button play;
 	private ImageButton pause,riprendi;
 	private Intent broadcastIntent;
+	public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,31 +36,31 @@ public class UI4 extends Activity {
         id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
         
         broadcastIntent = new Intent();
-        broadcastIntent.setAction(MyPlayerReceiver.THREAD_RESPONSE);
-        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        broadcastIntent.setAction(THREAD_RESPONSE);
+        
+       
+        playIntentService=new Intent(UI4.this, PlayRecord.class);
+        playIntentService.putExtra("ID", id);
+    	playIntentService.putExtra("fromUI4", true);
+    	startService(playIntentService);
         
         
-        
-        play.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	/*playIntentService=new Intent(UI4.this, PlayRecord.class);
-            	playIntentService.putExtra("ID", id);
-            	playIntentService.putExtra("fromUI4", true);
-            	startService(playIntentService);*/
-            	broadcastIntent.putExtra("Play", true);
-            	sendBroadcast(broadcastIntent);	
-            }});  
+ 
         
         
         pause.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	broadcastIntent.putExtra("Pausa", true);
+            	broadcastIntent.putExtra("Riprendi", false);
+            	broadcastIntent.putExtra("Play", false);
             	sendBroadcast(broadcastIntent);	
             }});
         
         riprendi.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	broadcastIntent.putExtra("Riprendi", true);
+            	broadcastIntent.putExtra("Pausa", false);
+            	broadcastIntent.putExtra("Play", false);
             	sendBroadcast(broadcastIntent);	
             }});
         
@@ -71,6 +72,9 @@ public class UI4 extends Activity {
 	public void onBackPressed() {
 		super.onBackPressed();
 		broadcastIntent.putExtra("Stop", true);
+    	broadcastIntent.putExtra("Pausa", false);
+    	broadcastIntent.putExtra("Play", false);
+    	broadcastIntent.putExtra("Riprendi", false);
     	sendBroadcast(broadcastIntent);
     	
         finish();	
