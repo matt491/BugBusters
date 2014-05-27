@@ -276,8 +276,6 @@ public class UI1 extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					/*CustomList runningCl = (CustomList) lv.getAdapter();
-					runningCl.remove(dati);*/
 					nuovaLista.remove(dati);
 					runningCl.notifyDataSetChanged();
 					db.open();
