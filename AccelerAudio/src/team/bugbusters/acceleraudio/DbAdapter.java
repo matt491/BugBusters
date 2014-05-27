@@ -78,7 +78,26 @@ public class DbAdapter {
     
    return values;
   }
-         
+      
+  private ContentValues updateContentValuesNameImage(String name, String imm) {
+	    ContentValues values = new ContentValues();
+	    values.put( KEY_NAME, name );
+	    values.put( KEY_IMM, imm );    
+	   return values;
+	  }
+  
+  private ContentValues updateContentValuesImageCodeOnly(String imm) {
+	    ContentValues values = new ContentValues();
+	    values.put( KEY_IMM, imm ); 	    
+	   return values;
+	  }
+  
+  private ContentValues updateContentValuesNameOnly(String name) {
+	    ContentValues values = new ContentValues();
+	    values.put( KEY_NAME, name );    
+	   return values;
+  }
+  
   //crea una music session
   public long createRecord(String name, String dur, String assex, String assey, String assez, String checkx,
 		  				   String checky , String checkz, int numcamp, String upsample, String datacreaz, String dataulti, String datimm ) {
@@ -90,26 +109,43 @@ public class DbAdapter {
   //aggiorna un record
   public boolean updateRecord(long recordID, String name, String checkx, String checky , String checkz, String upsample, String dataulti ) {
 	  			ContentValues updateValues = updateContentValues(name, checkx, checky , checkz, upsample, dataulti);
-	  			return database.update(DATABASE_TABLE, updateValues, KEY_RECORDID + "=" + recordID, null) > 0;
+	  			return database.update(DATABASE_TABLE, updateValues, KEY_RECORDID + "==" + recordID, null) > 0;
   }
                  
   //Elimina un record    
   public boolean deleteRecord(long recordID) {
-	  			return database.delete(DATABASE_TABLE, KEY_RECORDID + "=" + recordID, null) > 0;
+	  			return database.delete(DATABASE_TABLE, KEY_RECORDID + "==" + recordID, null) > 0;
   }
  
-  //Query che restituisce tutti i record
+  //Query che restituisce tutti i record (in ordine di inserimento)
   public Cursor fetchAllRecord() {
 	  			return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, null);
     }
+  
+  //Query che restituisce tutti i record ordinati per nome
+  public Cursor fetchAllRecordSortedByName() {
+	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_NAME + " ASC");
+  }
  
+//Query che restituisce tutti i record ordinati per data
+  public Cursor fetchAllRecordSortedByDate() {
+	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DATE + " DESC");
+  }
+  
+//Query che restituisce tutti i record ordinati per durata
+  public Cursor fetchAllRecordSortedByDuration() {
+	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DURATION + " ASC");
+  }
   
   //Query che restituisce un record(cursor) dato un NOME
   public Cursor fetchRecordByFilter(String filter) {
 	  	Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
-                                    KEY_NAME + " like '%"+ filter + "%'", null, null, null, null, null);
+                                    KEY_NAME + " = '"+ filter + "'", null, null, null, null, null);
 	  	return mCursor;
     
   }
@@ -118,10 +154,27 @@ public class DbAdapter {
    public Cursor fetchRecordById(long id) {
         Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
         		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
-        							KEY_RECORDID + " = "+ id , null, null, null, null, null);
+        							KEY_RECORDID + " == "+ id , null, null, null, null, null);
     
         return mCursor;
   }
+   
+   public boolean updateRecordNameAndImage(long recordID, String name, String imm) {
+			ContentValues update = updateContentValuesNameImage(name, imm);
+			return database.update(DATABASE_TABLE, update, KEY_RECORDID + "==" + recordID, null) > 0;
+}
+   
+   
+   public boolean updateImageCode(long recordID, String name) {
+			ContentValues updateValuesImageCode = updateContentValuesImageCodeOnly(name);
+			return database.update(DATABASE_TABLE, updateValuesImageCode, KEY_RECORDID + "==" + recordID, null) > 0;
+}
+   
+   public boolean updateNameOnly(long recordID, String name) {
+			ContentValues updateName = updateContentValuesNameOnly(name);
+			return database.update(DATABASE_TABLE, updateName, KEY_RECORDID + "==" + recordID, null) > 0;
+}
+   //Qua ci va il metodo di Mattia
   
   
 }

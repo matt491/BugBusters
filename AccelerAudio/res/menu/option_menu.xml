@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/Preferenze"
+          android:title="@string/Preferences"
+          android:icon="@android:drawable/ic_menu_preferences"
+          android:showAsAction="never"></item>
+    <item android:id="@+id/Or" android:title="@string/Sort" android:icon="@android:drawable/ic_menu_sort_by_size" android:showAsAction="ifRoom|withText">
+        <menu><item android:id="@+id/Numera" android:title="@string/SortById" android:showAsAction="ifRoom|withText"></item><item android:id="@+id/Ordina" android:title="@string/SortAlphabetically" android:showAsAction="ifRoom|withText"></item>
+        <item android:id="@+id/OrdinaData" android:showAsAction="ifRoom|withText" android:title="@string/SortByDate"/>
+        <item android:id="@+id/OrdinaDurata" android:showAsAction="ifRoom|withText" android:title="@string/SortByDuration"/>
+</menu>
+    </item>
+    
+
+</menu>

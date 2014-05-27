@@ -1,205 +1,216 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="it.bugbusters.acceleraudio.UI3"
-    android:orientation="vertical"  >
+    tools:context=".UI3" >
 
-    <TableLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="10dip"
-        android:stretchColumns="*" >
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/toggleButtonString"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="17sp" />
 
-        <TableRow android:layout_width="wrap_content" >
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/nameChoosing"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Asse_x"
-                android:textSize="14sp" />
+    <EditText
+        android:id="@+id/nome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView8"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/textView8"
+        android:ems="10"
+        android:hint="@string/hintName"
+        android:imeOptions="actionSend"
+        android:inputType="textCapSentences|textNoSuggestions" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Asse_y"
-                android:textSize="14sp" />
+        <requestFocus />
+    </EditText>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Asse_z"
-                android:textSize="14sp" />
-        </TableRow>
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/Assi"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TableRow>
+    <team.bugbusters.acceleraudio.VerticalProgressBar
+        android:id="@+id/x_axis"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@id/textView2"
+        android:layout_marginRight="68dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/y_axis"
+        android:max="15" />
 
-            <ProgressBar
-                android:id="@+id/x_axis"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:max="15"
-                android:minHeight="13dp"
-                android:minWidth="20dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="5dp" />
+    <team.bugbusters.acceleraudio.VerticalProgressBar
+        android:id="@+id/y_axis"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:max="15" />
 
-            <ProgressBar
-                android:id="@+id/y_axis"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:max="15"
-                android:minHeight="13dp"
-                android:minWidth="20dp"
-                android:paddingTop="5dp" />
+    <team.bugbusters.acceleraudio.VerticalProgressBar
+        android:id="@+id/z_axis"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@id/textView2"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/y_axis"
+        android:max="15" />
 
-            <ProgressBar
-                android:id="@+id/z_axis"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:max="15"
-                android:minHeight="13dp"
-                android:minWidth="20dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="5dp" />
-            
-        </TableRow>
-        
-    </TableLayout>
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/x_axis"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/AsseX"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_marginLeft="105dp"
+        android:layout_toRightOf="@+id/textView3"
+        android:text="@string/AsseY"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView3"
+        android:layout_marginLeft="105dp"
+        android:layout_toRightOf="@+id/textView4"
+        android:text="@string/AsseZ"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView3"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/time"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView6"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/textView6"
+        android:text="tempo_di_registrazione" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="false"
-        android:max="10000"
-        android:minHeight="30dp"
-        android:minWidth="200dp"
-        android:padding="15dp"
-        android:paddingLeft="15dp"
-        android:paddingTop="15dp"
-        android:progress="1" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView6"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="5dp" />
 
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" >
-        
-        <TextView
-            android:id="@+id/last"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:minHeight="30dp" />
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" >
-
-        <Button
-            android:id="@+id/record"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RECORD"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PAUSE"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:clickable="false" />
-
-        <Button
-            android:id="@+id/resume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RESUME"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:clickable="false" />
-
-        <Button
-            android:id="@+id/stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="STOP"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:clickable="false" />
-    </TableRow>
-
-
-
-    <TableRow
-        android:id="@+id/tableRow15"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    
     <TextView
+        android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="left"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:text="Campioni Registrati: "
-        android:textSize="16sp"
-        android:textStyle="bold" />
-    
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/progressBar1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/campioniRegistratiString"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <TextView
-                android:id="@+id/campioni"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="16sp" />
-     </TableRow>
-    
-    <EditText
-        android:id="@+id/nome"
-        android:layout_width="match_parent"
+        android:id="@+id/campioni"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Nome Music Session"
-        android:imeOptions="actionSend"
-        android:inputType="text"
-        android:padding="15dp" >
-    
-    </EditText>
-    
-    <TableRow
-        android:id="@+id/tableRow4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_alignBaseline="@+id/textView7"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/textView7"
+        android:text="campioni_registrati" />
 
-        <Button
-            android:id="@+id/avanz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="AVANTI"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-       
-    </TableRow>
+    <Button
+        android:id="@+id/record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView7"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/record" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/avanz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/record"
+        android:layout_centerHorizontal="true"
+        android:text="@string/avanti" />
+
+    <Button
+        android:id="@+id/pause_res"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/avanz"
+        android:layout_centerHorizontal="true"
+        android:text="@string/pause" />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/avanz"
+        android:layout_alignRight="@+id/z_axis"
+        android:text="@string/stop" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/stop"
+        android:layout_alignParentTop="true"
+        android:textOff="@string/ifUnlocked"
+        android:textOn="@string/ifLocked" />
+
+</RelativeLayout>

@@ -1,134 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
- 	   <TableRow
-        android:id="@+id/tableRow22"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp" >
-    
-    <CheckBox
+     <CheckBox
         android:id="@+id/checkXdef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="25dp"
         android:text="@string/AsseX" />
 
     <CheckBox
         android:id="@+id/checkYdef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkXdef"
+        android:layout_toRightOf="@+id/checkXdef"
+        android:layout_marginLeft="25dp"
         android:text="@string/AsseY" />
 
     <CheckBox
         android:id="@+id/checkZdef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkYdef"
+        android:layout_toRightOf="@+id/checkYdef"
+        android:layout_marginLeft="25dp"
         android:text="@string/AsseZ" />
-
-       </TableRow>
-       
     
-        <TableRow
-        android:id="@+id/tableRow23"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" >
-
-        <TextView
-            android:id="@+id/tt1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:text="Campionamento: "
-            android:textSize="15sp" />
-
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </TableRow>
-
-        <TableRow
-        android:id="@+id/tableRow24"
+    <TextView
+        android:id="@+id/tt1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="left" >
-        
-        
-          <TextView
-              android:id="@+id/tt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="10dp"
-            android:text="Durata Massima: "
-            android:textSize="15sp" />
-
-          <TextView
-              android:id="@+id/durmax"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:textSize="15sp"/>
-          
-          </TableRow>
-            
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/checkXdef"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
+        android:paddingTop="10dp"
+        android:text="@string/Sampling"
+        android:textSize="15sp" />
+    
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tt1"
+        android:layout_toRightOf="@+id/tt1"
+        android:layout_marginLeft="10dp" />
+    
+    <TextView
+        android:id="@+id/durmax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tt"
+        android:layout_toRightOf="@+id/tt"
+        android:layout_marginLeft="10dp"
+        android:text="dur"
+        android:textSize="15sp" />
+    
     <SeekBar
         android:id="@+id/durdef"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="150"
-        android:paddingBottom="15dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tt"
+        android:layout_marginTop="15dp"
+        android:max="120"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_centerVertical="true"
         android:progress="1" />
-     
-     <TableRow
-        android:id="@+id/tableRow25"
-        android:layout_width="match_parent"
+    
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="15dp" >
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/durdef"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/Upsampling"
+        android:textSize="15sp" />
     
     <TextView
-       		android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:paddingLeft="10dp"
-            android:text="Sovracampionamento: "
-            android:textSize="15sp" />
-    
-    <TextView
-        	android:id="@+id/sovradef"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:max="100"
-       		android:paddingBottom="15dp"
-        	android:paddingTop="15dp"
-        	android:progress="1" />
-    
-    </TableRow>
-    
+        android:id="@+id/sovradef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView1"
+        android:layout_toRightOf="@+id/textView1"
+        android:layout_marginLeft="10dp"
+        android:text="sovra" />
+   
+
     <SeekBar
         android:id="@+id/sbcampdef"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_centerVertical="true"
         android:max="100"
-        android:paddingBottom="15dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:progress="1" />
-            
-            <Button
-                android:id="@+id/salva_imp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SALVA"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-    
-</LinearLayout>
+
+
+    <Button
+        android:id="@+id/salva_imp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sbcampdef"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="@string/save"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tt1"
+        android:layout_below="@+id/spinner1"
+        android:layout_marginTop="28dp"
+        android:text="@string/MaxDur"
+        android:textSize="15sp" />
+
+</RelativeLayout>

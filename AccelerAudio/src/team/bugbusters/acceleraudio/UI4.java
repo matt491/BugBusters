@@ -1,72 +1,109 @@
 package team.bugbusters.acceleraudio;
 
+import team.bugbusters.acceleraudio.PlayRecord.MyPlayerReceiver;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
 
-	private DbAdapter dbHelper;
-	private Cursor cr;
 	private long id;
-	private double m;
-	private String asseX,asseY,asseZ;
-	private boolean checkX,checkY,checkZ;
-	private int ncamp;
-	private String sovrac;
-	private String[] s;
- 	private short[] x,y,z;
+	private String pkg_r;
+	private Intent playIntentService;
+	private Button play;
+	private ImageButton pause,riprendi;
+	private Intent broadcastIntent;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.ui4_layout);
-        Intent intent_r=getIntent();
-        String pkg_r=getPackageName();
+        play=(Button)findViewById(R.id.playbutton);
+        pause=(ImageButton)findViewById(R.id.imageButton1);
+        riprendi=(ImageButton)findViewById(R.id.imageButton3);
         
-        dbHelper = new DbAdapter(this);
+        pkg_r=getPackageName();   
+        id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
         
-        id=intent_r.getLongExtra(pkg_r+"myID", -1);
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(MyPlayerReceiver.THREAD_RESPONSE);
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         
-        //Query che individua l'unica riga con questo ID
-        dbHelper.open();
-        cr=dbHelper.fetchRecordById(id);
         
-        //Lettura dei dati dal record(cursor) restituito
-        m=Double.parseDouble(cr.getString(cr.getColumnIndex(DbAdapter.KEY_DURATION)));
-        asseX=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEX));
-        asseY=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEY));
-        asseZ=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEZ));
-        checkX=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
-        checkY=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
-        checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-        ncamp=cr.getInt(cr.getColumnIndex(DbAdapter.KEY_NUMCAMP));
-        sovrac=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
-
-        x=new short[ncamp/3];
-        y=new short[ncamp/3];
-        z=new short[ncamp/3];
         
-        //Tokenizzazione delle stringhe in array di short
-        s=asseX.split(" ", ncamp/3); 
-        for(int i=0;i<s.length;i++)
-    		x[i]=Short.parseShort(s[i]);
+        play.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	/*playIntentService=new Intent(UI4.this, PlayRecord.class);
+            	playIntentService.putExtra("ID", id);
+            	playIntentService.putExtra("fromUI4", true);
+            	startService(playIntentService);*/
+            	broadcastIntent.putExtra("Play", true);
+            	sendBroadcast(broadcastIntent);	
+            }});  
         
-        s=asseY.split(" ", ncamp/3); 
-        for(int i=0;i<s.length;i++)
-    		y[i]=Short.parseShort(s[i]);
         
-        s=asseZ.split(" ", ncamp/3); 
-        for(int i=0;i<s.length;i++)
-    		z[i]=Short.parseShort(s[i]);
+        pause.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	broadcastIntent.putExtra("Pausa", true);
+            	sendBroadcast(broadcastIntent);	
+            }});
+        
+        riprendi.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	broadcastIntent.putExtra("Riprendi", true);
+            	sendBroadcast(broadcastIntent);	
+            }});
         
         
 	} //FINE onCreate()
 	
+	//Quando viene premuto il tasto Back
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		broadcastIntent.putExtra("Stop", true);
+    	sendBroadcast(broadcastIntent);
+    	
+        finish();	
+	return;
+	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.option_menu, menu);
+		return true;
+		}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem ordina = menu.findItem(R.id.Or);
+		ordina.setVisible(false);
+		
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		
+		case R.id.Preferenze:
+			Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
+            startActivity(prefIntentUI5);
+            return(true);
+		}
+		
+		return (super.onOptionsItemSelected(item));
+	}
 	
 	
 }

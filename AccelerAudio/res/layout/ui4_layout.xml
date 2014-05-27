@@ -3,5 +3,113 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
+<!-- Questo tasto non dev'essere presente -->
+    <Button
+        android:id="@+id/playbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="61dp"
+        android:text="PLAY" />
+    
+<!-- Rappresenta la thumbnail della music session che è in riproduzione (opzionale) -->
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/ImageDesc" />
+    
+<!-- Qui compare il nome della music session che è in riproduzione -->
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_toRightOf="@+id/imageView1"
+        android:layout_marginLeft="15dp"
+        android:text="music_session_name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView1"
+        android:layout_alignLeft="@+id/textView1"
+        android:text="@string/Duration"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+<!-- Qui compare la durata della music session che è in riproduzione -->
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView2"
+       	android:layout_toRightOf="@+id/textView2"
+       	android:layout_marginLeft="5dp"
+        android:text="music_session_dur"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+ <!-- Qui compare il tempo corrente di riproduzione, il quale dovrà aggiornarsi quando l'utente trascina il cursore della seekbar (opzionale) -->   
+     <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:layout_below="@+id/imageView1"
+        android:layout_marginTop="25dp"
+        android:text="current_playing-time"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+     
+<!-- Rappresenta la posizione di riproduzione, se non vogliamo implementare la funzionalità che consente all'utente di andare avanti e indietro spostandone il cursore potremmo sostituirla con una semplice progressbar -->
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
 
+<!-- Alla pressione di questo tasto la riproduzione si mette in pausa e il tasto commuta nel tasto play(ovvero resume) -->
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar1"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:src="@android:drawable/ic_media_pause"
+        android:contentDescription="@string/pauseButtonDesc" />
+    
+<!-- Alla pressione di questo tasto parte la riproduzione della music session precedente, se c'è. (opzionale) -->
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageButton1"
+        android:layout_toLeftOf="@+id/imageButton1"
+        android:layout_marginRight="20dp"
+        android:src="@android:drawable/ic_media_previous"
+        android:contentDescription="@string/previusButtonDesc" />
+    
+<!-- Alla pressione di questo tasto parte la riproduzione della music session successiva, se c'è. (opzionale) -->
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageButton1"
+        android:layout_toRightOf="@+id/imageButton1"
+        android:layout_marginLeft="20dp"
+        android:src="@android:drawable/ic_media_next"
+        android:contentDescription="@string/nextButtonDesc" />
+   
 </RelativeLayout>

@@ -13,28 +13,23 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/ImageDesc" />
 
-    <TextView
-        android:id="@+id/sessione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="16dp"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="@string/SessionName"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+   <EditText
+       android:id="@+id/nomeSessione"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_above="@+id/dataRegistrazione"
+       android:layout_alignRight="@+id/checkBoxZ"
+       android:layout_marginLeft="15dp"
+       android:layout_toRightOf="@+id/thumbnail"
+       android:hint="@string/hintName"
+       android:ems="10"
+       android:imeOptions="actionSend"
+       android:inputType="textCapSentences|textNoSuggestions" />
 
-    <TextView
-        android:id="@+id/nomeSessione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sessione"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:text="nome_sessione" />
+   <requestFocus />
 
     <TextView
         android:id="@+id/dataRegistrazione"
@@ -53,8 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/dataRegistrazione"
         android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/dataRegistrazione"
-        android:text="data" />
+        android:layout_toRightOf="@+id/dataRegistrazione" />
 
     <TextView
         android:id="@+id/dataUltimaModifica"
@@ -73,8 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/dataUltimaModifica"
         android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/dataUltimaModifica"
-        android:text="data" />
+        android:layout_toRightOf="@+id/dataUltimaModifica" />
 
     <TextView
         android:id="@+id/selezionaAssi"
@@ -103,8 +96,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkBoxX"
-        android:layout_toRightOf="@+id/checkBoxX"
         android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/checkBoxX"
+        android:checked="true"
         android:text="@string/AsseY" />
 
     <CheckBox
@@ -112,8 +106,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkBoxY"
-        android:layout_toRightOf="@+id/checkBoxY"
         android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/checkBoxY"
+        android:checked="true"
         android:text="@string/AsseZ" />
 
     <TextView
@@ -139,20 +134,29 @@
         android:layout_marginTop="10dp" />
 
     <Button
-        android:id="@+id/invio_nome"
+        android:id="@+id/toPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/seekBar1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp"
-        android:enabled="false"
         android:text="@string/Play" />
 
     <TextView
         android:id="@+id/res"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/seekBar1"
-        android:layout_toRightOf="@+id/dataulmod"/>
+        android:layout_alignBaseline="@+id/sovracampionamento"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/sovracampionamento" />
+
+    <TextView
+        android:id="@+id/sessione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/nomeSessione"
+        android:layout_alignLeft="@+id/nomeSessione"
+        android:text="@string/SessionName"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

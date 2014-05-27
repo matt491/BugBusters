@@ -8,32 +8,72 @@
         android:targetSdkVersion="19" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
 
+    <!-- 		APPLICATION		 -->
+    
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_launcher1"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="team.bugbusters.acceleraudio.UI1" android:label="@string/app_name">
-            <intent-filter>
+        
+        <!-- SETTING THE BIG ONE WIDGET  -->
+        
+        <receiver android:name="widget_big" >	<!-- Linking the .class which have the core of the actions we want our widget to perform -->
+    		<intent-filter>	<!-- Declaring that we are setting ad UPDATE widget type -->
+        		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    		</intent-filter>
+    		<meta-data android:name="android.appwidget.provider"
+        		       android:resource="@xml/widget_descriptor_big" />	<!-- Linking the "provider descriptor" which contains the provider specifics -->
+		</receiver>
+       
+        
+        <!-- SETTING THE LIL ONE WIDGET -->
+        
+        
+         <receiver android:name="widget_lil" >
+    		<intent-filter>
+        		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    		</intent-filter>
+    		<meta-data android:name="android.appwidget.provider"
+        		       android:resource="@xml/widget_descriptor_lil" />
+		</receiver>
+        
+        <service android:name="DataRecord"/>
+        <service android:name="PlayRecord"/>
+        
+        <!-- 		SETTING UI1			 -->
+        
+        <activity android:name="team.bugbusters.acceleraudio.UI1"
+            	  android:label="Overview (UI#1)"
+            	  android:configChanges="orientation|screenSize|keyboardHidden">
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
+        </activity> 
+        
+        <!--			SETTING UI2			-->
         
         <activity android:name="team.bugbusters.acceleraudio.UI2"
-            android:configChanges="orientation">
-        </activity>
+            android:label="Details (UI#2)" >
+		</activity>
+        
+        <!-- 		SETTING UI3			-->
         
         <activity android:name="team.bugbusters.acceleraudio.UI3"
-            android:configChanges="orientation">
+            android:label="New Music Session (UI#3)">
         </activity>
+        
+        <!-- 		SETTING UI4			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI4"
-            android:configChanges="orientation">
+            android:label="Play (UI#4)">
         </activity>
         
+        <!-- 		SETTING UI5			 -->
+        
         <activity android:name="team.bugbusters.acceleraudio.UI5"
-            android:configChanges="orientation">
+            android:label="Preferences (UI#5)">
         </activity>
         
     </application>

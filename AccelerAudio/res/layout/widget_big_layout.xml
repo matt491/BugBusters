@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="216dp"
+    android:layout_height="112dp"
+    android:background="@android:drawable/alert_dark_frame" >
+
+    <ImageButton
+        android:id="@+id/play_big"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@android:drawable/ic_media_play" />
+
+    <ImageButton
+        android:id="@+id/rec_big"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/play_big"
+        android:src="@android:drawable/ic_btn_speak_now" />
+
+    <ImageButton
+        android:id="@+id/backward_big"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/rec_big"
+        android:src="@android:drawable/ic_media_previous" />
+
+    <TextView
+        android:id="@+id/title_big"
+        android:layout_width="144dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="3dp"
+        android:layout_below="@+id/play_big"
+        android:text="Title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/background_light" />
+
+    <ImageView
+        android:id="@+id/image_big"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/backward_big"
+        android:layout_toRightOf="@+id/backward_big"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageButton
+        android:id="@+id/forward_big"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/image_big"
+        android:layout_alignParentRight="true"
+        android:src="@android:drawable/ic_media_next" />
+
+</RelativeLayout>
