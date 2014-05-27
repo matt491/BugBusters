@@ -156,7 +156,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 											
 				dbHelper.open();
 				long id=dbHelper.createRecord("Rec_", "", datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
-						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i, UI5.campToString(prefs.getInt("sovrdef", 0)),
+						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i, ""+prefs.getInt("sovrdef", 0),
 						timestamp, timestamp, null);
 				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
@@ -238,25 +238,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			else if (k>=10 && k<100) sb.append("0"+k);
 			else sb.append(""+k);	
 		}
-		
-	/*	if (s.length()>=50) {
-			if (s.charAt(49)!=' ' && s.charAt(49)!='-') sb.append(s.charAt(49));
-			else sb.append(""+r.nextInt(3));
-		}
-		else sb.append(""+r.nextInt(3));
-		
-		if (p.length()>=50) {
-			if (p.charAt(49)!=' ' && p.charAt(49)!='-') sb.append(p.charAt(49));
-			else sb.append(""+r.nextInt(6));
-		}
-		else sb.append(""+r.nextInt(6));
-		
-		if (q.length()>=50) {
-			if (q.charAt(49)!=' ' && q.charAt(49)!='-') sb.append(q.charAt(49));
-			else sb.append(""+r.nextInt(6));
-		}
-		else sb.append(""+r.nextInt(6));*/
-		
+			
 		int h=Integer.parseInt(time.charAt(1)+""+time.charAt(12)+""+time.charAt(15));
 		h=Math.abs(Integer.valueOf(h+r.nextInt(10000)).byteValue() & 0xFF);
 		if(h<10) sb.append("00"+h);

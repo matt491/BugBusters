@@ -205,7 +205,7 @@ public class UI3 extends Activity {
         		
             		long id_to_ui2=dbHelper.createRecord(nome, "", datoX.toString(), datoY.toString(), datoZ.toString(),
             				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
-        					i, UI5.campToString(prefs.getInt("sovrdef", 0)), ts, ts, null);
+        					i, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
             		
             		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
         		

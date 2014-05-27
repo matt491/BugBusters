@@ -21,7 +21,9 @@ public class UI4 extends Activity {
 	private Button play;
 	private ImageButton pause,riprendi;
 	private Intent broadcastIntent;
+	private static boolean primavolta=true;
 	public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
+	
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,12 +40,13 @@ public class UI4 extends Activity {
         broadcastIntent = new Intent();
         broadcastIntent.setAction(THREAD_RESPONSE);
         
-       
+        if(primavolta){
+        	primavolta=false;
         playIntentService=new Intent(UI4.this, PlayRecord.class);
         playIntentService.putExtra("ID", id);
     	playIntentService.putExtra("fromUI4", true);
     	startService(playIntentService);
-        
+        }
         
  
         
@@ -76,7 +79,7 @@ public class UI4 extends Activity {
     	broadcastIntent.putExtra("Play", false);
     	broadcastIntent.putExtra("Riprendi", false);
     	sendBroadcast(broadcastIntent);
-    	
+    	primavolta=true;
         finish();	
 	return;
 	}

@@ -22,7 +22,7 @@ public class PlayRecord extends IntentService {
 	private String asseX,asseY,asseZ;
 	private boolean checkX,checkY,checkZ;
 	private int ncamp;
-	private String sovrac;
+	private int sovrac;
 	private String[] s,p,q;
  	private short[] x,y,z;
 	private boolean  pausa,riprendi,stop,play;
@@ -39,7 +39,6 @@ public class PlayRecord extends IntentService {
    		    play=intent.getBooleanExtra("Play", false);
    		    
    		       if(stop){
-   		           stop=false;
    		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
        		    	   at.pause();
        		    	   at.flush();
@@ -48,43 +47,26 @@ public class PlayRecord extends IntentService {
    		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
    		    		at.flush();
        		    	at.release();
-   		        	}
-   		    	       		           
-   		           	
+   		        	}       	
    		       }
    		       
    		       if(pausa) {
-   		    	   pausa=false; 
-   		    	//   pausacall();
    		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
    		    	   	g=at.getPlaybackHeadPosition();
-   		    	   	at.pause();  
-   		    	 
+   		    	   	at.pause();   
    		       }
 				
    		    if(riprendi) {
-		    	   riprendi=false;
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
 		    	   at.setPlaybackHeadPosition(g);
 		    	   at.play();    
-		       }
-   		       
-
-			
-		}
-		
+		       }		
+		}	
 	};
 	
 	public PlayRecord() {
 		super("PlayRecord");
 	}
-
-    
- /*   protected void pausacall(){
-    	  if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-		    	   	g=at.getPlaybackHeadPosition();
-		    	   	at.pause();  
-    }*/
 
 
 	@Override
@@ -114,15 +96,12 @@ public class PlayRecord extends IntentService {
         checkY=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
         ncamp=cr.getInt(cr.getColumnIndex(DbAdapter.KEY_NUMCAMP));
-        sovrac=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+        sovrac=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
         
         //Chiusura DB
         dbHelper.close();
         
-        if(sovrac.equals("Scelta 0")) k=0;
-        if(sovrac.equals("Scelta 1")) k=1;
-        if(sovrac.equals("Scelta 2")) k=2;
-        if(sovrac.equals("Scelta 3")) k=3;
+        k=0;
         
         s=asseX.split(" "); 
         p=asseY.split(" "); 
@@ -149,21 +128,12 @@ public class PlayRecord extends IntentService {
        
          minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
          
-         at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO,
-                                   AudioFormat.ENCODING_PCM_16BIT, 1000*minsize, AudioTrack.MODE_STATIC);
-
-         
-         
+                
 
         
         short[] samples;
         
-        
 
-        	
-        switch(k){
-	        
-	        case 0: {
 	        	short[] s1 = new short[0];
 		        if(checkX){
 		        	s1 = new short[2*minsize];
@@ -268,10 +238,9 @@ public class PlayRecord extends IntentService {
 		         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
 		         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
 		         
-		        break;
-	        } //Fine case 0 "Scelta 0" durata=6*2*minsize/44100 uguale per tutti <-- FISSO --> ALCATEL=2.29s con 3 assi
+
 	    
-	        case 1: {
+	  /*      case 1: {
 	        	samples = new short[2*minsize+20*x.length];
 		        if(checkX)
 		            if(x.length >= minsize)
@@ -393,11 +362,12 @@ public class PlayRecord extends IntentService {
 	        } //Fine case 2 "Scelta 2" durata=ncamp*minsize/44100  <-- LUNGO/PSICADELICO -->
 	        
 	       	        
-        } //Fine switch
+        } //Fine switch*/
         
        
 
-        
+        at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
+        					AudioTrack.MODE_STATIC);
         at.write(finale, 0, finale.length); 
         at.play();
         

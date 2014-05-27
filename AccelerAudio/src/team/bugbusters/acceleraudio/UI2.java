@@ -34,7 +34,7 @@ public class UI2 extends Activity {
 	private ImageView iv;
 	private String timestamp_ric;
 	private String nome_ric;
-	private String sovra_ric;
+	private int sovra_ric;
 	private String dataulitmamodifica;
 	private String codifica;
     private boolean x_selected, y_selected, z_selected;
@@ -111,7 +111,7 @@ public class UI2 extends Activity {
         x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
         y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-        sovra_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
         codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
         
         //Chiusura Cursor e DB
@@ -165,8 +165,8 @@ public class UI2 extends Activity {
         nomevar.setSelection(nomevar.getText().length());
         timevar.setText(timestamp_ric);
         ultimavar.setText(dataulitmamodifica);
-        result.setText(sovra_ric);
-        sb.setProgress(UI5.stringToCamp(sovra_ric));
+        result.setText(""+sovra_ric);
+        sb.setProgress(sovra_ric);
         
         
        
@@ -175,26 +175,8 @@ public class UI2 extends Activity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            	if(progress<15){
-            		seekBar.setProgress(0);
-            		result.setText(UI5.campToString(sb.getProgress()));
-            		}
-                if(progress>15 && progress<40){
-                	seekBar.setProgress(25);
-                	result.setText(UI5.campToString(sb.getProgress()));
-                	}
-                if(progress>40 && progress<60){
-                	seekBar.setProgress(50);
-                	result.setText(UI5.campToString(sb.getProgress()));
-                	}
-                if(progress>60 && progress<80){
-                	seekBar.setProgress(75);
-                	result.setText(UI5.campToString(sb.getProgress()));
-                	}
-                if(progress>80){
-                	seekBar.setProgress(100);
-                	result.setText(UI5.campToString(sb.getProgress()));
-                	}
+            	sb.setProgress(seekBar.getProgress());
+            	result.setText(""+sb.getProgress());
             }
 
 			@Override
@@ -202,7 +184,8 @@ public class UI2 extends Activity {
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				result.setText(UI5.campToString(sb.getProgress()));
+				sb.setProgress(seekBar.getProgress());
+				result.setText(""+sb.getProgress());
 				
 			}});
         
@@ -213,7 +196,7 @@ public class UI2 extends Activity {
             	String nomeNuovo=nomevar.getText().toString();
             	
             	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
-            		sb.getProgress()!=UI5.stringToCamp(sovra_ric) || !(nome_ric.equals(nomeNuovo)) ){
+            		sb.getProgress()!=sovra_ric || !(nome_ric.equals(nomeNuovo)) ){
             	
             		if(nomeNuovo.contains("'") || (nomeNuovo.contains("_") && !(nome_ric.equals(nomeNuovo))))
             			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
@@ -226,7 +209,7 @@ public class UI2 extends Activity {
             				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
             				dbHelper.open();
             				dbHelper.updateRecord(id_ric, nome_ric, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
-            						UI5.campToString(sb.getProgress()), dataulitmamodifica);
+            						""+sb.getProgress(), dataulitmamodifica);
             				dbHelper.close();
             		
             
@@ -261,7 +244,7 @@ public class UI2 extends Activity {
 	        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
 	        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
 	        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-	        sovra_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+	        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
 	        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
 	        
 	        //Chiusura Cursor e DB
