@@ -1,11 +1,11 @@
 package team.bugbusters.acceleraudio;
 
-//import team.bugbusters.acceleraudio.PlayRecord.MyPlayerReceiver;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
@@ -34,6 +35,11 @@ public class UI4 extends Activity {
 	private String durata;
 	private static boolean primavolta=true;
 	public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
+	private TextView time;
+	private SeekBar sbtime;
+	private TimerCounter timer;
+	private long prec,endtime;
+	private final long intervallo=1L;
 	
 	
 	@Override
@@ -47,6 +53,11 @@ public class UI4 extends Activity {
         iv = (ImageView) findViewById(R.id.imageView1);
         name = (TextView) findViewById(R.id.textView1);
         duration = (TextView) findViewById(R.id.textView3);
+        time = (TextView) findViewById(R.id.textView4);
+        sbtime=(SeekBar)findViewById(R.id.seekBar1);
+        sbtime.setEnabled(false);
+        
+        
         db = new DbAdapter(this);
         
         pkg_r=getPackageName();   
@@ -115,6 +126,9 @@ public class UI4 extends Activity {
         playIntentService=new Intent(UI4.this, PlayRecord.class);
         playIntentService.putExtra("ID", id);
     	playIntentService.putExtra("fromUI4", true);
+    	endtime=1959;
+    	sbtime.setMax((int) endtime);
+    	creaTimer(endtime,intervallo,0);
     	startService(playIntentService);
         }
         
@@ -125,8 +139,8 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	broadcastIntent.putExtra("Pausa", true);
             	broadcastIntent.putExtra("Riprendi", false);
-            	broadcastIntent.putExtra("Play", false);
             	sendBroadcast(broadcastIntent);
+            	prec=timer.myCancel();
             	pause.setImageResource(android.R.drawable.ic_media_play);
             }});
         
@@ -134,12 +148,20 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	broadcastIntent.putExtra("Riprendi", true);
             	broadcastIntent.putExtra("Pausa", false);
-            	broadcastIntent.putExtra("Play", false);
+            	creaTimer(endtime-prec, intervallo, prec);
             	sendBroadcast(broadcastIntent);	
             }});
         
         
 	} //FINE onCreate()
+	
+	
+	public void creaTimer(long fine, long this_intervallo, long prev ){
+		timer=new TimerCounter(fine, this_intervallo);
+    	timer.end=fine;
+    	timer.previous=prev;
+    	timer.start();
+	}
 	
 	//Quando viene premuto il tasto Back
 	@Override
@@ -183,5 +205,37 @@ public class UI4 extends Activity {
 		return (super.onOptionsItemSelected(item));
 	}
 	
-	
+	public class TimerCounter extends CountDownTimer{
+		 private long end;
+		 private long last;
+		 private long previous=0;
+		 private long curr;
+		 
+	      public TimerCounter(long millisInFuture, long countDownInterval) {
+	          super(millisInFuture, countDownInterval);
+	      }
+
+	      @Override
+	      public void onFinish() {
+	    	  time.setText((float)((end+previous)/100)/10+"");
+	    	  creaTimer(end+previous, intervallo, 0);
+	      }
+	      
+	      public long myCancel(){
+	    	  last=previous+end-curr;
+	    	  super.cancel(); 
+	    	  return last;
+	      }
+	      
+
+	      @Override
+	      public void onTick(long millisUntilFinished) {
+	    	  curr=millisUntilFinished;
+	          time.setText((float)((previous+end-curr)/100)/10 +"");
+	          sbtime.setProgress((int)(previous+end-curr));
+	          last=previous+end-curr;
+	      }
+	  }
+
+		
 }

@@ -25,10 +25,10 @@ public class PlayRecord extends IntentService {
 	private int sovrac;
 	private String[] s,p,q;
  	private short[] x,y,z;
-	private boolean  pausa,riprendi,stop,play;
+	private boolean  pausa,riprendi,stop;
 	private int g,k,minsize;
 	private AudioTrack at;
-	private short[] finale = new short[0];
+	private short[] finale;
 	
 	private BroadcastReceiver receiver=new BroadcastReceiver(){
 		  
@@ -36,7 +36,7 @@ public class PlayRecord extends IntentService {
 			pausa=intent.getBooleanExtra("Pausa", false);
    		    riprendi=intent.getBooleanExtra("Riprendi", false);
    		    stop=intent.getBooleanExtra("Stop", false);
-   		    play=intent.getBooleanExtra("Play", false);
+   		    
    		    
    		       if(stop){
    		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
@@ -47,13 +47,14 @@ public class PlayRecord extends IntentService {
    		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
    		    		at.flush();
        		    	at.release();
-   		        	}       	
+   		        	}      
+   		        stopSelf();
    		       }
    		       
    		       if(pausa) {
    		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-   		    	   	g=at.getPlaybackHeadPosition();
    		    	   	at.pause();   
+   		       		g=at.getPlaybackHeadPosition();
    		       }
 				
    		    if(riprendi) {
@@ -73,7 +74,6 @@ public class PlayRecord extends IntentService {
 	protected void onHandleIntent(Intent intent) {
         registerReceiver(receiver,new IntentFilter(UI4.THREAD_RESPONSE));
         
-        pausa=riprendi=stop=false;
         dbHelper = new DbAdapter(this);
         
         id_to_process=intent.getLongExtra("ID", -1);
@@ -101,7 +101,6 @@ public class PlayRecord extends IntentService {
         //Chiusura DB
         dbHelper.close();
         
-        k=0;
         
         s=asseX.split(" "); 
         p=asseY.split(" "); 
@@ -123,17 +122,10 @@ public class PlayRecord extends IntentService {
         
         for(i=0;i<q.length;i++)
     		z[i]=Short.parseShort(q[i]);
-      
-
-       
-         minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
-         
-                
 
         
-        short[] samples;
+        minsize=AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO , AudioFormat.ENCODING_PCM_16BIT);
         
-
 	        	short[] s1 = new short[0];
 		        if(checkX){
 		        	s1 = new short[2*minsize];
@@ -141,7 +133,7 @@ public class PlayRecord extends IntentService {
 		           	 at.write(x, 0, x.length);
 		            else {
 		           	 int j=0;
-		           	 for(i=0;i<s.length;i++){
+		           	 for(i=0;i<s1.length;i++){
 		           		 s1[i]=x[j];
 		           		 j++;
 		           		 if(j==x.length) j=0;
@@ -369,10 +361,11 @@ public class PlayRecord extends IntentService {
         at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
         					AudioTrack.MODE_STATIC);
         at.write(finale, 0, finale.length); 
+        at.setLoopPoints(0, finale.length-1, -1);
         at.play();
         
-        at.setLoopPoints(0, finale.length, -1);
         Looper.loop();
+
 	
       
 	
@@ -380,7 +373,6 @@ public class PlayRecord extends IntentService {
 	  
         
   public void onDestroy(){
-	 
 	  this.unregisterReceiver(receiver);
 	  Toast.makeText(getApplicationContext(), "Servizio Terminato", Toast.LENGTH_SHORT).show();
 	  super.onDestroy();
