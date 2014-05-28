@@ -325,21 +325,19 @@ public class UI1 extends Activity {
 	       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
 	       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
 	       int ncamp=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMP));
-	       String sovrac=c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+	       int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
 	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
 	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-	       String sovrac_new;
+	       int sovrac_new;
 	       
 	       if(checkX) checkY=!checkY;
 	       if(checkY) checkZ=!checkZ;
 	       if(checkZ) checkX=!checkX;
-	       if(sovrac.equals("Scelta 0")) sovrac_new="Scelta 1";
-	       else if(sovrac.equals("Scelta 1")) sovrac_new="Scelta 2";
-	       else if(sovrac.equals("Scelta 2")) sovrac_new="Scelta 3";
-	       else if(sovrac.equals("Scelta 3")) sovrac_new="Scelta 4";
-	       else sovrac_new="Scelta 0";
 	       
-	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac_new, datar, dataul, null);
+	       if(sovrac<=90) sovrac_new=sovrac+10;
+	       else sovrac_new=sovrac-80;
+	       
+	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, ""+sovrac_new, datar, dataul, null);
 		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
 		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
 			
