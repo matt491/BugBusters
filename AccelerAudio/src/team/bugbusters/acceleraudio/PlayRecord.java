@@ -122,7 +122,7 @@ public class PlayRecord extends IntentService {
         
 	        	short[] s1 = new short[0];
 		        if(checkX){
-		        	s1 = new short[2*minsize];
+		        	s1 = new short[minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
@@ -138,7 +138,7 @@ public class PlayRecord extends IntentService {
 		         
 		        short[] s2 =new short[0];
 				if(checkZ){
-					s2 =new short[2*minsize];
+					s2 =new short[minsize];
 		        	if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
@@ -154,7 +154,7 @@ public class PlayRecord extends IntentService {
 		        
 		        short[] s3 =new short[0];	
 		        if(checkY)	{ 
-		         s3 =new short[2*minsize];
+		         s3 =new short[minsize];
 		         if(y.length >= minsize)
 		        	 at.write(y, 0, y.length);
 		         else {
@@ -170,7 +170,7 @@ public class PlayRecord extends IntentService {
 		        
 		        short[] s4 =new short[0];	 
 		        if(checkZ){
-		        	s4 =new short[2*minsize];
+		        	s4 =new short[minsize];
 		            if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
@@ -186,7 +186,7 @@ public class PlayRecord extends IntentService {
 		        
 		        short[] s5 =new short[0];    
 		        if(checkX){
-		        	s5 =new short[2*minsize];
+		        	s5 =new short[minsize];
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
@@ -202,7 +202,7 @@ public class PlayRecord extends IntentService {
 		            
 		            short[] s6 =new short[0];    
 		           	if(checkY)	{
-		           		s6 =new short[2*minsize];  
+		           		s6 =new short[minsize];  
 				         if(y.length >= minsize)
 				        	 at.write(y, 0, y.length);
 				         else {
@@ -352,7 +352,7 @@ public class PlayRecord extends IntentService {
         
        
 
-        at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
+        at = new AudioTrack(AudioManager.STREAM_MUSIC, 24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
         					AudioTrack.MODE_STATIC);
         at.write(finale, 0, finale.length); 
         at.setLoopPoints(0, finale.length-1, -1);
