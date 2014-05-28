@@ -48,13 +48,14 @@ public class PlayRecord extends IntentService {
    		    		at.flush();
        		    	at.release();
    		        	}      
-   		        stopSelf();
+   		           stopSelf();
    		       }
    		       
    		       if(pausa) {
    		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-   		    	   	at.pause();   
-   		       		g=at.getPlaybackHeadPosition();
+   		    	   g=at.getPlaybackHeadPosition();	
+   		    	   at.pause();   
+   		       		
    		       }
 				
    		    if(riprendi) {
@@ -364,8 +365,8 @@ public class PlayRecord extends IntentService {
         at.setLoopPoints(0, finale.length-1, -1);
         at.play();
         
-        Looper.loop();
-
+       // 10 ore di Sleep XD XD
+        SystemClock.sleep(36000000);
 	
       
 	
