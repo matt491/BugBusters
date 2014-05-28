@@ -40,11 +40,11 @@ public class PlayRecord extends IntentService {
 		    	   at.flush();
 		    	   at.release();
 	           }
-	       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
-				at.flush();
-				at.release();
-				}      
-				stopSelf();
+		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+					at.flush();
+					at.release();
+					}      
+					stopSelf();
 	       }
 	       
 	       if(pausa) {
@@ -360,6 +360,19 @@ public class PlayRecord extends IntentService {
         
        // 10 ore di Sleep XD XD
         SystemClock.sleep(36000000);
+        
+        //Dopo 10 ore si termina il servizio e l'AudioTrack
+        //ES: si è dimenticati il telefono in ricarica con la riproduzione in corso o in pausa
+        if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+	    	   at.pause();
+	    	   at.flush();
+	    	   at.release();
+        }
+	       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+				at.flush();
+				at.release();
+				}      
+				stopSelf();
 	
       
 	
