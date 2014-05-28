@@ -27,6 +27,7 @@ public class PlayRecord extends IntentService {
 	private AudioTrack at;
 	private short[] finale;
 	private final int minsize=7000;
+	private int sc;
 	private BroadcastReceiver receiver=new BroadcastReceiver(){
 		  
 		public void onReceive(Context context, Intent intent) {
@@ -117,104 +118,75 @@ public class PlayRecord extends IntentService {
         for(i=0;i<q.length;i++)
     		z[i]=Short.parseShort(q[i]);
 
-        
-      //  minsize=AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO , AudioFormat.ENCODING_PCM_16BIT);
+
+        sc=calcoloSovra(sovrac, x.length+y.length+z.length);
         
 	        	short[] s1 = new short[0];
 		        if(checkX){
-		        	s1 = new short[minsize];
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
+		        	s1 = new short[minsize+sc*x.length];
 		           	 j=0;
 		           	 for(i=0;i<s1.length;i++){
 		           		 s1[i]=x[j];
 		           		 j++;
-		           		 if(j==x.length) j=0;
-		           	 }
-		           	
+		           		 if(j==x.length) j=0;		           	
 		            }
 		        }
 		         
 		        short[] s2 =new short[0];
 				if(checkZ){
-					s2 =new short[minsize];
-		        	if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
+					s2 =new short[minsize+sc*z.length];
 		           	 j=0;
 		           	 for(i=0;i<s2.length;i++){
 		           		s2[i]=z[j];
 		           		 j++;
 		           		 if(j==z.length) j=0;
 		           	 }
-		          
-		            } 
 		            }
 		        
 		        short[] s3 =new short[0];	
 		        if(checkY)	{ 
-		         s3 =new short[minsize];
-		         if(y.length >= minsize)
-		        	 at.write(y, 0, y.length);
-		         else {
+		        	s3 =new short[minsize+sc*y.length];
 		        	 j=0;
 		        	 for(i=0;i<s3.length;i++){
 		        		 s3[i]=y[j];
 		        		 j++;
 		        		 if(j==y.length) j=0;
-		        	 }
-		        		 
+	 
 		         }
 		        }
 		        
 		        short[] s4 =new short[0];	 
 		        if(checkZ){
-		        	s4 =new short[minsize];
-		            if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
+		        	s4 =new short[minsize+sc*z.length];
 		           	 j=0;
 		           	 for(i=0;i<s4.length;i++){
 		           		s4[i]=z[j];
 		           		 j++;
 		           		 if(j==z.length) j=0;
-		           	 }
-
 		            }
 		        }
 		        
 		        short[] s5 =new short[0];    
 		        if(checkX){
-		        	s5 =new short[minsize];
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
-		           	 j=0;
+		        	s5 =new short[minsize+sc*x.length];
+		        	j=0;
 		           	 for(i=0;i<s5.length;i++){
 		           		s5[i]=x[j];
 		           		 j++;
 		           		 if(j==x.length) j=0;
 		           	 }
-
-		            }
 		            }
 		            
-		            short[] s6 =new short[0];    
-		           	if(checkY)	{
-		           		s6 =new short[minsize];  
-				         if(y.length >= minsize)
-				        	 at.write(y, 0, y.length);
-				         else {
-				        	 j=0;
-				        	 for(i=0;i<s6.length;i++){
-				        		 s6[i]=y[j];
-				        		 j++;
-				        		 if(j==y.length) j=0;
-				        	 }
-
-		            }
-		           	}
+	            short[] s6 =new short[0];    
+	           	if(checkY)	{
+	           		s6 =new short[minsize+sc*y.length];  
+			        j=0;
+			        for(i=0;i<s6.length;i++){
+			        	s6[i]=y[j];
+			        	j++;
+			        	if(j==y.length) j=0;
+			        }
+		         }
 				         
 		         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
 		         System.arraycopy(s1, 0, finale, 0, s1.length);	
@@ -226,101 +198,7 @@ public class PlayRecord extends IntentService {
 		         
 
 	    
-	  /*      case 1: {
-	        	samples = new short[2*minsize+20*x.length];
-		        if(checkX)
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=x[j];
-		           		 j++;
-		           		 if(j==x.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		            }
-		        
-		        samples = new short[2*minsize+20*z.length];
-		        if(checkZ)
-		        	if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=z[j];
-		           		 j++;
-		           		 if(j==z.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		            }
-		        
-		        samples = new short[2*minsize+20*y.length]; 
-		        if(checkY)	 
-		         if(y.length >= minsize)
-		        	 at.write(y, 0, y.length);
-		         else {
-		        	 int j=0;
-		        	 for(i=0;i<samples.length;i++){
-		        		 samples[i]=y[j];
-		        		 j++;
-		        		 if(j==y.length) j=0;
-		        	 }
-		        		 
-		        	 at.write(samples, 0, samples.length);
-		         }
-		        
-		        samples = new short[2*minsize+20*z.length];
-		        if(checkZ)
-		            if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=z[j];
-		           		 j++;
-		           		 if(j==z.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		            }
-		        
-		        samples = new short[2*minsize+20*x.length];
-		        if(checkX)
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=x[j];
-		           		 j++;
-		           		 if(j==x.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		           	 
-		            }
-		        samples = new short[2*minsize+20*y.length]; 
-		        if(checkY)	 
-				    if(y.length >= minsize)
-			        	 at.write(y, 0, y.length);
-			         else {
-			        	 int j=0;
-			        	 for(i=0;i<samples.length;i++){
-			        		 samples[i]=y[j];
-			        		 j++;
-			        		 if(j==y.length) j=0;
-			        	 }
-			        		 
-			        	 at.write(samples, 0, samples.length);    
-		            }
-	        	
-	        	break;
-	        	
-	        } //Fine case 1 "Scelta 1" durata=6*(2*minsize+20*numcamp)/44100  <-- VARIABILE -->
-	        
+	 /*
 	        case 2: {
 	        	short[] s = new short[minsize];
 	        	if(checkX)
@@ -384,6 +262,15 @@ public class PlayRecord extends IntentService {
 	  this.unregisterReceiver(receiver);
 	  Toast.makeText(getApplicationContext(), "Servizio Terminato", Toast.LENGTH_SHORT).show();
 	  super.onDestroy();
+	  
+  }
+  
+  public static int calcoloSovra(int s, int camp){
+	  if(camp>=1000) return (int) (30*s/100);
+	  else if (camp<1000) return (int) (40*s/100);
+	  else if (camp<500) return (int) (80*s/100);
+	  else if (camp<250) return (int) (120*s/100);
+	  else return (200*s/100);
 	  
   }
   

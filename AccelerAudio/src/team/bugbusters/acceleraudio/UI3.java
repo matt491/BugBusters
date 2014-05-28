@@ -262,7 +262,12 @@ public class UI3 extends Activity {
  		
  		return (super.onOptionsItemSelected(item));
  	}
-	
+ 	
+ /*	public long calcoloTempo(int n_camp, int sovra){
+ 		if(n_camp>1000) return (long) ((42000+0.4*sovra*2*n_camp)/24);
+ 		
+ 	}
+	*/
 	  public class MyCounter extends CountDownTimer{
 		 private long end;
 		 private long last;
