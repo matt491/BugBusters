@@ -2,15 +2,16 @@ package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -32,6 +33,7 @@ public class UI4 extends Activity {
 	private String nome;
 	private String thumbnail;
 	private String durata;
+	private SharedPreferences prefs;
 	private static boolean primavolta=true;
 	public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
 	private TextView time;
@@ -40,6 +42,12 @@ public class UI4 extends Activity {
 	private long prec,endtime;
 	private final long intervallo=1L;
 	private boolean on_play=true;
+	private static final int PREVIOUS = 0;
+	private static final int NEXT = 1;
+	private static final int BY_INSERTION = -1;
+	private static final int BY_NAME = 0;
+	private static final int BY_DATE = 1;
+	private static final int BY_DURATION = 2;
 	
 	
 	@Override
@@ -88,10 +96,9 @@ public class UI4 extends Activity {
             	sendBroadcast(broadcastIntent);
             	stopService(playIntentService);
             	timer.cancel();
-            	//Calcola id precedente
-            	//id=precedente(id);
+            	id = searchId(id, PREVIOUS, currentSorting());
             	broadcastIntent.putExtra("Stop", false);  
-            	id--;
+            	//id--;
             	impostaUI4(id);
             	playIntentService.putExtra("ID", id);
             	endtime=1959;
@@ -109,10 +116,9 @@ public class UI4 extends Activity {
             	sendBroadcast(broadcastIntent);
             	stopService(playIntentService);
             	timer.cancel();
-            	//Calcola id successivo
-            	//id=precedente(id);
+            	id = searchId(id, NEXT, currentSorting());
             	broadcastIntent.putExtra("Stop", false);  
-            	id++;
+            	//id++;
             	impostaUI4(id);
             	playIntentService.putExtra("ID", id);
             	endtime=1959;
@@ -121,7 +127,6 @@ public class UI4 extends Activity {
             	startService(playIntentService);
             	
             }});
-        
         
         pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -147,6 +152,94 @@ public class UI4 extends Activity {
         
 	} //FINE onCreate()
 	
+	public int currentSorting() {
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		int currentSorting = BY_INSERTION; //Default
+		
+		if(prefs.getBoolean("sortedByName", false)) {
+			currentSorting = BY_NAME;
+		}
+		else if(prefs.getBoolean("sortedByDate", false)) {
+			currentSorting = BY_DATE;
+		}
+		else if(prefs.getBoolean("sortedByDuration", false)) {
+			currentSorting = BY_DURATION;
+		}
+		
+		return currentSorting;
+	}
+	
+	public long searchId(long playingId, int nextOrPrevious, int currentSorting) {
+	long previousOrNextId;
+	
+	db.open();
+	
+	switch(currentSorting) {
+	 
+	 case BY_NAME:
+		 c = db.fetchAllRecordSortedByName();
+		 break;
+		 
+	 case BY_DATE:
+		 c = db.fetchAllRecordSortedByDate();
+		 break;
+		 
+	 case BY_DURATION:
+		 c = db.fetchAllRecordSortedByDuration();
+		 break;
+		 
+	 default:
+		 c = db.fetchAllRecord();
+		 break;
+	 }
+	
+	
+	
+ 	 switch(nextOrPrevious) {
+ 	 case PREVIOUS:
+ 		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+			if(c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+				if(!c.isFirst()) {
+					c.moveToPrevious();
+					previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+					c.close();
+					db.close();
+					return previousOrNextId;
+				}
+				else {
+					c.moveToLast();
+					previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+					c.close();
+					db.close();
+					return previousOrNextId;
+				}
+			 }
+			}
+ 		 
+ 	 case NEXT:
+ 		 for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+ 			 if(c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+ 				 if(!c.isLast()) {
+ 					 c.moveToNext();
+ 					 previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+ 					 c.close();
+ 					 db.close();
+ 					 return previousOrNextId;
+ 				 }
+ 				 else {
+ 					 c.moveToFirst();
+ 					 previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+ 					 c.close();
+ 					 db.close();
+ 					 return previousOrNextId;
+ 				 }
+ 			 }
+ 		 }
+ 		 default:
+ 			 previousOrNextId = playingId;
+ 			 return previousOrNextId;	 
+ 	 }
+    }
 	
 	public void creaTimer(long fine, long this_intervallo, long prev ){
 		timer=new TimerCounter(fine, this_intervallo);
@@ -211,7 +304,6 @@ public class UI4 extends Activity {
         duration.setText(durata);
         on_play=true;
         pause_resume.setImageResource(android.R.drawable.ic_media_pause);
-        
         }
 	
 	//Quando viene premuto il tasto Back
