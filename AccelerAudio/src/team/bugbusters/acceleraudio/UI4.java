@@ -22,8 +22,7 @@ public class UI4 extends Activity {
 	private long id;
 	private String pkg_r;
 	private Intent playIntentService;
-	private Button play;
-	private ImageButton pause,riprendi;
+	private ImageButton pause_resume,next,previous;
 	private ImageView iv;
 	private TextView name;
 	private TextView duration;
@@ -40,6 +39,7 @@ public class UI4 extends Activity {
 	private TimerCounter timer;
 	private long prec,endtime;
 	private final long intervallo=1L;
+	private boolean on_play=true;
 	
 	
 	@Override
@@ -47,24 +47,118 @@ public class UI4 extends Activity {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.ui4_layout);
-        play=(Button)findViewById(R.id.playbutton);
-        pause=(ImageButton)findViewById(R.id.imageButton1);
-        riprendi=(ImageButton)findViewById(R.id.imageButton3);
+        pause_resume=(ImageButton)findViewById(R.id.imageButton1);
+        next=(ImageButton)findViewById(R.id.imageButton3);
+        previous=(ImageButton)findViewById(R.id.imageButton2);
         iv = (ImageView) findViewById(R.id.imageView1);
         name = (TextView) findViewById(R.id.textView1);
         duration = (TextView) findViewById(R.id.textView3);
         time = (TextView) findViewById(R.id.textView4);
         sbtime=(SeekBar)findViewById(R.id.seekBar1);
         sbtime.setEnabled(false);
-        
-        
+       
         db = new DbAdapter(this);
         
         pkg_r=getPackageName();   
         id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
         
+        impostaUI4(id);
+        
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(THREAD_RESPONSE);
+        playIntentService=new Intent(UI4.this, PlayRecord.class);
+        
+        if(primavolta){
+        	primavolta=false;
+        
+        playIntentService.putExtra("ID", id);
+        //endtime=Float.parseFloat(durata)*1000;
+    	endtime=1959;
+    	sbtime.setMax((int) endtime);
+    	creaTimer(endtime,intervallo,0);
+    	startService(playIntentService);
+        }
+        
+ 
+        previous.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	broadcastIntent.putExtra("Stop", true);
+            	broadcastIntent.putExtra("Pausa", false);
+            	broadcastIntent.putExtra("Play", false);
+            	broadcastIntent.putExtra("Riprendi", false);  	
+            	sendBroadcast(broadcastIntent);
+            	stopService(playIntentService);
+            	timer.cancel();
+            	//Calcola id precedente
+            	//id=precedente(id);
+            	id--;
+            	impostaUI4(id);
+            	playIntentService.putExtra("ID", id);
+            	endtime=1959;
+            	sbtime.setMax((int) endtime);
+            	creaTimer(endtime,intervallo,0);
+            	startService(playIntentService);
+            	
+            }});
+        
+        next.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	broadcastIntent.putExtra("Stop", true);
+            	broadcastIntent.putExtra("Pausa", false);
+            	broadcastIntent.putExtra("Play", false);
+            	broadcastIntent.putExtra("Riprendi", false);  	
+            	sendBroadcast(broadcastIntent);
+            	stopService(playIntentService);
+            	timer.cancel();
+            	//Calcola id successivo
+            	//id=precedente(id);
+            	id++;
+            	impostaUI4(id);
+            	playIntentService.putExtra("ID", id);
+            	endtime=1959;
+            	sbtime.setMax((int) endtime);
+            	creaTimer(endtime,intervallo,0);
+            	startService(playIntentService);
+            	
+            }});
+        
+        
+        pause_resume.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	if(on_play){
+            		on_play=false;
+	            	broadcastIntent.putExtra("Pausa", true);
+	            	broadcastIntent.putExtra("Riprendi", false);
+	            	sendBroadcast(broadcastIntent);
+	            	prec=timer.myCancel();
+	            	pause_resume.setImageResource(android.R.drawable.ic_media_play);
+            	}
+            	else{
+            		on_play=true;
+            		broadcastIntent.putExtra("Riprendi", true);
+                	broadcastIntent.putExtra("Pausa", false);
+                	creaTimer(endtime-prec, intervallo, prec);
+                	sendBroadcast(broadcastIntent);	
+                	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
+            	}
+            }});
+        
+
+        
+	} //FINE onCreate()
+	
+	
+	public void creaTimer(long fine, long this_intervallo, long prev ){
+		timer=new TimerCounter(fine, this_intervallo);
+    	timer.end=fine;
+    	timer.previous=prev;
+    	timer.start();
+	}
+	
+	
+	public void impostaUI4(long this_id){
         db.open();
-        c = db.fetchRecordById(id);
+        c = db.fetchRecordById(this_id);
         c.moveToNext();
         
         thumbnail = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
@@ -113,55 +207,10 @@ public class UI4 extends Activity {
 			iv.setImageResource(R.drawable.ic_music_9);
 			break;
 		}
-        
         name.setText(nome);
         duration.setText(durata);
         
-        
-        broadcastIntent = new Intent();
-        broadcastIntent.setAction(THREAD_RESPONSE);
-        
-        if(primavolta){
-        	primavolta=false;
-        playIntentService=new Intent(UI4.this, PlayRecord.class);
-        playIntentService.putExtra("ID", id);
-    	playIntentService.putExtra("fromUI4", true);
-    	endtime=1959;
-    	sbtime.setMax((int) endtime);
-    	creaTimer(endtime,intervallo,0);
-    	startService(playIntentService);
         }
-        
- 
-        
-        
-        pause.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	broadcastIntent.putExtra("Pausa", true);
-            	broadcastIntent.putExtra("Riprendi", false);
-            	sendBroadcast(broadcastIntent);
-            	prec=timer.myCancel();
-            	pause.setImageResource(android.R.drawable.ic_media_play);
-            }});
-        
-        riprendi.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	broadcastIntent.putExtra("Riprendi", true);
-            	broadcastIntent.putExtra("Pausa", false);
-            	creaTimer(endtime-prec, intervallo, prec);
-            	sendBroadcast(broadcastIntent);	
-            }});
-        
-        
-	} //FINE onCreate()
-	
-	
-	public void creaTimer(long fine, long this_intervallo, long prev ){
-		timer=new TimerCounter(fine, this_intervallo);
-    	timer.end=fine;
-    	timer.previous=prev;
-    	timer.start();
-	}
 	
 	//Quando viene premuto il tasto Back
 	@Override
@@ -204,6 +253,9 @@ public class UI4 extends Activity {
 		
 		return (super.onOptionsItemSelected(item));
 	}
+
+	
+	
 	
 	public class TimerCounter extends CountDownTimer{
 		 private long end;
