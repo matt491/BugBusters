@@ -84,13 +84,13 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	broadcastIntent.putExtra("Stop", true);
             	broadcastIntent.putExtra("Pausa", false);
-            	broadcastIntent.putExtra("Play", false);
-            	broadcastIntent.putExtra("Riprendi", false);  	
+            	broadcastIntent.putExtra("Riprendi", false);  
             	sendBroadcast(broadcastIntent);
             	stopService(playIntentService);
             	timer.cancel();
             	//Calcola id precedente
             	//id=precedente(id);
+            	broadcastIntent.putExtra("Stop", false);  
             	id--;
             	impostaUI4(id);
             	playIntentService.putExtra("ID", id);
@@ -105,13 +105,13 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	broadcastIntent.putExtra("Stop", true);
             	broadcastIntent.putExtra("Pausa", false);
-            	broadcastIntent.putExtra("Play", false);
             	broadcastIntent.putExtra("Riprendi", false);  	
             	sendBroadcast(broadcastIntent);
             	stopService(playIntentService);
             	timer.cancel();
             	//Calcola id successivo
             	//id=precedente(id);
+            	broadcastIntent.putExtra("Stop", false);  
             	id++;
             	impostaUI4(id);
             	playIntentService.putExtra("ID", id);
@@ -209,6 +209,8 @@ public class UI4 extends Activity {
 		}
         name.setText(nome);
         duration.setText(durata);
+        on_play=true;
+        pause_resume.setImageResource(android.R.drawable.ic_media_pause);
         
         }
 	
