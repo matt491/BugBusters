@@ -44,7 +44,7 @@ public class PlayRecord extends IntentService {
 					at.flush();
 					at.release();
 					}      
-					stopSelf();
+			   stopSelf();
 	       }
 	       
 	       if(pausa) {
@@ -371,8 +371,9 @@ public class PlayRecord extends IntentService {
 	       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
 				at.flush();
 				at.release();
-				}      
-				stopSelf();
+		}      
+				
+        stopSelf();
 	
       
 	
