@@ -29,6 +29,10 @@ public class CustomList extends ArrayAdapter<String[]> {
 		this.toFill = toFill;
 	}
 	
+	public List<String[]> getList(){
+		return this.toFill;
+	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View rowView = convertView;
@@ -92,9 +96,4 @@ public class CustomList extends ArrayAdapter<String[]> {
 		
 		return rowView;
 	}
-	
-	public List<String[]> getList(){
-		return this.toFill;
-	}
-
 }
