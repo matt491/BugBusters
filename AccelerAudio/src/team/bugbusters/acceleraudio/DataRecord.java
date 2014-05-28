@@ -177,22 +177,19 @@ public class DataRecord extends IntentService implements SensorEventListener {
     		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     		valprec[0]=valprec[1]=valprec[2]=0;
     		
-    		if(freq.equals("Molto lento")) {
+    		if(freq.equals("Lento")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     			NOISE=1.1F;
     		}
-    		if(freq.equals("Lento"))   {
+    		if(freq.equals("Normale"))   {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     			NOISE=0.8F;
     		}
-    		if(freq.equals("Normale")) {
+    		if(freq.equals("Veloce")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
     			NOISE=0.6F;
     		}
-    		if(freq.equals("Veloce"))  {
-    			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-    			NOISE=0.4F;
-    		}
+
     	}
     	
     }

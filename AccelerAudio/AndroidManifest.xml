@@ -55,7 +55,7 @@
         <!--			SETTING UI2			-->
         
         <activity android:name="team.bugbusters.acceleraudio.UI2"
-            android:label="Details (UI#2)" >
+            android:label="Details (UI#2)">
 		</activity>
         
         <!-- 		SETTING UI3			-->
@@ -67,7 +67,8 @@
         <!-- 		SETTING UI4			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI4"
-            android:label="Play (UI#4)">
+            android:label="Play (UI#4)"
+            android:configChanges="orientation|screenSize|keyboardHidden">>
         </activity>
         
         <!-- 		SETTING UI5			 -->

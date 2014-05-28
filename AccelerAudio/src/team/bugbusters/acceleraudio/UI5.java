@@ -83,7 +83,7 @@ public class UI5 extends Activity {
 	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 	        		this,
 	        		android.R.layout.simple_spinner_item,
-	        		new String[]{"Molto lento","Lento","Normale","Veloce"}
+	        		new String[]{"Lento","Normale","Veloce"}
 	        		);
 	         spinner.setAdapter(adapter);
     
@@ -164,9 +164,6 @@ public class UI5 extends Activity {
 	                }});
 	        	
 	
-	
-		
-
 	}//Fine onCreate
 	
 	
@@ -178,30 +175,13 @@ public class UI5 extends Activity {
 	return;
 	}
 	
-	/*public static String campToString(int c){
-		if(c==0) return "Scelta 0";
-		else if(c==25) return "Scelta 1";
-		else if(c==50) return "Scelta 2";
-		else if(c==75) return "Scelta 3";
-		else return  "Scelta 4";
-		
-	}*/
 	
 	public static int stringToFreq(String s){
-		if(s.equals("Molto lento")) return 0;
-		if(s.equals("Lento")) return 1;
-		if(s.equals("Normale")) return 2;
-		else return 3;
+		if(s.equals("Lento")) return 0;
+		if(s.equals("Normale")) return 1;
+		else return 2;
 	}
 	
-	
-/*	public static int stringToCamp(String s){
-		if(s.equals("Scelta 0")) return 0;
-		if(s.equals("Scelta 1")) return 25;
-		if(s.equals("Scelta 2")) return 50;
-		if(s.equals("Scelta 3")) return 75;
-		else return 100;
-	}*/
 
 	
 	
