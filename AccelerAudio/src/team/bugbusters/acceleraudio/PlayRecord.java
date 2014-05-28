@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.widget.Toast;
 
@@ -18,47 +17,44 @@ public class PlayRecord extends IntentService {
 	private DbAdapter dbHelper;
 	private Cursor cr;
 	private long id_to_process;
-	private double m;
 	private String asseX,asseY,asseZ;
 	private boolean checkX,checkY,checkZ;
-	private int ncamp;
 	private int sovrac;
 	private String[] s,p,q;
  	private short[] x,y,z;
 	private boolean  pausa,riprendi,stop;
-	private int g,k,minsize;
+	private int g,i,j;
 	private AudioTrack at;
 	private short[] finale;
-	
+	private final int minsize=7000;
 	private BroadcastReceiver receiver=new BroadcastReceiver(){
 		  
 		public void onReceive(Context context, Intent intent) {
 			pausa=intent.getBooleanExtra("Pausa", false);
-   		    riprendi=intent.getBooleanExtra("Riprendi", false);
-   		    stop=intent.getBooleanExtra("Stop", false);
-   		    
-   		    
-   		       if(stop){
-   		           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
-       		    	   at.pause();
-       		    	   at.flush();
-       		    	   at.release();
-   		           }
-   		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
-   		    		at.flush();
-       		    	at.release();
-   		        	}      
-   		           stopSelf();
-   		       }
-   		       
-   		       if(pausa) {
-   		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-   		    	   g=at.getPlaybackHeadPosition();	
-   		    	   at.pause();   
-   		       		
-   		       }
+		    riprendi=intent.getBooleanExtra("Riprendi", false);
+		    stop=intent.getBooleanExtra("Stop", false);
+
+	       if(stop){
+	           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+		    	   at.pause();
+		    	   at.flush();
+		    	   at.release();
+	           }
+	       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+				at.flush();
+				at.release();
+				}      
+				stopSelf();
+	       }
+	       
+	       if(pausa) {
+	       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+	    	   g=at.getPlaybackHeadPosition();	
+	    	   at.pause();   
+	       		
+	       }
 				
-   		    if(riprendi) {
+		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
 		    	   at.setPlaybackHeadPosition(g);
 		    	   at.play();    
@@ -66,6 +62,7 @@ public class PlayRecord extends IntentService {
 		}	
 	};
 	
+	//Costruttore
 	public PlayRecord() {
 		super("PlayRecord");
 	}
@@ -73,10 +70,10 @@ public class PlayRecord extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		//Registrazione ricevitore
         registerReceiver(receiver,new IntentFilter(UI4.THREAD_RESPONSE));
         
         dbHelper = new DbAdapter(this);
-        
         id_to_process=intent.getLongExtra("ID", -1);
         
         //Apertura DB
@@ -89,30 +86,26 @@ public class PlayRecord extends IntentService {
         cr.moveToNext();
         
         //Lettura dei dati dal record(cursor) restituito
-       // m=Float.parseFloat(cr.getString(cr.getColumnIndex(DbAdapter.KEY_DURATION)));
         asseX=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEX));
         asseY=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEY));
         asseZ=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEZ));
         checkX=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
         checkY=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-        ncamp=cr.getInt(cr.getColumnIndex(DbAdapter.KEY_NUMCAMP));
         sovrac=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
         
         //Chiusura DB
         dbHelper.close();
         
-        
+      //Tokenizzazione delle stringhe in array di short        
         s=asseX.split(" "); 
         p=asseY.split(" "); 
         q=asseZ.split(" "); 
-        
         x=new short[s.length];
         y=new short[p.length];
         z=new short[q.length];
         
-        //Tokenizzazione delle stringhe in array di short
-        int i;
+
         for(i=0;i<s.length;i++)
     		x[i]=Short.parseShort(s[i]);
         
@@ -125,7 +118,7 @@ public class PlayRecord extends IntentService {
     		z[i]=Short.parseShort(q[i]);
 
         
-        minsize=AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO , AudioFormat.ENCODING_PCM_16BIT);
+      //  minsize=AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO , AudioFormat.ENCODING_PCM_16BIT);
         
 	        	short[] s1 = new short[0];
 		        if(checkX){
@@ -133,7 +126,7 @@ public class PlayRecord extends IntentService {
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
-		           	 int j=0;
+		           	 j=0;
 		           	 for(i=0;i<s1.length;i++){
 		           		 s1[i]=x[j];
 		           		 j++;
@@ -149,7 +142,7 @@ public class PlayRecord extends IntentService {
 		        	if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
-		           	 int j=0;
+		           	 j=0;
 		           	 for(i=0;i<s2.length;i++){
 		           		s2[i]=z[j];
 		           		 j++;
@@ -165,7 +158,7 @@ public class PlayRecord extends IntentService {
 		         if(y.length >= minsize)
 		        	 at.write(y, 0, y.length);
 		         else {
-		        	 int j=0;
+		        	 j=0;
 		        	 for(i=0;i<s3.length;i++){
 		        		 s3[i]=y[j];
 		        		 j++;
@@ -181,7 +174,7 @@ public class PlayRecord extends IntentService {
 		            if(z.length >= minsize)
 		           	 at.write(z, 0, z.length);
 		            else {
-		           	 int j=0;
+		           	 j=0;
 		           	 for(i=0;i<s4.length;i++){
 		           		s4[i]=z[j];
 		           		 j++;
@@ -197,7 +190,7 @@ public class PlayRecord extends IntentService {
 		            if(x.length >= minsize)
 		           	 at.write(x, 0, x.length);
 		            else {
-		           	 int j=0;
+		           	 j=0;
 		           	 for(i=0;i<s5.length;i++){
 		           		s5[i]=x[j];
 		           		 j++;
@@ -213,7 +206,7 @@ public class PlayRecord extends IntentService {
 				         if(y.length >= minsize)
 				        	 at.write(y, 0, y.length);
 				         else {
-				        	 int j=0;
+				        	 j=0;
 				        	 for(i=0;i<s6.length;i++){
 				        		 s6[i]=y[j];
 				        		 j++;
