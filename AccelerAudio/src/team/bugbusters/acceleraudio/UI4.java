@@ -120,7 +120,6 @@ public class UI4 extends Activity {
 	            	timer.cancel();
 	            	id = searchId(id, NEXT, currentSorting());
 	            	broadcastIntent.putExtra("Stop", false);  
-	            	//id++;
 	            	impostaUI4(id);
 	            	playIntentService.putExtra("ID", id);
 	            	endtime=durata;
