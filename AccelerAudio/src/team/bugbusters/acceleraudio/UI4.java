@@ -39,7 +39,7 @@ public class UI4 extends Activity {
 	private TextView time;
 	private SeekBar sbtime;
 	private TimerCounter timer;
-	private long prec,endtime;
+	private long prec,endtime,starttime;
 	private final long intervallo=1L;
 	private boolean on_play=true;
 	private static final int PREVIOUS = 0;
@@ -64,7 +64,7 @@ public class UI4 extends Activity {
         time = (TextView) findViewById(R.id.textView4);
         sbtime=(SeekBar)findViewById(R.id.seekBar1);
         sbtime.setEnabled(false);
-       
+        starttime=System.currentTimeMillis();
         db = new DbAdapter(this);
         
         pkg_r=getPackageName();   
@@ -78,54 +78,56 @@ public class UI4 extends Activity {
         
         if(primavolta){
         	primavolta=false;
-        
-        playIntentService.putExtra("ID", id);
-        //endtime=Float.parseFloat(durata)*1000;
-    	endtime=durata;
-    	sbtime.setMax((int) endtime);
-    	creaTimer(endtime,intervallo,0);
-    	startService(playIntentService);
+	        playIntentService.putExtra("ID", id);
+	    	endtime=durata;
+	    	sbtime.setMax((int) endtime);
+	    	creaTimer(endtime,intervallo,0);
+	    	startService(playIntentService);
         }
         
  
         previous.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	broadcastIntent.putExtra("Stop", true);
-            	broadcastIntent.putExtra("Pausa", false);
-            	broadcastIntent.putExtra("Riprendi", false);  
-            	sendBroadcast(broadcastIntent);
-            	stopService(playIntentService);
-            	timer.cancel();
-            	id = searchId(id, PREVIOUS, currentSorting());
-            	broadcastIntent.putExtra("Stop", false);  
-            	//id--;
-            	impostaUI4(id);
-            	playIntentService.putExtra("ID", id);
-            	endtime=durata;
-            	sbtime.setMax((int) endtime);
-            	creaTimer(endtime,intervallo,0);
-            	startService(playIntentService);
+            	if(System.currentTimeMillis()-starttime>400) {
+            		starttime=System.currentTimeMillis();
+	            	broadcastIntent.putExtra("Stop", true);
+	            	broadcastIntent.putExtra("Pausa", false);
+	            	broadcastIntent.putExtra("Riprendi", false);  
+	            	sendBroadcast(broadcastIntent);
+	            	stopService(playIntentService);
+	            	timer.cancel();
+	            	id = searchId(id, PREVIOUS, currentSorting());
+	            	broadcastIntent.putExtra("Stop", false);  
+	            	impostaUI4(id);
+	            	playIntentService.putExtra("ID", id);
+	            	endtime=durata;
+	            	sbtime.setMax((int) endtime);
+	            	creaTimer(endtime,intervallo,0);
+	            	startService(playIntentService);
+            	}
             	
             }});
         
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	broadcastIntent.putExtra("Stop", true);
-            	broadcastIntent.putExtra("Pausa", false);
-            	broadcastIntent.putExtra("Riprendi", false);  	
-            	sendBroadcast(broadcastIntent);
-            	stopService(playIntentService);
-            	timer.cancel();
-            	id = searchId(id, NEXT, currentSorting());
-            	broadcastIntent.putExtra("Stop", false);  
-            	//id++;
-            	impostaUI4(id);
-            	playIntentService.putExtra("ID", id);
-            	endtime=durata;
-            	sbtime.setMax((int) endtime);
-            	creaTimer(endtime,intervallo,0);
-            	startService(playIntentService);
-            	
+            	if(System.currentTimeMillis()-starttime>400) {
+            		starttime=System.currentTimeMillis();
+	            	broadcastIntent.putExtra("Stop", true);
+	            	broadcastIntent.putExtra("Pausa", false);
+	            	broadcastIntent.putExtra("Riprendi", false);  	
+	            	sendBroadcast(broadcastIntent);
+	            	stopService(playIntentService);
+	            	timer.cancel();
+	            	id = searchId(id, NEXT, currentSorting());
+	            	broadcastIntent.putExtra("Stop", false);  
+	            	//id++;
+	            	impostaUI4(id);
+	            	playIntentService.putExtra("ID", id);
+	            	endtime=durata;
+	            	sbtime.setMax((int) endtime);
+	            	creaTimer(endtime,intervallo,0);
+	            	startService(playIntentService);
+            	}            	
             }});
         
         pause_resume.setOnClickListener(new View.OnClickListener() {

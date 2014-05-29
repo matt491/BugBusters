@@ -218,9 +218,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	public static long calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
 		int somma=n_campX+n_campY+n_campZ;
 		int s=PlayRecord.calcoloSovra(sovra,somma);
-		int dimX=2*(7000+s*n_campX);
-		int dimY=2*(7000+s*n_campY);
-		int dimZ=2*(7000+s*n_campZ);
+		int dimX=2*(PlayRecord.minsize+s*n_campX);
+		int dimY=2*(PlayRecord.minsize+s*n_campY);
+		int dimZ=2*(PlayRecord.minsize+s*n_campZ);
 		if(cX && cY && cZ) return (dimX+dimY+dimZ)/24;
 		else if(cX && cY) return (dimX+dimY)/24;
 		else if(cX && cZ) return (dimX+dimZ)/24;

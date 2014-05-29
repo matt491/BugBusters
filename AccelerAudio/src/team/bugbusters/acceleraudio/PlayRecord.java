@@ -26,7 +26,7 @@ public class PlayRecord extends IntentService {
 	private int g,i,j;
 	private AudioTrack at;
 	private short[] finale;
-	private final int minsize=7000;
+	public static final int minsize=7000;
 	private int sc;
 	private BroadcastReceiver receiver=new BroadcastReceiver(){
 		  
@@ -57,7 +57,7 @@ public class PlayRecord extends IntentService {
 				
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-		    	   at.setPlaybackHeadPosition(g);
+		    	   at.setPlaybackHeadPosition(g-100);
 		    	   at.play();    
 		       }		
 		}	
