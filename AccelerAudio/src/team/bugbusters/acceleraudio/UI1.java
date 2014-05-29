@@ -494,7 +494,9 @@ public class UI1 extends Activity {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						return s1[4].compareTo(s2[4]);
+						float a = Float.parseFloat(s1[4])/1000;
+						float b = Float.parseFloat(s2[4])/1000;
+						return Float.compare(a, b);
 					}
 				});
 				

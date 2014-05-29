@@ -92,7 +92,7 @@ public class CustomList extends ArrayAdapter<String[]> {
 		
 		holder.nameText.setText(s[2]);
 		holder.lastText.setText(s[3]);
-		holder.durationText.setText(s[4]);
+		holder.durationText.setText(Float.parseFloat(s[4])/1000 + "s");
 		
 		return rowView;
 	}
