@@ -453,7 +453,7 @@ public class UI1 extends Activity {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						return s1[0].compareTo(s2[0]);
+						return (Integer.valueOf(s1[0])).compareTo(Integer.valueOf(s2[0]));
 					}
 				});
 				
