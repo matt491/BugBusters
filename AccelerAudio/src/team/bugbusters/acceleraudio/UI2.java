@@ -209,7 +209,7 @@ public class UI2 extends Activity {
             	
             			else {
             				nome_ric=nomeNuovo;
-            				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+            				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
             				long dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());	
             				dbHelper.open();
             				dbHelper.updateRecord(id_ric, nome_ric, ""+dur, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),

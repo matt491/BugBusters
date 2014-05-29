@@ -93,7 +93,7 @@ public class CustomList extends ArrayAdapter<String[]> {
 		}
 		
 		holder.nameText.setText(s[2]);
-		holder.lastText.setText(s[3]);
+		holder.lastText.setText(s[3].substring(0, 16));
 		float dur =Float.parseFloat(s[4])/1000;
 		holder.durationText.setText(String.format("%.2fs", dur));
 		

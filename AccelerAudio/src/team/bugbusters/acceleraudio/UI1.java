@@ -328,7 +328,7 @@ public class UI1 extends Activity {
 	       int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
 	       int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
 	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
-	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 	       int sovrac_new;
 	       
 	       if(checkX) checkY=!checkY;

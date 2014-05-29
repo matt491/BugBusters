@@ -202,7 +202,7 @@ public class UI3 extends Activity {
             	}
             	else {	
             		nome = nome_music.getText().toString();
-            		ts = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+            		ts = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
             	
             		long dur=DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 							prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
