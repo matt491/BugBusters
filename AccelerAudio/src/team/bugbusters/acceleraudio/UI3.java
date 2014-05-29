@@ -133,10 +133,9 @@ public class UI3 extends Activity {
             		intentToSer.putExtra("VecchioZ", datoZ);
             		intentToSer.putExtra("attFreq", freq_curr);
             		intentToSer.putExtra("attFineTempo", end_time);
-            		intentToSer.putExtra("attCamp", i);
-            		//intentToSer.putExtra("attCampX", i);
-            		//intentToSer.putExtra("attCampY", j);
-            		//intentToSer.putExtra("attCampZ", k);
+            		intentToSer.putExtra("attCampX", i);
+            		intentToSer.putExtra("attCampY", j);
+            		intentToSer.putExtra("attCampZ", k);
             		
             		in_pausa=false;
             		         		
@@ -205,13 +204,18 @@ public class UI3 extends Activity {
             		nome = nome_music.getText().toString();
             		ts = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
             	
+            		long dur=DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
+							prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
+            		
             		dbHelper.open();           	
         		
-            		long id_to_ui2=dbHelper.createRecord(nome, "", datoX.toString(), datoY.toString(), datoZ.toString(),
-            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
-        					i, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
             		
-            		//i,j,k e si calcola durata
+            		
+            		long id_to_ui2=dbHelper.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
+            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
+        					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
+            		
+
             		
             		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
         		
@@ -269,11 +273,7 @@ public class UI3 extends Activity {
  		return (super.onOptionsItemSelected(item));
  	}
  	
- /*	public long calcoloTempo(int n_camp, int sovra){
- 		if(n_camp>1000) return (long) ((42000+0.4*sovra*2*n_camp)/24);
- 		
- 	}
-	*/
+ 
 	  public class MyCounter extends CountDownTimer{
 		 private long end;
 		 private long last;
@@ -311,12 +311,11 @@ public class UI3 extends Activity {
 	        		pbY.setProgress(intent.getIntExtra("intPbY", 0));
 	        		pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
 	            
-	        		i=intent.getIntExtra("serCamp",0);
-	        		//i=intent.getIntExtra("serCampX",0);
-	        		//j=intent.getIntExtra("serCampY",0);
-	        		//k=intent.getIntExtra("serCampZ",0);
-	        		varcamp.setText(""+i);
-	        		//varcamp.setText(""+(i+j+k));
+	        		i=intent.getIntExtra("serCampX",0);
+	        		j=intent.getIntExtra("serCampY",0);
+	        		k=intent.getIntExtra("serCampZ",0);
+
+	        		varcamp.setText(""+(i+j+k));
 	        		datoX=intent.getStringExtra("ValoreX");
 	        		datoY=intent.getStringExtra("ValoreY");
 	        		datoZ=intent.getStringExtra("ValoreZ");

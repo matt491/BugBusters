@@ -317,14 +317,15 @@ public class UI1 extends Activity {
 		   Cursor c=db.fetchRecordById(id);
 		   c.moveToNext();
 		   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-	       String d=c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
 	       String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
 	       String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
 	       String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
 	       boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
 	       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
 	       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-	       int ncamp=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMP));
+	       int ncampx=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
+	       int ncampy=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
+	       int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
 	       int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
 	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
 	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
@@ -337,7 +338,9 @@ public class UI1 extends Activity {
 	       if(sovrac<=90) sovrac_new=sovrac+10;
 	       else sovrac_new=sovrac-80;
 	       
-	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, ""+sovrac_new, datar, dataul, null);
+	       long dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,checkX,checkY,checkZ,sovrac_new);
+	       
+	       long id_new=db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
 		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
 		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
 			
@@ -349,7 +352,7 @@ public class UI1 extends Activity {
 		   ret[1] = code;
 		   ret[2] = n + "_" + id_new;
 		   ret[3] = dataul;
-		   ret[4] = d;
+		   ret[4] = ""+dur;
 		   
 		   return ret;
 	   }

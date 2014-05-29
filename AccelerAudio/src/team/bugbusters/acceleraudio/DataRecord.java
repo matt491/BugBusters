@@ -71,7 +71,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        
 	        }
 
-	        	i=intent.getIntExtra("attCamp", 0);
+	        	i=intent.getIntExtra("attCampX", 0);
+	        	j=intent.getIntExtra("attCampY", 0);
+	        	k=intent.getIntExtra("attCampZ", 0);
 	        	
 	        	valprec=new float[3];
 	        	ric_UI3=intent.getBooleanExtra("fromUI3", false);
@@ -103,14 +105,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 				if(event.values[1]-valprec[1]>NOISE){
 					datoY.append((converti(event.values[1]))+" ");
-					i++;
-					//j++;
+					//i++;
+					j++;
 					broadcastIntent.putExtra("intPbY", Math.round(Math.abs(event.values[1])));
 				}
 				if(event.values[2]-valprec[2]>NOISE){
 					datoZ.append((converti(event.values[2]))+" ");
-					i++;
-					//k++;
+					//i++;
+					k++;
 					broadcastIntent.putExtra("intPbZ", Math.round(Math.abs(event.values[2])));
 				}
 				
@@ -119,7 +121,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				//Aggiornamento delle barre dei 3 assi e dei campioni registrati che vengono visualizzati nella UI3
 				if(ric_UI3 && System.currentTimeMillis()-sendtime>100){
 					sendtime=System.currentTimeMillis();
-					broadcastIntent.putExtra("serCamp",i);
+					broadcastIntent.putExtra("serCampX",i);
+					broadcastIntent.putExtra("serCampY",j);
+					broadcastIntent.putExtra("serCampZ",k);
 					sendBroadcast(broadcastIntent);
 				}
 				
@@ -147,7 +151,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				broadcastIntent.putExtra("ValoreZ", datoZ.toString());
 				broadcastIntent.putExtra("serFreq", freq);
 				broadcastIntent.putExtra("serDur", durata_def);
-				broadcastIntent.putExtra("serCamp",i);
+				broadcastIntent.putExtra("serCampX",i);
+				broadcastIntent.putExtra("serCampY",j);
+				broadcastIntent.putExtra("serCampZ",k);
 				sendBroadcast(broadcastIntent);
 			
 			}
@@ -155,13 +161,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			//Invece se si proviene dal widget
 			else {
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-											
-				dbHelper.open();
-				long id=dbHelper.createRecord("Rec_", "", datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
-						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i, ""+prefs.getInt("sovrdef", 0),
-						timestamp, timestamp, null);
+				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
+										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
 				
-				//i,j,k e si calcola durata
+				dbHelper.open();
+				long id=dbHelper.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
+						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
+						timestamp, timestamp, null);
+
 				
 				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
@@ -206,6 +213,23 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		if(x<-32.768) return -3276;
 		else return (short)Math.round(x*100);
 	}
+	
+	
+	public static long calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
+		int somma=n_campX+n_campY+n_campZ;
+		int s=PlayRecord.calcoloSovra(sovra,somma);
+		int dimX=2*(7000+s*n_campX);
+		int dimY=2*(7000+s*n_campY);
+		int dimZ=2*(7000+s*n_campZ);
+		if(cX && cY && cZ) return (dimX+dimY+dimZ)/24;
+		else if(cX && cY) return (dimX+dimY)/24;
+		else if(cX && cZ) return (dimX+dimZ)/24;
+		else if(cY && cZ) return (dimY+dimZ)/24;
+		else if(cX) return dimX/24;
+		else if(cY) return dimY/24;
+		else return dimZ/24;
+	}
+
 	
 	
 	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini

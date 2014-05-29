@@ -32,7 +32,7 @@ public class UI4 extends Activity {
 	private Cursor c;
 	private String nome;
 	private String thumbnail;
-	private String durata;
+	private long durata;
 	private SharedPreferences prefs;
 	private static boolean primavolta=true;
 	public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
@@ -81,7 +81,7 @@ public class UI4 extends Activity {
         
         playIntentService.putExtra("ID", id);
         //endtime=Float.parseFloat(durata)*1000;
-    	endtime=1959;
+    	endtime=durata;
     	sbtime.setMax((int) endtime);
     	creaTimer(endtime,intervallo,0);
     	startService(playIntentService);
@@ -101,7 +101,7 @@ public class UI4 extends Activity {
             	//id--;
             	impostaUI4(id);
             	playIntentService.putExtra("ID", id);
-            	endtime=1959;
+            	endtime=durata;
             	sbtime.setMax((int) endtime);
             	creaTimer(endtime,intervallo,0);
             	startService(playIntentService);
@@ -121,7 +121,7 @@ public class UI4 extends Activity {
             	//id++;
             	impostaUI4(id);
             	playIntentService.putExtra("ID", id);
-            	endtime=1959;
+            	endtime=durata;
             	sbtime.setMax((int) endtime);
             	creaTimer(endtime,intervallo,0);
             	startService(playIntentService);
@@ -256,7 +256,7 @@ public class UI4 extends Activity {
         
         thumbnail = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
         nome = c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-        durata = c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
+        durata = Long.parseLong(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)));
         
         c.close();
         db.close();
@@ -301,7 +301,7 @@ public class UI4 extends Activity {
 			break;
 		}
         name.setText(nome);
-        duration.setText(durata);
+        duration.setText(""+((float)(durata/10)/100));
         on_play=true;
         pause_resume.setImageResource(android.R.drawable.ic_media_pause);
         }

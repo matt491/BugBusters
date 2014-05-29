@@ -34,7 +34,7 @@ public class UI2 extends Activity {
 	private ImageView iv;
 	private String timestamp_ric;
 	private String nome_ric;
-	private int sovra_ric;
+	private int sovra_ric,ncampx,ncampy,ncampz;
 	private String dataulitmamodifica;
 	private String codifica;
     private boolean x_selected, y_selected, z_selected;
@@ -108,6 +108,9 @@ public class UI2 extends Activity {
         nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
         timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
         dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
+        ncampx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
+        ncampy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
+        ncampz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
         x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
         y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
@@ -207,8 +210,9 @@ public class UI2 extends Activity {
             			else {
             				nome_ric=nomeNuovo;
             				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+            				long dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());	
             				dbHelper.open();
-            				dbHelper.updateRecord(id_ric, nome_ric, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
+            				dbHelper.updateRecord(id_ric, nome_ric, ""+dur, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
             						""+sb.getProgress(), dataulitmamodifica);
             				dbHelper.close();
             		

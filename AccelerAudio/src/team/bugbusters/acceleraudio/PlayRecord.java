@@ -19,7 +19,7 @@ public class PlayRecord extends IntentService {
 	private long id_to_process;
 	private String asseX,asseY,asseZ;
 	private boolean checkX,checkY,checkZ;
-	private int sovrac;
+	private int sovrac,campx,campy,campz;
 	private String[] s,p,q;
  	private short[] x,y,z;
 	private boolean  pausa,riprendi,stop;
@@ -90,6 +90,9 @@ public class PlayRecord extends IntentService {
         asseX=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEX));
         asseY=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEY));
         asseZ=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEZ));
+        campx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
+        campy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
+        campz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
         checkX=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
         checkY=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
