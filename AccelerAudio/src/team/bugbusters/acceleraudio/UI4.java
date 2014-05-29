@@ -88,7 +88,7 @@ public class UI4 extends Activity {
  
         previous.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if(System.currentTimeMillis()-starttime>400) {
+            	if(System.currentTimeMillis()-starttime>450) {
             		starttime=System.currentTimeMillis();
 	            	broadcastIntent.putExtra("Stop", true);
 	            	broadcastIntent.putExtra("Pausa", false);
@@ -110,7 +110,7 @@ public class UI4 extends Activity {
         
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if(System.currentTimeMillis()-starttime>400) {
+            	if(System.currentTimeMillis()-starttime>450) {
             		starttime=System.currentTimeMillis();
 	            	broadcastIntent.putExtra("Stop", true);
 	            	broadcastIntent.putExtra("Pausa", false);
