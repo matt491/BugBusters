@@ -24,7 +24,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private SharedPreferences prefs;
 	private StringBuilder datoX,datoY,datoZ;
 	private long sendtime;
-	private int i,durata_def;
+	private int i,j,k,durata_def;
 	private String freq;
 	private DbAdapter dbHelper;
 	private boolean ric_UI3;
@@ -104,11 +104,13 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				if(event.values[1]-valprec[1]>NOISE){
 					datoY.append((converti(event.values[1]))+" ");
 					i++;
+					//j++;
 					broadcastIntent.putExtra("intPbY", Math.round(Math.abs(event.values[1])));
 				}
 				if(event.values[2]-valprec[2]>NOISE){
 					datoZ.append((converti(event.values[2]))+" ");
 					i++;
+					//k++;
 					broadcastIntent.putExtra("intPbZ", Math.round(Math.abs(event.values[2])));
 				}
 				
@@ -158,6 +160,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				long id=dbHelper.createRecord("Rec_", "", datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
 						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i, ""+prefs.getInt("sovrdef", 0),
 						timestamp, timestamp, null);
+				
+				//i,j,k e si calcola durata
+				
 				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
 				dbHelper.close();
@@ -179,15 +184,15 @@ public class DataRecord extends IntentService implements SensorEventListener {
     		
     		if(freq.equals("Lento")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    			NOISE=1.1F;
+    			NOISE=1.0F;
     		}
     		if(freq.equals("Normale"))   {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-    			NOISE=0.8F;
+    			NOISE=0.7F;
     		}
     		if(freq.equals("Veloce")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-    			NOISE=0.6F;
+    			NOISE=0.5F;
     		}
 
     	}

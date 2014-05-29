@@ -98,10 +98,31 @@ public class PlayRecord extends IntentService {
         //Chiusura DB
         dbHelper.close();
         
+        
+        
       //Tokenizzazione delle stringhe in array di short        
-        s=asseX.split(" "); 
-        p=asseY.split(" "); 
-        q=asseZ.split(" "); 
+        if(!asseX.isEmpty())
+        	s=asseX.split(" "); 
+        else {
+        	s=new String[1];
+        	s[0]="0";
+        }
+        
+        if(!asseY.isEmpty())
+        	p=asseY.split(" "); 
+        else {
+        	p=new String[1];
+        	p[0]="0";
+        }
+        
+        if(!asseZ.isEmpty())
+        	q=asseZ.split(" ");
+        else {
+        	q=new String[1];
+        	q[0]="0";
+        }
+        
+ 
         x=new short[s.length];
         y=new short[p.length];
         z=new short[q.length];

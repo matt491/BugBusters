@@ -30,7 +30,7 @@ public class UI3 extends Activity {
 	
     private String datoX,datoY,datoZ;
     private ProgressBar pbX,pbY,pbZ,pb;
-	private int i,end_time;									
+	private int i,j,k,end_time;									
     private long prec;							
     private String freq_curr;						
     private String nome; 								// Nome inserito dall'utente tramite EditText
@@ -134,6 +134,10 @@ public class UI3 extends Activity {
             		intentToSer.putExtra("attFreq", freq_curr);
             		intentToSer.putExtra("attFineTempo", end_time);
             		intentToSer.putExtra("attCamp", i);
+            		//intentToSer.putExtra("attCampX", i);
+            		//intentToSer.putExtra("attCampY", j);
+            		//intentToSer.putExtra("attCampZ", k);
+            		
             		in_pausa=false;
             		         		
             		timer=new MyCounter(end_time*1000-prec,100);
@@ -206,6 +210,8 @@ public class UI3 extends Activity {
             		long id_to_ui2=dbHelper.createRecord(nome, "", datoX.toString(), datoY.toString(), datoZ.toString(),
             				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
         					i, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
+            		
+            		//i,j,k e si calcola durata
             		
             		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
         		
@@ -306,7 +312,11 @@ public class UI3 extends Activity {
 	        		pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
 	            
 	        		i=intent.getIntExtra("serCamp",0);
+	        		//i=intent.getIntExtra("serCampX",0);
+	        		//j=intent.getIntExtra("serCampY",0);
+	        		//k=intent.getIntExtra("serCampZ",0);
 	        		varcamp.setText(""+i);
+	        		//varcamp.setText(""+(i+j+k));
 	        		datoX=intent.getStringExtra("ValoreX");
 	        		datoY=intent.getStringExtra("ValoreY");
 	        		datoZ=intent.getStringExtra("ValoreZ");
