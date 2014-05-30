@@ -95,10 +95,9 @@ public class widget_lil extends AppWidgetProvider {
 		
             RemoteViews rw = new RemoteViews(context.getPackageName(), R.layout.widget_lil_layout); 
             serviceIntent = new Intent(context, DataRecord.class);
+            
             b=intent.getBooleanExtra("TempoScaduto", false);
-
-            
-            
+ 
             if(b)  {
             	b=false;
             	Toast.makeText(context,"Registrazione terminata" , Toast.LENGTH_SHORT).show();
