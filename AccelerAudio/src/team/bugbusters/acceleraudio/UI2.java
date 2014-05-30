@@ -202,10 +202,10 @@ public class UI2 extends Activity {
             		sb.getProgress()!=sovra_ric || !(nome_ric.equals(nomeNuovo)) ){
             	
             		if(nomeNuovo.contains("'") || (nomeNuovo.contains("_") && !(nome_ric.equals(nomeNuovo))))
-            			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();
+            			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
             	
             		else if((!(nome_ric.equals(nomeNuovo)) && UI1.sameName(dbHelper, nomeNuovo)) || nomeNuovo.equals(""))
-            			Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_LONG).show();
+            			Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_SHORT).show();
             	
             			else {
             				nome_ric=nomeNuovo;
