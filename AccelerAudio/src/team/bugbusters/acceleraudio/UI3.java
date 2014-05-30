@@ -1,6 +1,5 @@
 package team.bugbusters.acceleraudio;
 
-import team.bugbusters.acceleraudio.UI4.TimerCounter;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -302,7 +302,7 @@ public class UI4 extends Activity {
 			break;
 		}
         name.setText(nome);
-        duration.setText(""+((float)(durata/10)/100));
+        duration.setText(((float)(durata/10)/100) + " secondi");
         on_play=true;
         pause_resume.setImageResource(android.R.drawable.ic_media_pause);
         }
@@ -378,7 +378,7 @@ public class UI4 extends Activity {
 	      @Override
 	      public void onTick(long millisUntilFinished) {
 	    	  curr=millisUntilFinished;
-	          time.setText((float)((previous+end-curr)/100)/10 +"");
+	          time.setText((float)((previous+end-curr)/100)/10 +" s");
 	          sbtime.setProgress((int)(previous+end-curr));
 	          last=previous+end-curr;
 	      }

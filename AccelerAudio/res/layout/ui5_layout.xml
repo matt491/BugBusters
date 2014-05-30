@@ -59,7 +59,6 @@
         android:layout_alignBaseline="@+id/tt"
         android:layout_toRightOf="@+id/tt"
         android:layout_marginLeft="10dp"
-        android:text="dur"
         android:textSize="15sp" />
     
     <SeekBar
@@ -93,8 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView1"
         android:layout_toRightOf="@+id/textView1"
-        android:layout_marginLeft="10dp"
-        android:text="sovra" />
+        android:layout_marginLeft="10dp" />
    
 
     <SeekBar
