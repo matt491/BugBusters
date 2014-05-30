@@ -60,5 +60,9 @@
     <string name="Sort">Ordina</string>
     <string name="SortByDate">Ordina per data</string>
     <string name="SortByDuration">Ordina per durata</string>
+    <string name="alreadySortedByName">La lista è già ordinata per nome</string>
+    <string name="alreadySortedByDate">La lista è già ordinata per data</string>
+    <string name="alreadySortedByInsertion">La lista è già ordinata per inserimento</string>
+    <string name="alreadySortedByDuration">La lista è già ordinata per durata</string>
 
 </resources>

@@ -25,7 +25,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private SharedPreferences prefs;
 	private StringBuilder datoX,datoY,datoZ;
 	private long sendtime;
-	private int i,durata_def;
+	private int i,j,k,durata_def;
 	private String freq;
 	private DbAdapter dbHelper;
 	private boolean ric_UI3;
@@ -74,7 +74,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        
 	        }
 
-	        	i=intent.getIntExtra("attCamp", 0);
+	        	i=intent.getIntExtra("attCampX", 0);
+	        	j=intent.getIntExtra("attCampY", 0);
+	        	k=intent.getIntExtra("attCampZ", 0);
 	        	
 	        	valprec=new float[3];
 	        	ric_UI3=intent.getBooleanExtra("fromUI3", false);
@@ -107,12 +109,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 				if(event.values[1]-valprec[1]>NOISE){
 					datoY.append((converti(event.values[1]))+" ");
-					i++;
+					//i++;
+					j++;
 					broadcastIntent.putExtra("intPbY", Math.round(Math.abs(event.values[1])));
 				}
 				if(event.values[2]-valprec[2]>NOISE){
 					datoZ.append((converti(event.values[2]))+" ");
-					i++;
+					//i++;
+					k++;
 					broadcastIntent.putExtra("intPbZ", Math.round(Math.abs(event.values[2])));
 				}
 				
@@ -121,7 +125,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				//Aggiornamento delle barre dei 3 assi e dei campioni registrati che vengono visualizzati nella UI3
 				if(ric_UI3 && System.currentTimeMillis()-sendtime>100){
 					sendtime=System.currentTimeMillis();
-					broadcastIntent.putExtra("serCamp",i);
+					broadcastIntent.putExtra("serCampX",i);
+					broadcastIntent.putExtra("serCampY",j);
+					broadcastIntent.putExtra("serCampZ",k);
 					sendBroadcast(broadcastIntent);
 				}
 				
@@ -149,19 +155,25 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				broadcastIntent.putExtra("ValoreZ", datoZ.toString());
 				broadcastIntent.putExtra("serFreq", freq);
 				broadcastIntent.putExtra("serDur", durata_def);
-				broadcastIntent.putExtra("serCamp",i);
+				broadcastIntent.putExtra("serCampX",i);
+				broadcastIntent.putExtra("serCampY",j);
+				broadcastIntent.putExtra("serCampZ",k);
 				sendBroadcast(broadcastIntent);
 			
 			}
 			
 			//Invece se si proviene dal widget
 			else {
-				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-											
+				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
+				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
+										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
+				
 				dbHelper.open();
-				long id=dbHelper.createRecord("Rec_", "", datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
-						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i, UI5.campToString(prefs.getInt("sovrdef", 0)),
+				long id=dbHelper.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
+						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
 						timestamp, timestamp, null);
+
+				
 				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
 				dbHelper.close();
@@ -181,22 +193,19 @@ public class DataRecord extends IntentService implements SensorEventListener {
     		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     		valprec[0]=valprec[1]=valprec[2]=0;
     		
-    		if(freq.equals("Molto lento")) {
+    		if(freq.equals("Lento")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    			NOISE=1.1F;
+    			NOISE=1.0F;
     		}
-    		if(freq.equals("Lento"))   {
+    		if(freq.equals("Normale"))   {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-    			NOISE=0.8F;
+    			NOISE=0.7F;
     		}
-    		if(freq.equals("Normale")) {
+    		if(freq.equals("Veloce")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-    			NOISE=0.6F;
+    			NOISE=0.5F;
     		}
-    		if(freq.equals("Veloce"))  {
-    			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-    			NOISE=0.4F;
-    		}
+
     	}
     	
     }
@@ -210,12 +219,29 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	}
 	
 	
+	public static long calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
+		int somma=n_campX+n_campY+n_campZ;
+		int s=PlayRecord.calcoloSovra(sovra,somma);
+		int dimX=2*(PlayRecord.minsize+s*n_campX);
+		int dimY=2*(PlayRecord.minsize+s*n_campY);
+		int dimZ=2*(PlayRecord.minsize+s*n_campZ);
+		if(cX && cY && cZ) return (dimX+dimY+dimZ)/24;
+		else if(cX && cY) return (dimX+dimY)/24;
+		else if(cX && cZ) return (dimX+dimZ)/24;
+		else if(cY && cZ) return (dimY+dimZ)/24;
+		else if(cX) return dimX/24;
+		else if(cY) return dimY/24;
+		else return dimZ/24;
+	}
+
+	
+	
 	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
 	public static String codifica(String s, String p, String q, String time, long id) {
 		StringBuilder sb=new StringBuilder();
 		Random r=new Random();
 		
-		int c=r.nextInt(256);
+		int c=110+r.nextInt(146);
 		if(c<10) sb.append("00"+c);
 		else if (c>=10 && c<100) sb.append("0"+c);
 		else sb.append(""+c);
@@ -242,25 +268,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			else if (k>=10 && k<100) sb.append("0"+k);
 			else sb.append(""+k);	
 		}
-		
-	/*	if (s.length()>=50) {
-			if (s.charAt(49)!=' ' && s.charAt(49)!='-') sb.append(s.charAt(49));
-			else sb.append(""+r.nextInt(3));
-		}
-		else sb.append(""+r.nextInt(3));
-		
-		if (p.length()>=50) {
-			if (p.charAt(49)!=' ' && p.charAt(49)!='-') sb.append(p.charAt(49));
-			else sb.append(""+r.nextInt(6));
-		}
-		else sb.append(""+r.nextInt(6));
-		
-		if (q.length()>=50) {
-			if (q.charAt(49)!=' ' && q.charAt(49)!='-') sb.append(q.charAt(49));
-			else sb.append(""+r.nextInt(6));
-		}
-		else sb.append(""+r.nextInt(6));*/
-		
+			
 		int h=Integer.parseInt(time.charAt(1)+""+time.charAt(12)+""+time.charAt(15));
 		h=Math.abs(Integer.valueOf(h+r.nextInt(10000)).byteValue() & 0xFF);
 		if(h<10) sb.append("00"+h);

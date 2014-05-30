@@ -70,7 +70,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tt"
         android:layout_marginTop="15dp"
-        android:max="120"
+        android:max="60"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_centerVertical="true"

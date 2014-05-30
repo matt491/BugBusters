@@ -83,7 +83,7 @@ public class UI5 extends Activity {
 	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 	        		this,
 	        		android.R.layout.simple_spinner_item,
-	        		new String[]{"Molto lento","Lento","Normale","Veloce"}
+	        		new String[]{"Lento","Normale","Veloce"}
 	        		);
 	         spinner.setAdapter(adapter);
     
@@ -106,7 +106,7 @@ public class UI5 extends Activity {
 	        	sbsovradef.setProgress(prefs.getInt("sovrdef", 0));
 	        	spinner.setSelection(stringToFreq(prefs.getString("Campion", "Normale")));
 	        	dmax.setText(sbdurdef.getProgress()+" secondi");
-	        	scampdef.setText(campToString(sbsovradef.getProgress()));
+	        	scampdef.setText(""+sbsovradef.getProgress());
 	
 	         
 	        	//Sovrascritti i metodi della SeekBar della durata di default
@@ -131,26 +131,8 @@ public class UI5 extends Activity {
 
 	                @Override
 	                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-	                	if(progress<15){
-	                		seekBar.setProgress(0);
-	                		scampdef.setText(campToString(sbsovradef.getProgress()));
-	                		}
-	                    if(progress>15 && progress<40){
-	                    	seekBar.setProgress(25);
-	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
-	                    	}
-	                    if(progress>40 && progress<60){
-	                    	seekBar.setProgress(50);
-	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
-	                    	}
-	                    if(progress>60 && progress<80){
-	                    	seekBar.setProgress(75);
-	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
-	                    	}
-	                    if(progress>80){
-	                    	seekBar.setProgress(100);
-	                    	scampdef.setText(UI5.campToString(sbsovradef.getProgress()));
-	                    	}
+	                	sbsovradef.setProgress(seekBar.getProgress());
+	                	scampdef.setText(""+sbsovradef.getProgress());
 	                }
 
 	    			@Override
@@ -158,7 +140,8 @@ public class UI5 extends Activity {
 
 	    			@Override
 	    			public void onStopTrackingTouch(SeekBar seekBar) {
-	    				scampdef.setText(campToString(sbsovradef.getProgress()));
+	    				sbsovradef.setProgress(seekBar.getProgress());
+	    				scampdef.setText(""+sbsovradef.getProgress());
 	    			}});
 	        	
 	        	
@@ -181,9 +164,6 @@ public class UI5 extends Activity {
 	                }});
 	        	
 	
-	
-		
-
 	}//Fine onCreate
 	
 	
@@ -195,30 +175,13 @@ public class UI5 extends Activity {
 	return;
 	}
 	
-	public static String campToString(int c){
-		if(c==0) return "Scelta 0";
-		else if(c==25) return "Scelta 1";
-		else if(c==50) return "Scelta 2";
-		else if(c==75) return "Scelta 3";
-		else return  "Scelta 4";
-		
-	}
 	
 	public static int stringToFreq(String s){
-		if(s.equals("Molto lento")) return 0;
-		if(s.equals("Lento")) return 1;
-		if(s.equals("Normale")) return 2;
-		else return 3;
+		if(s.equals("Lento")) return 0;
+		if(s.equals("Normale")) return 1;
+		else return 2;
 	}
 	
-	
-	public static int stringToCamp(String s){
-		if(s.equals("Scelta 0")) return 0;
-		if(s.equals("Scelta 1")) return 25;
-		if(s.equals("Scelta 2")) return 50;
-		if(s.equals("Scelta 3")) return 75;
-		else return 100;
-	}
 
 	
 	

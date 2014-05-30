@@ -27,7 +27,9 @@ public class DbAdapter {
   public static final String KEY_CHECKX = "checkx";
   public static final String KEY_CHECKY = "checky";
   public static final String KEY_CHECKZ = "checkz";
-  public static final String KEY_NUMCAMP = "numcamp";
+  public static final String KEY_NUMCAMPX = "numcampx";
+  public static final String KEY_NUMCAMPY = "numcampy";
+  public static final String KEY_NUMCAMPZ = "numcampz";
   public static final String KEY_UPSAMPLE = "upsample";
   public static final String KEY_DATE = "datacreaz";
   public static final String KEY_LAST = "dataulti";
@@ -48,7 +50,7 @@ public class DbAdapter {
   }
  
   private ContentValues createContentValues(String name, String dur, String assex, String assey, String assez, String checkx,
-		  String checky , String checkz, int numcamp, String upsample, String datacreaz, String dataulti, String datimm ) {
+		  String checky , String checkz, int numcampx, int numcampy, int numcampz, String upsample, String datacreaz, String dataulti, String datimm ) {
     ContentValues values = new ContentValues();
     values.put( KEY_NAME, name );
     values.put( KEY_DURATION, dur );
@@ -58,7 +60,9 @@ public class DbAdapter {
     values.put( KEY_CHECKX, checkx );
     values.put( KEY_CHECKY, checky );
     values.put( KEY_CHECKZ, checkz );
-    values.put( KEY_NUMCAMP, numcamp );
+    values.put( KEY_NUMCAMPX, numcampx );
+    values.put( KEY_NUMCAMPY, numcampy );
+    values.put( KEY_NUMCAMPZ, numcampz );
     values.put( KEY_UPSAMPLE, upsample );
     values.put( KEY_DATE, datacreaz );
     values.put( KEY_LAST, dataulti );
@@ -67,9 +71,10 @@ public class DbAdapter {
    return values;
   }
   
-  private ContentValues updateContentValues(String name,String checkx, String checky , String checkz, String upsample, String dataulti ) {
+  private ContentValues updateContentValues(String name,String dur,String checkx, String checky , String checkz, String upsample, String dataulti ) {
     ContentValues values = new ContentValues();
     values.put( KEY_NAME, name );
+    values.put( KEY_DURATION, dur );
     values.put( KEY_CHECKX, checkx );
     values.put( KEY_CHECKY, checky );
     values.put( KEY_CHECKZ, checkz );
@@ -100,15 +105,15 @@ public class DbAdapter {
   
   //crea una music session
   public long createRecord(String name, String dur, String assex, String assey, String assez, String checkx,
-		  				   String checky , String checkz, int numcamp, String upsample, String datacreaz, String dataulti, String datimm ) {
-	  		ContentValues initialValues = createContentValues(name, dur, assex, assey, assez, checkx, checky , checkz, numcamp,
+		  				   String checky , String checkz, int numcampx, int numcampy, int numcampz, String upsample, String datacreaz, String dataulti, String datimm ) {
+	  		ContentValues initialValues = createContentValues(name, dur, assex, assey, assez, checkx, checky , checkz, numcampx, numcampy, numcampz,
 	  										upsample, datacreaz, dataulti, datimm );
 	  		return database.insertOrThrow(DATABASE_TABLE, null, initialValues);
   }
  
   //aggiorna un record
-  public boolean updateRecord(long recordID, String name, String checkx, String checky , String checkz, String upsample, String dataulti ) {
-	  			ContentValues updateValues = updateContentValues(name, checkx, checky , checkz, upsample, dataulti);
+  public boolean updateRecord(long recordID, String name, String dur, String checkx, String checky , String checkz, String upsample, String dataulti ) {
+	  			ContentValues updateValues = updateContentValues(name, dur, checkx, checky , checkz, upsample, dataulti);
 	  			return database.update(DATABASE_TABLE, updateValues, KEY_RECORDID + "==" + recordID, null) > 0;
   }
                  
@@ -120,31 +125,31 @@ public class DbAdapter {
   //Query che restituisce tutti i record (in ordine di inserimento)
   public Cursor fetchAllRecord() {
 	  			return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
-    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, null);
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, null);
     }
   
   //Query che restituisce tutti i record ordinati per nome
   public Cursor fetchAllRecordSortedByName() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
-    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_NAME + " ASC");
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_NAME + " ASC");
   }
  
 //Query che restituisce tutti i record ordinati per data
   public Cursor fetchAllRecordSortedByDate() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
-    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DATE + " DESC");
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_LAST + " DESC");
   }
   
 //Query che restituisce tutti i record ordinati per durata
   public Cursor fetchAllRecordSortedByDuration() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
-    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DURATION + " ASC");
+    			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DURATION + " ASC");
   }
   
   //Query che restituisce un record(cursor) dato un NOME
   public Cursor fetchRecordByFilter(String filter) {
 	  	Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
-    		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
+    		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
                                     KEY_NAME + " = '"+ filter + "'", null, null, null, null, null);
 	  	return mCursor;
     
@@ -153,7 +158,7 @@ public class DbAdapter {
   //Query che restituisce un record(cursor) dato un ID
    public Cursor fetchRecordById(long id) {
         Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
-        		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMP,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
+        		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
         							KEY_RECORDID + " == "+ id , null, null, null, null, null);
     
         return mCursor;

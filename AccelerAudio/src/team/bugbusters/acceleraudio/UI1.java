@@ -157,6 +157,7 @@ public class UI1 extends Activity {
 	 */
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		String[] dati = (String[]) lv.getAdapter().getItem(info.position);
@@ -164,7 +165,6 @@ public class UI1 extends Activity {
 		menu.setHeaderIcon(android.R.drawable.ic_menu_more);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.context_menu_ui1, menu);
-		
 	}
 	
 	/*
@@ -175,55 +175,27 @@ public class UI1 extends Activity {
 		
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		final String[] dati = (String[]) lv.getAdapter().getItem(info.position);
+		final CustomList runningCl = (CustomList) lv.getAdapter();
+		final List<String[]> nuovaLista = runningCl.getList();
+		
 		switch(item.getItemId()) {
 		
 		case R.id.Duplica:
 			
 			String[] nuoviDati = duplica(Long.parseLong(dati[0]));
-			
-			CustomList runningCl = (CustomList) lv.getAdapter();
-			List<String[]> nuovaLista = new ArrayList<String[]>();
-			for(int i = 0; i < runningCl.getCount(); i++) {
-				nuovaLista.add(runningCl.getItem(i));
-			}
 			nuovaLista.add(nuoviDati);
 			
-			if(prefs.getBoolean("sortedByName", false)) {
-			Collections.sort(nuovaLista, new Comparator<String[]>() {
-				@Override
-				public int compare(String[] s1, String[] s2) {
-					return s1[2].compareToIgnoreCase(s2[2]);
-				}
-			});
-			}
-			else if(prefs.getBoolean("sortedByDate", false)) {
-				Collections.sort(nuovaLista, new Comparator<String[]>() {
-					@Override
-					public int compare(String[] s1, String[] s2) {
-						return s1[3].compareTo(s2[3]);
-					}
-				});
-			}
-			else if(prefs.getBoolean("sortedByDuration", false)) {
-				Collections.sort(nuovaLista, new Comparator<String[]>() {
-					@Override
-					public int compare(String[] s1, String[] s2) {
-						return s1[4].compareTo(s2[4]);
-					}
-				});
-			}
+			ordinaLista(nuovaLista);
 			
 			int pos = nuovaLista.indexOf(nuoviDati);
 			
-			runningCl.clear();
-			runningCl.addAll(nuovaLista);
 			runningCl.notifyDataSetChanged();
-			//lv.smoothScrollToPosition(pos);
 			lv.setSelection(pos);
 			
 			return(true);
 			
 		case R.id.Rinomina:
+			
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle(R.string.Rename);
 			alert.setIcon(android.R.drawable.ic_menu_edit);
@@ -269,48 +241,16 @@ public class UI1 extends Activity {
 						toast.show();
 					}
 					else {
-						CustomList runningCl = (CustomList) lv.getAdapter();
-						runningCl.remove(dati);
-						dati[2] = nuovoNome; 
-						List<String[]> nuovaLista = new ArrayList<String[]>();
-						for(int i = 0; i < runningCl.getCount(); i++) {
-							nuovaLista.add(runningCl.getItem(i));
-						}
-						nuovaLista.add(dati);
-						if(prefs.getBoolean("sortedByName", false)) {
-						Collections.sort(nuovaLista, new Comparator<String[]>() {
-							@Override
-							public int compare(String[] s1, String[] s2) {
-								return s1[2].compareToIgnoreCase(s2[2]);
-							}
-						});
-						}
-						else if(prefs.getBoolean("sortedByDate", false)) {
-							Collections.sort(nuovaLista, new Comparator<String[]>() {
-								@Override
-								public int compare(String[] s1, String[] s2) {
-									return s1[3].compareTo(s2[3]);
-								}
-							});
-						}
-						else if(prefs.getBoolean("sortedByDuration", false)) {
-							Collections.sort(nuovaLista, new Comparator<String[]>() {
-								@Override
-								public int compare(String[] s1, String[] s2) {
-									return s1[4].compareTo(s2[4]);
-								}
-							});
-						}
+						int dove = nuovaLista.indexOf(dati);
+						nuovaLista.get(dove)[2] = nuovoNome;
+						
+						ordinaLista(nuovaLista);
 						
 						int pos = nuovaLista.indexOf(dati);
 						
-						runningCl.clear();
-						runningCl.addAll(nuovaLista);
 						runningCl.notifyDataSetChanged();
 						
 						lv.setSelection(pos);
-						//In alternativa:
-						//lv.smoothScrollToPosition(pos);
 						
 						db.open();
 						db.updateNameOnly(id_to_rename,nuovoNome);
@@ -336,8 +276,7 @@ public class UI1 extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					CustomList runningCl = (CustomList) lv.getAdapter();
-					runningCl.remove(dati);
+					nuovaLista.remove(dati);
 					runningCl.notifyDataSetChanged();
 					db.open();
 					db.deleteRecord(id_to_delete);
@@ -378,29 +317,34 @@ public class UI1 extends Activity {
 		   Cursor c=db.fetchRecordById(id);
 		   c.moveToNext();
 		   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-	       String d=c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
 	       String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
 	       String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
 	       String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
 	       boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
 	       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
 	       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-	       int ncamp=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMP));
-	       String sovrac=c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+	       int ncampx=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
+	       int ncampy=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
+	       int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
+	       int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
 	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
-	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
-	       String sovrac_new;
+	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
+	       int sovrac_new;
+	       boolean cX=checkX, cY=checkY, cZ=checkZ;
 	       
-	       if(checkX) checkY=!checkY;
-	       if(checkY) checkZ=!checkZ;
-	       if(checkZ) checkX=!checkX;
-	       if(sovrac.equals("Scelta 0")) sovrac_new="Scelta 1";
-	       else if(sovrac.equals("Scelta 1")) sovrac_new="Scelta 2";
-	       else if(sovrac.equals("Scelta 2")) sovrac_new="Scelta 3";
-	       else if(sovrac.equals("Scelta 3")) sovrac_new="Scelta 4";
-	       else sovrac_new="Scelta 0";
+	       while(cX==checkX && cY==checkY && checkZ==cZ){
+		       if(Math.random()>0.5) cX = !checkX;
+		       if(Math.random()>0.5) cY = !checkY;
+		       if(Math.random()>0.5) cZ = !checkZ;
+	       }
+  
+	       sovrac_new = (int)(Math.random()*100);
+	       if(sovrac_new==sovrac && sovrac<=90) sovrac_new = sovrac+10;
+	       else if (sovrac_new==sovrac) sovrac_new = sovrac-80;
 	       
-	       long id_new=db.createRecord(n+"_", d, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncamp, sovrac_new, datar, dataul, null);
+	       long dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
+	       
+	       long id_new = db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+cX, ""+cY, ""+cZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
 		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
 		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
 			
@@ -412,14 +356,13 @@ public class UI1 extends Activity {
 		   ret[1] = code;
 		   ret[2] = n + "_" + id_new;
 		   ret[3] = dataul;
-		   ret[4] = d;
+		   ret[4] = ""+dur;
 		   
 		   return ret;
 	   }
 	
 	/*
 	 * Metodo che controlla se e gia' presente un NOME di una music session nel DB
-	 * --Preso in prestito da Loris-- :-)
 	 */
 		public static boolean sameName(DbAdapter db,String s){
 				db.open();
@@ -436,6 +379,33 @@ public class UI1 extends Activity {
 				db.close();
 				return false;
 		}
+		
+		public void ordinaLista(List<String[]> nuovaLista) {
+			if(prefs.getBoolean("sortedByName", false)) {
+				Collections.sort(nuovaLista, new Comparator<String[]>() {
+					@Override
+					public int compare(String[] s1, String[] s2) {
+						return s1[2].compareToIgnoreCase(s2[2]);
+					}
+				});
+				}
+				else if(prefs.getBoolean("sortedByDate", false)) {
+					Collections.sort(nuovaLista, new Comparator<String[]>() {
+						@Override
+						public int compare(String[] s1, String[] s2) {
+							return s2[3].compareTo(s1[3]);
+						}
+					});
+				}
+				else if(prefs.getBoolean("sortedByDuration", false)) {
+					Collections.sort(nuovaLista, new Comparator<String[]>() {
+						@Override
+						public int compare(String[] s1, String[] s2) {
+							return s1[4].compareTo(s2[4]);
+						}
+					});
+				}
+		}
 	
 		
 		@Override
@@ -449,10 +419,7 @@ public class UI1 extends Activity {
 		public boolean onOptionsItemSelected(MenuItem item) {
 			final Editor prefsEditor = prefs.edit();;
 			final CustomList runningCl = (CustomList) lv.getAdapter();
-			final List<String[]> nuovaLista = new ArrayList<String[]>();
-			for(int i = 0; i < runningCl.getCount(); i++) {
-				nuovaLista.add(i, runningCl.getItem(i));
-			}
+			final List<String[]> nuovaLista = runningCl.getList();
 			
 			switch(item.getItemId()) {
 			
@@ -462,11 +429,14 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
-				if(prefs.getBoolean("sortedByName", false))
+				if(prefs.getBoolean("sortedByName", false)) {
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByName, Toast.LENGTH_SHORT).show();
 					break;
+			}
 				prefsEditor.putBoolean("sortedByName", true).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
+				
 				
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
@@ -475,14 +445,14 @@ public class UI1 extends Activity {
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 			
 			case R.id.Numera:
-				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false))
+				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false)) {
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByInsertion, Toast.LENGTH_SHORT).show();
 					break;
+				}
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -490,18 +460,18 @@ public class UI1 extends Activity {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						return s1[0].compareTo(s2[0]);
+						return (Integer.valueOf(s1[0])).compareTo(Integer.valueOf(s2[0]));
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 				
 			case R.id.OrdinaData:
-				if(prefs.getBoolean("sortedByDate", false))
+				if(prefs.getBoolean("sortedByDate", false)) {
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDate, Toast.LENGTH_SHORT).show();
 					break;
+				}
 				prefsEditor.putBoolean("sortedByDate", true).commit();
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -509,18 +479,18 @@ public class UI1 extends Activity {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						return s1[3].compareTo(s2[3]);
+						return s2[3].compareTo(s1[3]);
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 				
 			case R.id.OrdinaDurata:
-				if(prefs.getBoolean("sortedByDuration", false))
+				if(prefs.getBoolean("sortedByDuration", false)){
+					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDuration, Toast.LENGTH_SHORT).show();
 					break;
+				}
 				prefsEditor.putBoolean("sortedByDuration", true).commit();
 				prefsEditor.putBoolean("sortedByName", false).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
@@ -528,12 +498,12 @@ public class UI1 extends Activity {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						return s1[4].compareTo(s2[4]);
+						float a = Float.parseFloat(s1[4])/1000;
+						float b = Float.parseFloat(s2[4])/1000;
+						return Float.compare(a, b);
 					}
 				});
 				
-				runningCl.clear();
-				runningCl.addAll(nuovaLista);
 				runningCl.notifyDataSetChanged();
 				return(true);
 			}

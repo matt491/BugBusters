@@ -17,22 +17,53 @@ public class PlayRecord extends IntentService {
 	private DbAdapter dbHelper;
 	private Cursor cr;
 	private long id_to_process;
-	private double m;
 	private String asseX,asseY,asseZ;
 	private boolean checkX,checkY,checkZ;
-	private int ncamp;
-	private String sovrac;
+	private int sovrac,campx,campy,campz;
 	private String[] s,p,q;
- 	private short[] x,y,z,w;
-	private Thread t;
-	private boolean isRunning = true, pausa,riprendi,stop;
-	private int g,k,minsize;
-    private MyPlayerReceiver receiver;
-    private IntentFilter filter;
-    private Intent intentToUI4;
+ 	private short[] x,y,z;
+	private boolean  pausa,riprendi,stop;
+	private int g,i,j;
 	private AudioTrack at;
-	private String f;
+	private short[] finale;
+	public static final int minsize=7000;
+	private int sc;
+	private BroadcastReceiver receiver=new BroadcastReceiver(){
+		  
+		public void onReceive(Context context, Intent intent) {
+			pausa=intent.getBooleanExtra("Pausa", false);
+		    riprendi=intent.getBooleanExtra("Riprendi", false);
+		    stop=intent.getBooleanExtra("Stop", false);
+
+	       if(stop){
+	           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+		    	   at.pause();
+		    	   at.flush();
+		    	   at.release();
+	           }
+		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+					at.flush();
+					at.release();
+					}      
+			   stopSelf();
+	       }
+	       
+	       if(pausa) {
+	       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+	    	   g=at.getPlaybackHeadPosition();	
+	    	   at.pause();   
+	       		
+	       }
+				
+		    if(riprendi) {
+		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
+		    	   at.setPlaybackHeadPosition(g-100);
+		    	   at.play();    
+		       }		
+		}	
+	};
 	
+	//Costruttore
 	public PlayRecord() {
 		super("PlayRecord");
 	}
@@ -40,16 +71,10 @@ public class PlayRecord extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-        receiver = new MyPlayerReceiver();
-        intentToUI4 = new Intent(getApplicationContext(), UI4.class);
+		//Registrazione ricevitore
+        registerReceiver(receiver,new IntentFilter(UI4.THREAD_RESPONSE));
         
-        filter = new IntentFilter(MyPlayerReceiver.THREAD_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiver,filter);
-        
-        pausa=riprendi=stop=false;
         dbHelper = new DbAdapter(this);
-        
         id_to_process=intent.getLongExtra("ID", -1);
         
         //Apertura DB
@@ -62,34 +87,49 @@ public class PlayRecord extends IntentService {
         cr.moveToNext();
         
         //Lettura dei dati dal record(cursor) restituito
-       // m=Float.parseFloat(cr.getString(cr.getColumnIndex(DbAdapter.KEY_DURATION)));
         asseX=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEX));
         asseY=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEY));
         asseZ=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEZ));
+        campx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
+        campy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
+        campz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
         checkX=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
         checkY=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-        ncamp=cr.getInt(cr.getColumnIndex(DbAdapter.KEY_NUMCAMP));
-        sovrac=cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE));
+        sovrac=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
         
         //Chiusura DB
         dbHelper.close();
         
-        if(sovrac.equals("Scelta 0")) k=0;
-        if(sovrac.equals("Scelta 1")) k=1;
-        if(sovrac.equals("Scelta 2")) k=2;
-        if(sovrac.equals("Scelta 3")) k=3;
         
-        s=asseX.split(" "); 
-        p=asseY.split(" "); 
-        q=asseZ.split(" "); 
+      //Tokenizzazione delle stringhe in array di short        
+        if(!asseX.equals(""))
+        	s=asseX.split(" "); 
+        else {
+        	s=new String[1];
+        	s[0]="0";
+        }
         
+        if(!asseY.equals(""))
+        	p=asseY.split(" "); 
+        else {
+        	p=new String[1];
+        	p[0]="0";
+        }
+        
+        if(!asseZ.equals(""))
+        	q=asseZ.split(" ");
+        else {
+        	q=new String[1];
+        	q[0]="0";
+        }
+        
+ 
         x=new short[s.length];
         y=new short[p.length];
         z=new short[q.length];
         
-        //Tokenizzazione delle stringhe in array di short
-        int i;
+
         for(i=0;i<s.length;i++)
     		x[i]=Short.parseShort(s[i]);
         
@@ -100,131 +140,76 @@ public class PlayRecord extends IntentService {
         
         for(i=0;i<q.length;i++)
     		z[i]=Short.parseShort(q[i]);
-      
-        	
 
 
-        // start a new thread to synthesise audio
-     /*   t = new Thread("PROVA") {
-         public void run() {
-         setPriority(Thread.MAX_PRIORITY);
-         int i;
-        */
-       
-         minsize = AudioTrack.getMinBufferSize(44100,AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
-         
-         at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO,
-                                   AudioFormat.ENCODING_PCM_16BIT, 1000*minsize, AudioTrack.MODE_STATIC);
-
-         
-         
-         // start audio
+        sc=calcoloSovra(sovrac, x.length+y.length+z.length);
         
-        short[] samples;
-        short[] finale = new short[0];
-        
-      //  while(true){
-        	
-        switch(k){
-	        
-	        case 0: {
 	        	short[] s1 = new short[0];
-		        if(checkX)
-		        	s1 = new short[minsize];
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<s.length;i++){
+		        if(checkX){
+		        	s1 = new short[minsize+sc*x.length];
+		           	 j=0;
+		           	 for(i=0;i<s1.length;i++){
 		           		 s1[i]=x[j];
 		           		 j++;
-		           		 if(j==x.length) j=0;
-		           	 }
-		           		 
-		         //  	 at.write(samples, 0, samples.length);
-		           	
+		           		 if(j==x.length) j=0;		           	
 		            }
+		        }
 		         
 		        short[] s2 =new short[0];
-				if(checkZ)
-					s2 =new short[minsize];
-		        	if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
-		           	 int j=0;
+				if(checkZ){
+					s2 =new short[minsize+sc*z.length];
+		           	 j=0;
 		           	 for(i=0;i<s2.length;i++){
 		           		s2[i]=z[j];
 		           		 j++;
 		           		 if(j==z.length) j=0;
 		           	 }
-		          
-		           
 		            }
 		        
 		        short[] s3 =new short[0];	
-		        if(checkY)	 
-		         s3 =new short[minsize];
-		         if(y.length >= minsize)
-		        	 at.write(y, 0, y.length);
-		         else {
-		        	 int j=0;
+		        if(checkY)	{ 
+		        	s3 =new short[minsize+sc*y.length];
+		        	 j=0;
 		        	 for(i=0;i<s3.length;i++){
 		        		 s3[i]=y[j];
 		        		 j++;
 		        		 if(j==y.length) j=0;
-		        	 }
-		        		 
-		        	// at.write(samples, 0, samples.length);
+	 
 		         }
+		        }
 		        
 		        short[] s4 =new short[0];	 
-		        if(checkZ)
-		        	s4 =new short[minsize];
-		            if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
-		           	 int j=0;
+		        if(checkZ){
+		        	s4 =new short[minsize+sc*z.length];
+		           	 j=0;
 		           	 for(i=0;i<s4.length;i++){
 		           		s4[i]=z[j];
 		           		 j++;
 		           		 if(j==z.length) j=0;
-		           	 }
-		           		 
-		           	// at.write(samples, 0, samples.length);
 		            }
+		        }
 		        
 		        short[] s5 =new short[0];    
-		        if(checkX)
-		        	s5 =new short[minsize];
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
-		           	 int j=0;
+		        if(checkX){
+		        	s5 =new short[minsize+sc*x.length];
+		        	j=0;
 		           	 for(i=0;i<s5.length;i++){
 		           		s5[i]=x[j];
 		           		 j++;
 		           		 if(j==x.length) j=0;
 		           	 }
-		           		 
-		           //	 at.write(samples, 0, samples.length);
-		           	 
 		            }
 		            
-		            short[] s6 =new short[0];    
-		           	if(checkY)	
-		           		s6 =new short[minsize];  
-				         if(y.length >= minsize)
-				        	 at.write(y, 0, y.length);
-				         else {
-				        	 int j=0;
-				        	 for(i=0;i<s6.length;i++){
-				        		 s6[i]=y[j];
-				        		 j++;
-				        		 if(j==y.length) j=0;
-				        	 }
-				        		 
-				        	// at.write(samples, 0, samples.length);    
-		            }
+	            short[] s6 =new short[0];    
+	           	if(checkY)	{
+	           		s6 =new short[minsize+sc*y.length];  
+			        j=0;
+			        for(i=0;i<s6.length;i++){
+			        	s6[i]=y[j];
+			        	j++;
+			        	if(j==y.length) j=0;
+			        }
+		         }
 				         
 		         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
 		         System.arraycopy(s1, 0, finale, 0, s1.length);	
@@ -234,104 +219,9 @@ public class PlayRecord extends IntentService {
 		         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
 		         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
 		         
-		        break;
-	        } //Fine case 0 "Scelta 0" durata=6*2*minsize/44100 uguale per tutti <-- FISSO --> ALCATEL=2.29s con 3 assi
+
 	    
-	        case 1: {
-	        	samples = new short[2*minsize+20*x.length];
-		        if(checkX)
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=x[j];
-		           		 j++;
-		           		 if(j==x.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		            }
-		        
-		        samples = new short[2*minsize+20*z.length];
-		        if(checkZ)
-		        	if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=z[j];
-		           		 j++;
-		           		 if(j==z.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		            }
-		        
-		        samples = new short[2*minsize+20*y.length]; 
-		        if(checkY)	 
-		         if(y.length >= minsize)
-		        	 at.write(y, 0, y.length);
-		         else {
-		        	 int j=0;
-		        	 for(i=0;i<samples.length;i++){
-		        		 samples[i]=y[j];
-		        		 j++;
-		        		 if(j==y.length) j=0;
-		        	 }
-		        		 
-		        	 at.write(samples, 0, samples.length);
-		         }
-		        
-		        samples = new short[2*minsize+20*z.length];
-		        if(checkZ)
-		            if(z.length >= minsize)
-		           	 at.write(z, 0, z.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=z[j];
-		           		 j++;
-		           		 if(j==z.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		            }
-		        
-		        samples = new short[2*minsize+20*x.length];
-		        if(checkX)
-		            if(x.length >= minsize)
-		           	 at.write(x, 0, x.length);
-		            else {
-		           	 int j=0;
-		           	 for(i=0;i<samples.length;i++){
-		           		 samples[i]=x[j];
-		           		 j++;
-		           		 if(j==x.length) j=0;
-		           	 }
-		           		 
-		           	 at.write(samples, 0, samples.length);
-		           	 
-		            }
-		        samples = new short[2*minsize+20*y.length]; 
-		        if(checkY)	 
-				    if(y.length >= minsize)
-			        	 at.write(y, 0, y.length);
-			         else {
-			        	 int j=0;
-			        	 for(i=0;i<samples.length;i++){
-			        		 samples[i]=y[j];
-			        		 j++;
-			        		 if(j==y.length) j=0;
-			        	 }
-			        		 
-			        	 at.write(samples, 0, samples.length);    
-		            }
-	        	
-	        	break;
-	        	
-	        } //Fine case 1 "Scelta 1" durata=6*(2*minsize+20*numcamp)/44100  <-- VARIABILE -->
-	        
+	 /*
 	        case 2: {
 	        	short[] s = new short[minsize];
 	        	if(checkX)
@@ -359,99 +249,55 @@ public class PlayRecord extends IntentService {
 	        } //Fine case 2 "Scelta 2" durata=ncamp*minsize/44100  <-- LUNGO/PSICADELICO -->
 	        
 	       	        
-        } //Fine switch
+        } //Fine switch*/
         
-       
-     /*    } //Fine RUN
-         
-        	}; //Fine Thread
-        	
-   		t.start();        
-   		
-      
-   		
-   		*/
-    	at.write(finale, 0, finale.length); 
-        at.play();
        
 
-      /*  SystemClock.sleep(500);
-        at.pause();
-      
-        SystemClock.sleep(200);
-        at.reloadStaticData();
-        at.setPlaybackHeadPosition(g);
+        at = new AudioTrack(AudioManager.STREAM_MUSIC, 24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
+        					AudioTrack.MODE_STATIC);
+        at.write(finale, 0, finale.length); 
+        at.setLoopPoints(0, finale.length-1, -1);
         at.play();
-        */
-        SystemClock.sleep(5000);
         
+       // 10 ore di Sleep XD XD
+        SystemClock.sleep(36000000);
+        
+        //Dopo 10 ore si termina il servizio e l'AudioTrack
+        //ES: si è dimenticati il telefono in ricarica con la riproduzione in corso o in pausa
+        if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+	    	   at.pause();
+	    	   at.flush();
+	    	   at.release();
+        }
+	       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+				at.flush();
+				at.release();
+		}      
+				
+        stopSelf();
 	
-       // }
+      
 	
 	}
-	
-  public void pausacall(){
-	  if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-	    	   	g=at.getPlaybackHeadPosition();
-	    	   	at.pause(); 	
-  }
-     
-       
+	  
         
   public void onDestroy(){
-	 
 	  this.unregisterReceiver(receiver);
 	  Toast.makeText(getApplicationContext(), "Servizio Terminato", Toast.LENGTH_SHORT).show();
 	  super.onDestroy();
 	  
   }
   
+  public static int calcoloSovra(int s, int camp){
+	  if(camp>=1000) return (int) (30*s/100);
+	  else if (camp<1000) return (int) (40*s/100);
+	  else if (camp<500) return (int) (80*s/100);
+	  else if (camp<250) return (int) (120*s/100);
+	  else return (200*s/100);
+	  
+  }
   
-  
-  public class MyPlayerReceiver extends BroadcastReceiver{
-
-	   public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
-       @Override
-       	public void onReceive(Context context, Intent intent) {
-       		    pausa=intent.getBooleanExtra("Pausa", false);
-       		    riprendi=intent.getBooleanExtra("Riprendi", false);
-       		    stop=intent.getBooleanExtra("Stop", false);
-       		     
-       		       if(stop){
-       		           stop=false;
-       		           if(at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
-	       		    	   at.pause();
-	       		    	   at.flush();
-	       		    	   at.release();
-       		           }
-       		       else if(at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
-       		    		at.flush();
-	       		    	at.release();
-       		        	}
-       		    	       		           
-       		           	
-       		       }
-       		        
-       		    
-       		       if(pausa) {
-       		    	   pausa=false; 
-       		    	   
-       		       pausacall();
-       		    	 
-       		       }
-					
-       		       if(riprendi) {
-       		    	   riprendi=false;
-       		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-       		    	   at.setPlaybackHeadPosition(g);
-       		    	   at.play();    
-       		       }
-       		       
-       		       
-       	}
-       }
-	
-	
+  	
 	
  }
 	

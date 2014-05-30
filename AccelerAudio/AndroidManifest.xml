@@ -29,7 +29,6 @@
         
         <!-- SETTING THE LIL ONE WIDGET -->
         
-        
          <receiver android:name="widget_lil" >
     		<intent-filter>
         		<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -37,6 +36,14 @@
     		<meta-data android:name="android.appwidget.provider"
         		       android:resource="@xml/widget_descriptor_lil" />
 		</receiver>
+		
+       <!-- SETTING LOW MEMORY MANAGER RECEIVER -->
+       
+        <receiver android:name="team.bugbusters.acceleraudio.MemoryReceiver" android:enabled="true">
+            <intent-filter>
+        		<action android:name="android.intent.action.ACTION_DEVICE_STORAGE_LOW" />
+    		</intent-filter>
+        </receiver>
         
         <service android:name="DataRecord"/>
         <service android:name="PlayRecord"/>
@@ -55,7 +62,7 @@
         <!--			SETTING UI2			-->
         
         <activity android:name="team.bugbusters.acceleraudio.UI2"
-            android:label="Details (UI#2)" >
+            android:label="Details (UI#2)">
 		</activity>
         
         <!-- 		SETTING UI3			-->
@@ -67,7 +74,8 @@
         <!-- 		SETTING UI4			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI4"
-            android:label="Play (UI#4)">
+            android:label="Play (UI#4)"
+            android:configChanges="orientation|screenSize|keyboardHidden">>
         </activity>
         
         <!-- 		SETTING UI5			 -->

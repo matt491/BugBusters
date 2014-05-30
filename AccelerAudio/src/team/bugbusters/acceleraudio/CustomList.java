@@ -1,7 +1,6 @@
 package team.bugbusters.acceleraudio;
 
 import java.util.List;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -27,6 +26,10 @@ public class CustomList extends ArrayAdapter<String[]> {
 		super(context, R.layout.row, toFill);
 		this.context = context;
 		this.toFill = toFill;
+	}
+	
+	public List<String[]> getList(){
+		return this.toFill;
 	}
 	
 	@Override
@@ -87,10 +90,10 @@ public class CustomList extends ArrayAdapter<String[]> {
 		}
 		
 		holder.nameText.setText(s[2]);
-		holder.lastText.setText(s[3]);
-		holder.durationText.setText(s[4]);
+		holder.lastText.setText(s[3].substring(0, 16));
+		float dur =Float.parseFloat(s[4])/1000;
+		holder.durationText.setText(String.format("%.2fs", dur));
 		
 		return rowView;
-	}	
-
+	}
 }

@@ -96,8 +96,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkBoxX"
-        android:layout_toRightOf="@+id/checkBoxX"
         android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/checkBoxX"
+        android:checked="true"
         android:text="@string/AsseY" />
 
     <CheckBox
@@ -105,8 +106,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/checkBoxY"
-        android:layout_toRightOf="@+id/checkBoxY"
         android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/checkBoxY"
+        android:checked="true"
         android:text="@string/AsseZ" />
 
     <TextView
