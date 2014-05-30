@@ -330,17 +330,21 @@ public class UI1 extends Activity {
 	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
 	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 	       int sovrac_new;
+	       boolean cX=checkX, cY=checkY, cZ=checkZ;
 	       
-	       if(checkX) checkY=!checkY;
-	       if(checkY) checkZ=!checkZ;
-	       if(checkZ) checkX=!checkX;
+	       while(cX==checkX && cY==checkY && checkZ==cZ){
+		       if(Math.random()>0.5) cX = !checkX;
+		       if(Math.random()>0.5) cY = !checkY;
+		       if(Math.random()>0.5) cZ = !checkZ;
+	       }
+  
+	       sovrac_new = (int)(Math.random()*100);
+	       if(sovrac_new==sovrac && sovrac<=90) sovrac_new = sovrac+10;
+	       else if (sovrac_new==sovrac) sovrac_new = sovrac-80;
 	       
-	       if(sovrac<=90) sovrac_new=sovrac+10;
-	       else sovrac_new=sovrac-80;
+	       long dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
 	       
-	       long dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,checkX,checkY,checkZ,sovrac_new);
-	       
-	       long id_new=db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+checkX, ""+checkY, ""+checkZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
+	       long id_new = db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+cX, ""+cY, ""+cZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
 		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
 		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
 			

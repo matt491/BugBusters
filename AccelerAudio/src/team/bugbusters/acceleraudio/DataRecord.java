@@ -160,7 +160,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 			//Invece se si proviene dal widget
 			else {
-				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm", new java.util.Date()).toString();
+				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
 				
