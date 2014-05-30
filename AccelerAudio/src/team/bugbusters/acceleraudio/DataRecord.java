@@ -47,6 +47,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		 	broadcastIntent = new Intent();
 	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
 	        
+	      //Intent usato per comunicare con il Broadcast Receiver dei widget
+	        broadcastWidget = new Intent();
+			broadcastWidget.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+	        
 	        //Inizializzo il database
 	        dbHelper = new DbAdapter(this);
 	        
@@ -160,8 +164,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			//Invece se si proviene dal widget
 			else {
 				
-				broadcastWidget = new Intent();
-				broadcastWidget.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+				
 				
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
@@ -177,6 +180,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
 				dbHelper.close();
 				
+				broadcastWidget.putExtra("NoAccelerometro",false);
 				broadcastWidget.putExtra("SS",true);
 				sendBroadcast(broadcastWidget);
 				
@@ -188,8 +192,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	//Metodo che inizializza l'acquisizione dei dati da parte dell'accelerometro
 	protected void acquisizione(){
-    	if(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null)
-    		Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
+    	if(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null) {
+    		broadcastWidget.putExtra("NoAccelerometro",true);
+			sendBroadcast(broadcastWidget);
+    	}
     	
     	else {
     		sendtime=System.currentTimeMillis();	
