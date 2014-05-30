@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 public class widget_lil extends AppWidgetProvider {
 	private static Intent serviceIntent;
-	private static boolean serviceRunning =false;
+	private static boolean serviceRunning =false, b=false,c=false,d=false;
 	public static String TOGGLE_WINET = "ToggleWiNetService";
 	@Override
 	/*-- Handles the first instance of the widget --*/
@@ -69,8 +69,16 @@ public class widget_lil extends AppWidgetProvider {
 			 * 
 			--*/
 			
-				view.setOnClickPendingIntent(R.id.stop_lil, PendingIntent.getBroadcast(context, 0, new Intent (context,widget_lil.class), 0));
-				view.setOnClickPendingIntent(R.id.rec_lil, PendingIntent.getBroadcast(context, 0, new Intent (context,widget_lil.class), 0));
+			Intent start=new Intent (context,widget_lil.class);
+			start.setAction("START_REC");
+			
+			Intent stop=new Intent (context,widget_lil.class);
+			stop.setAction("STOP_REC");
+
+			
+				view.setOnClickPendingIntent(R.id.stop_lil, PendingIntent.getBroadcast(context, 0,  stop, 0));
+				view.setOnClickPendingIntent(R.id.rec_lil, PendingIntent.getBroadcast(context, 0, start, 0));
+				
 			
 			/*-- Update the widget --*/
 			
@@ -83,29 +91,37 @@ public class widget_lil extends AppWidgetProvider {
 	@Override
     public void onReceive(Context context, Intent intent)
     {
-		//if(intent.getAction().equals(TOGGLE_WINET)){
+		String action=intent.getAction();
+		
             RemoteViews rw = new RemoteViews(context.getPackageName(), R.layout.widget_lil_layout); 
-            Intent serviceIntent = new Intent(context, DataRecord.class);
-            if(serviceRunning) {
-                context.stopService(serviceIntent);
-                /*--
-                rw.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
-                rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
-                --*/
-                Toast.makeText(context, "serviceStopped", Toast.LENGTH_LONG).show();
-            } else 
-            {
-                context.startService(serviceIntent);
-                /*--
-                rw.setViewVisibility(R.id.rec_lil, View.INVISIBLE);
+            serviceIntent = new Intent(context, DataRecord.class);
+            b=intent.getBooleanExtra("TempoScaduto", false);
+
+            
+            
+            if(b)  {
+            	b=false;
+            	Toast.makeText(context,"Registrazione terminata" , Toast.LENGTH_SHORT).show();
+            	rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
                 rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
-                --*/
-                Toast.makeText(context, "serviceStarted", Toast.LENGTH_LONG).show();
             }
-            serviceRunning=!serviceRunning;
-            ComponentName componentName = new ComponentName(context,widget_lil.class);
-            AppWidgetManager.getInstance(context).updateAppWidget(componentName, rw);
-		//}
+            
+            
+            if(action.equals("START_REC")){
+            	context.startService(serviceIntent);
+            	rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
+                rw.setViewVisibility(R.id.rec_lil, View.INVISIBLE);
+            }
+            	
+            if(action.equals("STOP_REC")){
+            	context.stopService(serviceIntent);
+            	rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
+                rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
+            }
+            
+
+            AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_lil.class), rw);
+
         super.onReceive(context, intent);
     }
 

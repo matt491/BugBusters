@@ -164,8 +164,6 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			//Invece se si proviene dal widget
 			else {
 				
-				
-				
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
@@ -180,8 +178,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
 				dbHelper.close();
 				
-				broadcastWidget.putExtra("NoAccelerometro",false);
-				broadcastWidget.putExtra("SS",true);
+				broadcastWidget.putExtra("TempoScaduto",true);
 				sendBroadcast(broadcastWidget);
 				
 			}
