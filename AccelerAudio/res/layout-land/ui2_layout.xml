@@ -13,7 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/ImageDesc" />
 
     <TextView
         android:id="@+id/sessione"
@@ -32,8 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/dataRegistrazione"
         android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/dataRegistrazione"
-        android:text="data" />
+        android:layout_toRightOf="@+id/dataRegistrazione" />
 
     <TextView
         android:id="@+id/selezionaAssi"
@@ -114,8 +114,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/sovracampionamento"
         android:layout_toRightOf="@+id/sovracampionamento"
-        android:layout_marginLeft="5dp"
-        android:text="sovracamp" />
+        android:layout_marginLeft="5dp" />
 
     <TextView
         android:id="@+id/dataRegistrazione"
@@ -134,7 +133,6 @@
         android:layout_below="@+id/sessione"
         android:layout_toLeftOf="@+id/checkBoxY"
         android:ems="10"
-        android:text="nome_sessione"
         android:hint="@string/hintName"
 		android:imeOptions="actionSend"
         android:inputType="textCapSentences|textNoSuggestions">
@@ -157,7 +155,6 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/dataUltimaModifica"
         android:layout_alignBottom="@+id/dataUltimaModifica"
-        android:layout_alignLeft="@+id/datareg"
-        android:text="data" />
+        android:layout_alignLeft="@+id/datareg" />
 
 </RelativeLayout>

@@ -429,10 +429,13 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
+				while(runningCl.isEmpty()) {
+					break;
+				}
 				if(prefs.getBoolean("sortedByName", false)) {
 					Toast.makeText(getApplicationContext(), R.string.alreadySortedByName, Toast.LENGTH_SHORT).show();
 					break;
-			}
+				}
 				prefsEditor.putBoolean("sortedByName", true).commit();
 				prefsEditor.putBoolean("sortedByDate", false).commit();
 				prefsEditor.putBoolean("sortedByDuration", false).commit();
@@ -449,6 +452,9 @@ public class UI1 extends Activity {
 				return(true);
 			
 			case R.id.Numera:
+				while(runningCl.isEmpty()) {
+					break;
+				}
 				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false)) {
 					Toast.makeText(getApplicationContext(), R.string.alreadySortedByInsertion, Toast.LENGTH_SHORT).show();
 					break;
@@ -468,6 +474,9 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaData:
+				while(runningCl.isEmpty()) {
+					break;
+				}
 				if(prefs.getBoolean("sortedByDate", false)) {
 					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDate, Toast.LENGTH_SHORT).show();
 					break;
@@ -487,6 +496,9 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaDurata:
+				while(runningCl.isEmpty()) {
+					break;
+				}
 				if(prefs.getBoolean("sortedByDuration", false)){
 					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDuration, Toast.LENGTH_SHORT).show();
 					break;

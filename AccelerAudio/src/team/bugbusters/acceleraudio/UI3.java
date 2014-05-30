@@ -46,17 +46,16 @@ public class UI3 extends Activity {
     private IntentFilter filter;
     private ToggleButton toggle;
     private boolean in_pausa=false;
-    private MyCounter timer;
+    private RecordCounter timer;
+    private final long INTERVALLO=100L;
     		
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-
         receiver = new MyUI3Receiver();
         intentToSer = new Intent(UI3.this, DataRecord.class);
         filter = new IntentFilter(MyUI3Receiver.PROCESS_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiver,filter);
         
         setContentView(R.layout.ui3_layout);
@@ -121,8 +120,7 @@ public class UI3 extends Activity {
             	if(!in_pausa){
             		pause_resume.setText("Riprendi");
             		in_pausa=true;
-            		prec=timer.last;
-            		timer.cancel();
+            		prec=timer.myCancel();
             		stopService(intentToSer);
             	}
             	else {
@@ -135,14 +133,9 @@ public class UI3 extends Activity {
             		intentToSer.putExtra("attFineTempo", end_time);
             		intentToSer.putExtra("attCampX", i);
             		intentToSer.putExtra("attCampY", j);
-            		intentToSer.putExtra("attCampZ", k);
-            		
+            		intentToSer.putExtra("attCampZ", k);	
             		in_pausa=false;
-            		         		
-            		timer=new MyCounter(end_time*1000-prec,100);
-            		timer.end=end_time*1000-prec;
-            		timer.previous=prec;
-            		timer.start();
+            		creaRecordTimer(end_time*1000-prec, INTERVALLO, prec);
             		startService(intentToSer);
             	}
             }
@@ -156,9 +149,7 @@ public class UI3 extends Activity {
             		pause_resume.setEnabled(false);
             		stop.setEnabled(false);
             		timer.cancel();
-            		
-            		stopService(intentToSer);
-            		
+            		stopService(intentToSer);		
             	}
         });
          
@@ -175,11 +166,7 @@ public class UI3 extends Activity {
             		toggle.setEnabled(false);
             		end_time=prefs.getInt("duratadef", 30);
             		pb.setMax(end_time);
-            		
-            		timer=new MyCounter(end_time*1000,100);
-            		timer.end=end_time*1000;	
-            		timer.start();
-            		
+            		creaRecordTimer(end_time*1000, INTERVALLO, 0 );
             		intentToSer.putExtra("fromUI3", true);
             		startService(intentToSer);
             	}
@@ -193,13 +180,15 @@ public class UI3 extends Activity {
             	pkg=getPackageName();
             	String nomeinserito=nome_music.getText().toString();
             	
-            	//Se il nome inserito e la stringa vuota o  gia presente nel DB allora
+            	//Se il nome inserito e' non valido o  gia' presente nel DB allora
             	if(nomeinserito.contains("'") || nomeinserito.contains("_")) {
             		Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
             	}
             	else if((nomeinserito.equals("")) || UI1.sameName(dbHelper,nomeinserito)) {
             		Toast.makeText(getApplicationContext(), R.string.validName, Toast.LENGTH_SHORT).show();
             	}
+            	
+            	//Altrimenti inserisci il record nel DB
             	else {	
             		nome = nome_music.getText().toString();
             		ts = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
@@ -208,15 +197,11 @@ public class UI3 extends Activity {
 							prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
             		
             		dbHelper.open();           	
-        		
-            		
-            		
+        				
             		long id_to_ui2=dbHelper.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
             				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
         					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
-            		
-
-            		
+            	            		
             		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
         		
             		//Update dei dati immagine
@@ -273,12 +258,21 @@ public class UI3 extends Activity {
  		return (super.onOptionsItemSelected(item));
  	}
  	
+ 	
+ 	public void creaRecordTimer(long fine, long this_intervallo, long prev ){
+		timer=new RecordCounter(fine, this_intervallo);
+    	timer.end=fine;
+    	timer.previous=prev;
+    	timer.start();
+	}
  
-	  public class MyCounter extends CountDownTimer{
+	  public class RecordCounter extends CountDownTimer{
 		 private long end;
 		 private long last;
 		 private long previous=0;
-	        public MyCounter(long millisInFuture, long countDownInterval) {
+		 private long curr;
+		 
+	        public RecordCounter(long millisInFuture, long countDownInterval) {
 	            super(millisInFuture, countDownInterval);
 	        }
 	 
@@ -295,10 +289,17 @@ public class UI3 extends Activity {
 	 
 	        @Override
 	        public void onTick(long millisUntilFinished) {
-	            t.setText((float)((previous+end-millisUntilFinished)/100)/10 +"");
-	            pb.setProgress((int)(previous+end-millisUntilFinished)/1000);
-	            last=previous+end-millisUntilFinished;
+	        	curr=millisUntilFinished;
+	            t.setText((float)((previous+end-curr)/100)/10 +"");
+	            pb.setProgress((int)(previous+end-curr)/1000);
+	            last=previous+end-curr;
 	        }
+	        
+	        public long myCancel(){
+		    	  last=previous+end-curr;
+		    	  super.cancel(); 
+		    	  return last;
+		      }
 	    }
 	
 

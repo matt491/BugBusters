@@ -166,8 +166,8 @@ public class UI2 extends Activity {
         chZ.setChecked(z_selected);
         nomevar.setText(nome_ric);
         nomevar.setSelection(nomevar.getText().length());
-        timevar.setText(timestamp_ric);
-        ultimavar.setText(dataulitmamodifica);
+        timevar.setText(timestamp_ric.substring(0, 16));
+        ultimavar.setText(dataulitmamodifica.substring(0, 16));
         result.setText(""+sovra_ric);
         sb.setProgress(sovra_ric);
         
@@ -254,7 +254,7 @@ public class UI2 extends Activity {
 	        //Chiusura Cursor e DB
 	        cr.close();
 	        dbHelper.close();
-	        ultimavar.setText(dataulitmamodifica);
+	        ultimavar.setText(dataulitmamodifica.substring(0, 16));
 	}
 	
 	

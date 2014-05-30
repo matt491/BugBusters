@@ -28,8 +28,11 @@ public class PlayRecord extends IntentService {
 	private short[] finale;
 	public static final int minsize=7000;
 	private int sc;
+	
+	//Creazione del ricevitore
 	private BroadcastReceiver receiver=new BroadcastReceiver(){
-		  
+		 
+		@Override
 		public void onReceive(Context context, Intent intent) {
 			pausa=intent.getBooleanExtra("Pausa", false);
 		    riprendi=intent.getBooleanExtra("Riprendi", false);
@@ -57,7 +60,7 @@ public class PlayRecord extends IntentService {
 				
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-		    	   at.setPlaybackHeadPosition(g-100);
+		    	   at.setPlaybackHeadPosition(g-200);
 		    	   at.play();    
 		       }		
 		}	
@@ -124,7 +127,6 @@ public class PlayRecord extends IntentService {
         	q[0]="0";
         }
         
- 
         x=new short[s.length];
         y=new short[p.length];
         z=new short[q.length];
@@ -132,92 +134,92 @@ public class PlayRecord extends IntentService {
 
         for(i=0;i<s.length;i++)
     		x[i]=Short.parseShort(s[i]);
-        
-        
         for(i=0;i<p.length;i++)
-    		y[i]=Short.parseShort(p[i]);
-        
-        
+    		y[i]=Short.parseShort(p[i]);      
         for(i=0;i<q.length;i++)
     		z[i]=Short.parseShort(q[i]);
 
-
+        //Calcolo del coefficiente atto ad effettuare il sovracampionamento
         sc=calcoloSovra(sovrac, x.length+y.length+z.length);
         
-	        	short[] s1 = new short[0];
-		        if(checkX){
-		        	s1 = new short[minsize+sc*x.length];
-		           	 j=0;
-		           	 for(i=0;i<s1.length;i++){
-		           		 s1[i]=x[j];
-		           		 j++;
-		           		 if(j==x.length) j=0;		           	
-		            }
+        
+        //Creazione dei vari array che andranno a comporre l'array finale
+        	short[] s1 = new short[0];
+	        if(checkX){
+	        	s1 = new short[minsize+sc*x.length];
+	           	 j=0;
+	           	 for(i=0;i<s1.length;i++){
+	           		 s1[i]=x[j];
+	           		 j++;
+	           		 if(j==x.length) j=0;		           	
+	            }
+	        }
+	         
+	        short[] s2 =new short[0];
+			if(checkZ){
+				s2 =new short[minsize+sc*z.length];
+	           	 j=0;
+	           	 for(i=0;i<s2.length;i++){
+	           		s2[i]=z[j];
+	           		 j++;
+	           		 if(j==z.length) j=0;
+	           	 }
+	            }
+	        
+	        short[] s3 =new short[0];	
+	        if(checkY)	{ 
+	        	s3 =new short[minsize+sc*y.length];
+	        	 j=0;
+	        	 for(i=0;i<s3.length;i++){
+	        		 s3[i]=y[j];
+	        		 j++;
+	        		 if(j==y.length) j=0;
+ 
+	         }
+	        }
+	        
+	        short[] s4 =new short[0];	 
+	        if(checkZ){
+	        	s4 =new short[minsize+sc*z.length];
+	           	 j=0;
+	           	 for(i=0;i<s4.length;i++){
+	           		s4[i]=z[j];
+	           		 j++;
+	           		 if(j==z.length) j=0;
+	            }
+	        }
+	        
+	        short[] s5 =new short[0];    
+	        if(checkX){
+	        	s5 =new short[minsize+sc*x.length];
+	        	j=0;
+	           	 for(i=0;i<s5.length;i++){
+	           		s5[i]=x[j];
+	           		 j++;
+	           		 if(j==x.length) j=0;
+	           	 }
+	            }
+	            
+            short[] s6 =new short[0];    
+           	if(checkY)	{
+           		s6 =new short[minsize+sc*y.length];  
+		        j=0;
+		        for(i=0;i<s6.length;i++){
+		        	s6[i]=y[j];
+		        	j++;
+		        	if(j==y.length) j=0;
 		        }
-		         
-		        short[] s2 =new short[0];
-				if(checkZ){
-					s2 =new short[minsize+sc*z.length];
-		           	 j=0;
-		           	 for(i=0;i<s2.length;i++){
-		           		s2[i]=z[j];
-		           		 j++;
-		           		 if(j==z.length) j=0;
-		           	 }
-		            }
-		        
-		        short[] s3 =new short[0];	
-		        if(checkY)	{ 
-		        	s3 =new short[minsize+sc*y.length];
-		        	 j=0;
-		        	 for(i=0;i<s3.length;i++){
-		        		 s3[i]=y[j];
-		        		 j++;
-		        		 if(j==y.length) j=0;
-	 
-		         }
-		        }
-		        
-		        short[] s4 =new short[0];	 
-		        if(checkZ){
-		        	s4 =new short[minsize+sc*z.length];
-		           	 j=0;
-		           	 for(i=0;i<s4.length;i++){
-		           		s4[i]=z[j];
-		           		 j++;
-		           		 if(j==z.length) j=0;
-		            }
-		        }
-		        
-		        short[] s5 =new short[0];    
-		        if(checkX){
-		        	s5 =new short[minsize+sc*x.length];
-		        	j=0;
-		           	 for(i=0;i<s5.length;i++){
-		           		s5[i]=x[j];
-		           		 j++;
-		           		 if(j==x.length) j=0;
-		           	 }
-		            }
-		            
-	            short[] s6 =new short[0];    
-	           	if(checkY)	{
-	           		s6 =new short[minsize+sc*y.length];  
-			        j=0;
-			        for(i=0;i<s6.length;i++){
-			        	s6[i]=y[j];
-			        	j++;
-			        	if(j==y.length) j=0;
-			        }
-		         }
-				         
-		         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
-		         System.arraycopy(s1, 0, finale, 0, s1.length);	
-		         System.arraycopy(s2, 0, finale, s1.length, s2.length);	
-		         System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
-		         System.arraycopy(s4, 0, finale, s1.length+s2.length+s3.length, s4.length);
-		         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
-		         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
+	         }
+			   
+           	
+           	//Creazione dell'array finale da scrivere nel buffer interno dell'AudioTrack
+	         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
+	         System.arraycopy(s1, 0, finale, 0, s1.length);	
+	         System.arraycopy(s2, 0, finale, s1.length, s2.length);	
+	         System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
+	         System.arraycopy(s4, 0, finale, s1.length+s2.length+s3.length, s4.length);
+	         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
+	         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
 		         
 
 	    
@@ -252,14 +254,21 @@ public class PlayRecord extends IntentService {
         } //Fine switch*/
         
        
-
+	    //Creazione dell'oggetto AudioTrack in modalita' statica     
         at = new AudioTrack(AudioManager.STREAM_MUSIC, 24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
         					AudioTrack.MODE_STATIC);
+        
+        //Scrittura nel buffer interno
         at.write(finale, 0, finale.length); 
+        
+        //Impostazione del Loop della musica
         at.setLoopPoints(0, finale.length-1, -1);
+        
+        //Riproduzione
         at.play();
         
-       // 10 ore di Sleep XD XD
+        
+       // 10 ore di Sleep
         SystemClock.sleep(36000000);
         
         //Dopo 10 ore si termina il servizio e l'AudioTrack
@@ -288,6 +297,8 @@ public class PlayRecord extends IntentService {
 	  
   }
   
+  //Metodo che calcola il coefficiente di sovracampionamento in base al numero dei campioni
+  //e alla posizione della SeekBar di sovracampionamento
   public static int calcoloSovra(int s, int camp){
 	  if(camp>=1000) return (int) (30*s/100);
 	  else if (camp<1000) return (int) (40*s/100);

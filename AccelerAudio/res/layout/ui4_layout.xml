@@ -45,7 +45,6 @@
         android:layout_alignBaseline="@+id/textView2"
        	android:layout_toRightOf="@+id/textView2"
        	android:layout_marginLeft="5dp"
-        android:text="music_session_dur"
         android:textAppearance="?android:attr/textAppearanceSmall" />
  <!-- Qui compare il tempo corrente di riproduzione, il quale dovrà aggiornarsi quando l'utente trascina il cursore della seekbar (opzionale) -->   
      <TextView

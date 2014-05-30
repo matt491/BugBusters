@@ -40,7 +40,7 @@ public class UI4 extends Activity {
 	private SeekBar sbtime;
 	private TimerCounter timer;
 	private long prec,endtime,starttime;
-	private final long intervallo=1L;
+	private final long INTERVALLO=1L;
 	private boolean on_play=true;
 	private static final int PREVIOUS = 0;
 	private static final int NEXT = 1;
@@ -81,7 +81,7 @@ public class UI4 extends Activity {
 	        playIntentService.putExtra("ID", id);
 	    	endtime=durata;
 	    	sbtime.setMax((int) endtime);
-	    	creaTimer(endtime,intervallo,0);
+	    	creaPlayTimer(endtime,INTERVALLO,0);
 	    	startService(playIntentService);
         }
         
@@ -102,7 +102,7 @@ public class UI4 extends Activity {
 	            	playIntentService.putExtra("ID", id);
 	            	endtime=durata;
 	            	sbtime.setMax((int) endtime);
-	            	creaTimer(endtime,intervallo,0);
+	            	creaPlayTimer(endtime,INTERVALLO,0);
 	            	startService(playIntentService);
             	}
             	
@@ -124,7 +124,7 @@ public class UI4 extends Activity {
 	            	playIntentService.putExtra("ID", id);
 	            	endtime=durata;
 	            	sbtime.setMax((int) endtime);
-	            	creaTimer(endtime,intervallo,0);
+	            	creaPlayTimer(endtime,INTERVALLO,0);
 	            	startService(playIntentService);
             	}            	
             }});
@@ -143,7 +143,7 @@ public class UI4 extends Activity {
             		on_play=true;
             		broadcastIntent.putExtra("Riprendi", true);
                 	broadcastIntent.putExtra("Pausa", false);
-                	creaTimer(endtime-prec, intervallo, prec);
+                	creaPlayTimer(endtime-prec, INTERVALLO, prec);
                 	sendBroadcast(broadcastIntent);	
                 	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
             	}
@@ -242,7 +242,7 @@ public class UI4 extends Activity {
  	 }
     }
 	
-	public void creaTimer(long fine, long this_intervallo, long prev ){
+	private void creaPlayTimer(long fine, long this_intervallo, long prev ){
 		timer=new TimerCounter(fine, this_intervallo);
     	timer.end=fine;
     	timer.previous=prev;
@@ -302,7 +302,7 @@ public class UI4 extends Activity {
 			break;
 		}
         name.setText(nome);
-        duration.setText(""+((float)(durata/10)/100));
+        duration.setText(((float)(durata/10)/100) + " secondi");
         on_play=true;
         pause_resume.setImageResource(android.R.drawable.ic_media_pause);
         }
@@ -365,7 +365,7 @@ public class UI4 extends Activity {
 	      @Override
 	      public void onFinish() {
 	    	  time.setText((float)((end+previous)/100)/10+"");
-	    	  creaTimer(end+previous, intervallo, 0);
+	    	  creaPlayTimer(end+previous, INTERVALLO, 0);
 	      }
 	      
 	      public long myCancel(){
@@ -378,7 +378,7 @@ public class UI4 extends Activity {
 	      @Override
 	      public void onTick(long millisUntilFinished) {
 	    	  curr=millisUntilFinished;
-	          time.setText((float)((previous+end-curr)/100)/10 +"");
+	          time.setText((float)((previous+end-curr)/100)/10 +" s");
 	          sbtime.setProgress((int)(previous+end-curr));
 	          last=previous+end-curr;
 	      }

@@ -1,7 +1,6 @@
 package team.bugbusters.acceleraudio;
 
 import java.util.Random;
-
 import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
@@ -47,7 +46,6 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		 	//Intent usato per comunicare con il Broadcast Receiver della UI3
 		 	broadcastIntent = new Intent();
 	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
-	        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
 	        
 	        //Inizializzo il database
 	        dbHelper = new DbAdapter(this);
@@ -109,13 +107,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 				if(event.values[1]-valprec[1]>NOISE){
 					datoY.append((converti(event.values[1]))+" ");
-					//i++;
 					j++;
 					broadcastIntent.putExtra("intPbY", Math.round(Math.abs(event.values[1])));
 				}
 				if(event.values[2]-valprec[2]>NOISE){
 					datoZ.append((converti(event.values[2]))+" ");
-					//i++;
 					k++;
 					broadcastIntent.putExtra("intPbZ", Math.round(Math.abs(event.values[2])));
 				}
@@ -137,7 +133,6 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		}
 	 
 	 
-
 
 	@Override
 	public void onDestroy(){
