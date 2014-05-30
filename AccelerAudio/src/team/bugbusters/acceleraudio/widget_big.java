@@ -51,15 +51,12 @@ public class widget_big extends AppWidgetProvider {
 		iplay = new Intent (context,PlayRecord.class);
 		irec = new Intent(context,DataRecord.class);
 		
-		/*-- Pending intents --*/
-		
-		PendingIntent pplay = PendingIntent.getService(context, 0, iplay, 0);
-		PendingIntent prec = PendingIntent.getService(context, 0, irec, 0);
+		/*-- Pending intents that we want to immediately starts af the first istance --*/
 		
 		/*-- Performing the action --*/
 		
-		view.setOnClickPendingIntent(R.id.play_big, pplay);
-		view.setOnClickPendingIntent(R.id.rec_big, prec);
+		view.setOnClickPendingIntent(R.id.play_big, PendingIntent.getService(context, 0, iplay, 0));
+		view.setOnClickPendingIntent(R.id.rec_big, PendingIntent.getService(context, 0, irec, 0));
 		
 		/*-- Updating the widget --*/
 		appWidgetManager.updateAppWidget(appWidgetIds[0], view);
