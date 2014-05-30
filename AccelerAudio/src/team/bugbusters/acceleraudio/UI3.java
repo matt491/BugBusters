@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -48,6 +49,7 @@ public class UI3 extends Activity {
     private boolean in_pausa=false;
     private RecordCounter timer;
     private final long INTERVALLO=100L;
+    private PackageManager packageManager;
     		
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class UI3 extends Activity {
         intentToSer = new Intent(UI3.this, DataRecord.class);
         filter = new IntentFilter(MyUI3Receiver.PROCESS_RESPONSE);
         registerReceiver(receiver,filter);
+        packageManager = getApplicationContext().getPackageManager();
         
         setContentView(R.layout.ui3_layout);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -157,18 +160,19 @@ public class UI3 extends Activity {
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
             	if(toggle.isChecked()){
-            		
-            		
-            		avan.setEnabled(false);
-            		pause_resume.setEnabled(true);
-            		stop.setEnabled(true);
-            		rec.setEnabled(false);
-            		toggle.setEnabled(false);
-            		end_time=prefs.getInt("duratadef", 30);
-            		pb.setMax(end_time);
-            		creaRecordTimer(end_time*1000, INTERVALLO, 0 );
-            		intentToSer.putExtra("fromUI3", true);
-            		startService(intentToSer);
+            		if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
+	            		avan.setEnabled(false);
+	            		pause_resume.setEnabled(true);
+	            		stop.setEnabled(true);
+	            		rec.setEnabled(false);
+	            		toggle.setEnabled(false);
+	            		end_time=prefs.getInt("duratadef", 30);
+	            		pb.setMax(end_time);
+	            		creaRecordTimer(end_time*1000, INTERVALLO, 0 );
+	            		intentToSer.putExtra("fromUI3", true);
+	            		startService(intentToSer);
+            		}
+            		else Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
             	}
             	else Toast.makeText(getApplicationContext(), R.string.lockScreen, Toast.LENGTH_SHORT).show();
             }
