@@ -47,7 +47,7 @@ public class widget_lil extends AppWidgetProvider {
 			/*-- Setting REC  Intent --*/
 			
 			//Intent irec = new Intent(context,DataRecord.class);
-			Intent iirec = new Intent(context,widget_lil.class);
+			//Intent iirec = new Intent(context,widget_lil.class);
 						
 			/*-- Pending intents that we want to immediately starts af the first istance --*/
 			
@@ -62,10 +62,15 @@ public class widget_lil extends AppWidgetProvider {
 			
             /*-- Starts the intent only with the onclick event--*/
             
-			/*-- Hiding buttons mutually exclusive way --*/
-
-				view.setOnClickPendingIntent(R.id.stop_lil, PendingIntent.getBroadcast(context, 0, iirec, 0));
-				view.setOnClickPendingIntent(R.id.rec_lil, PendingIntent.getBroadcast(context, 0, iirec, 0));
+			/*--
+			 * 
+			 *  The only way (that i figure out) to manage the first launch of the application is to instantiate the onReceive calling intents  in the OnClick event
+			 * setting it previously with the new keyword such as: Intent ex = new Intent( . . . , . . . ) triggers the onReceive when we don't want to
+			 * 
+			--*/
+			
+				view.setOnClickPendingIntent(R.id.stop_lil, PendingIntent.getBroadcast(context, 0, new Intent (context,widget_lil.class), 0));
+				view.setOnClickPendingIntent(R.id.rec_lil, PendingIntent.getBroadcast(context, 0, new Intent (context,widget_lil.class), 0));
 			
 			/*-- Update the widget --*/
 			
@@ -83,14 +88,18 @@ public class widget_lil extends AppWidgetProvider {
             Intent serviceIntent = new Intent(context, DataRecord.class);
             if(serviceRunning) {
                 context.stopService(serviceIntent);
+                /*--
                 rw.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
                 rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
+                --*/
                 Toast.makeText(context, "serviceStopped", Toast.LENGTH_LONG).show();
             } else 
             {
                 context.startService(serviceIntent);
+                /*--
                 rw.setViewVisibility(R.id.rec_lil, View.INVISIBLE);
                 rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
+                --*/
                 Toast.makeText(context, "serviceStarted", Toast.LENGTH_LONG).show();
             }
             serviceRunning=!serviceRunning;
