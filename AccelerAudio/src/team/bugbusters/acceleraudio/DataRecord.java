@@ -20,7 +20,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 
 	private SensorManager mSensorManager;
     private Sensor mAccelerometer;
-	private Intent broadcastIntent;
+	private Intent broadcastIntent,broadcastWidget;
 	private SharedPreferences prefs;
 	private StringBuilder datoX,datoY,datoZ;
 	private long sendtime;
@@ -159,6 +159,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 			//Invece se si proviene dal widget
 			else {
+				
+				broadcastWidget = new Intent();
+				broadcastWidget.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+				
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
@@ -172,6 +176,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
 				dbHelper.close();
+				
+				broadcastWidget.putExtra("SS",true);
+				sendBroadcast(broadcastWidget);
+				
 			}
 			
 			super.onDestroy();
