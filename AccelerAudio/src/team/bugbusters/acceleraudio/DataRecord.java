@@ -88,7 +88,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	//Ogni 25 ms si controlla se il tempo trascorso supera la durata massima impostata
 	        	SystemClock.sleep(1000*durata_def);
 
-	        /*-- trying to link with the widget --*/
+	        
 	        			
 	 	}
 	 
@@ -177,6 +177,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
 				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
 				dbHelper.close();
+				
+				/*-- Signal to widget that the REC is over due to time elapsed expired --*/
 				
 				broadcastWidget.putExtra("TempoScaduto",true);
 				sendBroadcast(broadcastWidget);
