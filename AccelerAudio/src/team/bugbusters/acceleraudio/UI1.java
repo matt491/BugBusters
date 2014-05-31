@@ -49,7 +49,6 @@ public class UI1 extends Activity {
 		
 		lv = (ListView) findViewById(R.id.listView1);
 		
-		
 		db = new DbAdapter(UI1.this);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -112,11 +111,11 @@ public class UI1 extends Activity {
 	    		nuova[4] = c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
 	    		toAdd.add(nuova);
 	    	}
-	    	c.close();
-	    	db.close();
 	    	ordinaLista(toAdd);
 	    	runningCl.notifyDataSetChanged();
 	    }
+	    c.close();
+    	db.close();
 		super.onResume();
 	}
 	
