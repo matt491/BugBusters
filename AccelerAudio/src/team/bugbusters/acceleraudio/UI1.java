@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -48,6 +49,7 @@ public class UI1 extends Activity {
 		setContentView(R.layout.ui1_layout);
 		
 		lv = (ListView) findViewById(R.id.listView1);
+		
 		
 		db = new DbAdapter(UI1.this);
 		
@@ -93,6 +95,30 @@ public class UI1 extends Activity {
 		});
 		
 		registerForContextMenu(lv);
+	}
+	
+	@Override
+	public void onResume() {
+		CustomList runningCl = (CustomList) lv.getAdapter();
+		List<String[]> toAdd = runningCl.getList();
+	    db.open();
+	    Cursor c = db.fetchAllRecord();
+	    if(toAdd.size() != c.getCount()) {
+	    	for(c.move(toAdd.size() + 1); !c.isAfterLast(); c.moveToNext()) {
+	    		String[] nuova = new String[5];
+	    		nuova[0] = c.getString(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+	    		nuova[1] = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+	    		nuova[2] = c.getString(c.getColumnIndexOrThrow(DbAdapter.KEY_NAME));
+	    		nuova[3] = c.getString(c.getColumnIndex(DbAdapter.KEY_LAST));
+	    		nuova[4] = c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
+	    		toAdd.add(nuova);
+	    	}
+	    	c.close();
+	    	db.close();
+	    	ordinaLista(toAdd);
+	    	runningCl.notifyDataSetChanged();
+	    }
+		super.onResume();
 	}
 	
 	/*
