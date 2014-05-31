@@ -48,7 +48,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
 	        
 	      //Intent usato per comunicare con il Broadcast Receiver dei widget
-	        broadcastWidget = new Intent();
+	        broadcastWidget = new Intent(this,widget_lil.class);
 			broadcastWidget.setAction("android.appwidget.action.APPWIDGET_UPDATE");
 	        
 	        //Inizializzo il database

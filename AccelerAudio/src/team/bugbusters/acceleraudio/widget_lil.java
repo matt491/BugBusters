@@ -67,10 +67,10 @@ public class widget_lil extends AppWidgetProvider {
 			 * 
 			--*/
 			
-			Intent start=new Intent (context,widget_lil.class);
+			Intent start = new Intent (context,widget_lil.class);
 			start.setAction("START_REC");
 			
-			Intent stop=new Intent (context,widget_lil.class);
+			Intent stop = new Intent (context,widget_lil.class);
 			stop.setAction("STOP_REC");
 
 			
@@ -89,12 +89,12 @@ public class widget_lil extends AppWidgetProvider {
 	@Override
     public void onReceive(Context context, Intent intent)
     {
-		String action=intent.getAction();
+		String action = intent.getAction();
 		
             RemoteViews rw = new RemoteViews(context.getPackageName(), R.layout.widget_lil_layout); 
             serviceIntent = new Intent(context, DataRecord.class);
             
-            b=intent.getBooleanExtra("TempoScaduto", false);
+            b = intent.getBooleanExtra("TempoScaduto", false);
  
             if(b)  {
             	b=false;
@@ -124,58 +124,3 @@ public class widget_lil extends AppWidgetProvider {
 
 }
 
-/*--
-	public static String TOGGLE_WINET = "ToggleWiNetService";
-    private static boolean serviceRunning = false;
-    private static Intent serviceIntent;
-    
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        final int N = appWidgetIds.length;
-        serviceIntent = new Intent(context, WiNetService.class);
-
-        for (int i=0; i<N; i++) {
-            int appWidgetId = appWidgetIds[i];
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_winet);
-
-            remoteViews.setViewVisibility(R.id.buttonWidgetLoading, View.INVISIBLE);
-            remoteViews.setViewVisibility(R.id.buttonWidgetStartService, View.VISIBLE);
-
-            Intent newIntent = new Intent(context, WiNetWidget.class);
-            newIntent.setAction(TOGGLE_WINET);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, newIntent, 0);
-            remoteViews.setOnClickPendingIntent(R.id.buttonWidgetStartService, pendingIntent);
-            remoteViews.setOnClickPendingIntent(R.id.buttonWidgetStopService, pendingIntent);
-
-            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
-            Log.i(TOGGLE_WINET, "updated");
-        }
-    }
-
-@Override
-public void onReceive(Context context, Intent intent) {
-    if(intent.getAction().equals(TOGGLE_WINET)) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_winet);
-
-        // Create a fresh intent 
-        Intent serviceIntent = new Intent(context, WiNetService.class);
-
-        if(serviceRunning) {
-            context.stopService(serviceIntent);
-            remoteViews.setViewVisibility(R.id.buttonWidgetStartService, View.VISIBLE);
-            remoteViews.setViewVisibility(R.id.buttonWidgetStopService, View.INVISIBLE);
-            Toast.makeText(context, "serviceStopped", Toast.LENGTH_SHORT).show();
-        } else {
-            context.startService(serviceIntent);
-            remoteViews.setViewVisibility(R.id.buttonWidgetStopService, View.VISIBLE);
-            remoteViews.setViewVisibility(R.id.buttonWidgetStartService, View.INVISIBLE);
-            Toast.makeText(context, "serviceStarted", Toast.LENGTH_SHORT).show();
-        }
-        serviceRunning=!serviceRunning;
-        ComponentName componentName = new ComponentName(context, WiNetWidget.class);
-        AppWidgetManager.getInstance(context).updateAppWidget(componentName, remoteViews);
-    }
-    super.onReceive(context, intent);
-}
-
---*/
