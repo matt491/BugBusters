@@ -388,19 +388,19 @@ public class UI1 extends Activity {
 	/*
 	 * Metodo che controlla se e gia' presente un NOME di una music session nel DB
 	 */
-		public static boolean sameName(DbAdapter db,String s){
-				db.open();
-				Cursor cursor=db.fetchRecordByFilter(s);
+		public static boolean sameName(DbAdapter this_db,String s){
+				this_db.open();
+				Cursor cursor=this_db.fetchRecordByFilter(s);
 				while (cursor.moveToNext()) {
 					String rNAME = cursor.getString(cursor.getColumnIndex(DbAdapter.KEY_NAME) );
 					if(s.equals(rNAME)) {
 						cursor.close();
-						db.close();
+						this_db.close();
 						return true;
 					}
 				} 
 				cursor.close();
-				db.close();
+				this_db.close();
 				return false;
 		}
 		
