@@ -25,7 +25,6 @@ public class PlayRecord extends IntentService {
 	private boolean  pausa,riprendi,stop;
 	private int g,i,j;
 	private AudioTrack at;
-	private short[] finale;
 	public static final int minsize=7000;
 	private int sc;
 	
@@ -74,22 +73,20 @@ public class PlayRecord extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		//Registrazione ricevitore
+		/*-- Registering Broadcast receiver --*/
         registerReceiver(receiver,new IntentFilter(UI4.THREAD_RESPONSE));
         
         dbHelper = new DbAdapter(this);
         id_to_process=intent.getLongExtra("ID", -1);
         
-        //Apertura DB
+        /*-- Opening DB --*/
         dbHelper.open();
         
-        //Query che individua l'unica riga con questo ID
+        /*-- Query that return all informations about a certain ID --*/
         cr=dbHelper.fetchRecordById(id_to_process);
         
-        //Si posiziona all'unica tupla esistente
+    	/*-- Reading data from query result --*/
         cr.moveToNext();
-        
-        //Lettura dei dati dal record(cursor) restituito
         asseX=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEX));
         asseY=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEY));
         asseZ=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEZ));
@@ -101,11 +98,11 @@ public class PlayRecord extends IntentService {
         checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
         sovrac=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
         
-        //Chiusura DB
+    	/*-- Closing DB --*/
         dbHelper.close();
         
         
-      //Tokenizzazione delle stringhe in array di short        
+    	/*-- Tokenization and conversion of samples to short arrays --*/       
         if(!asseX.equals(""))
         	s=asseX.split(" "); 
         else {
@@ -139,11 +136,11 @@ public class PlayRecord extends IntentService {
         for(i=0;i<q.length;i++)
     		z[i]=Short.parseShort(q[i]);
 
-        //Calcolo del coefficiente atto ad effettuare il sovracampionamento
+        /*-- Calculate upsampling coefficient --*/
         sc=calcoloSovra(sovrac, x.length+y.length+z.length);
         
         
-        //Creazione dei vari array che andranno a comporre l'array finale
+        /*-- Creation and initialization of arrays which will be written in the AudioTrack internal buffer --*/
         	short[] s1 = new short[0];
 	        if(checkX){
 	        	s1 = new short[minsize+sc*x.length];
@@ -212,59 +209,27 @@ public class PlayRecord extends IntentService {
 	         }
 			   
            	
-           	//Creazione dell'array finale da scrivere nel buffer interno dell'AudioTrack
-	         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
-	         System.arraycopy(s1, 0, finale, 0, s1.length);	
-	         System.arraycopy(s2, 0, finale, s1.length, s2.length);	
-	         System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
-	         System.arraycopy(s4, 0, finale, s1.length+s2.length+s3.length, s4.length);
-	         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
-	         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
-		         
-
-	    
-	 /*
-	        case 2: {
-	        	short[] s = new short[minsize];
-	        	if(checkX)
-	        		for(int j=0;j<x.length;j++) {
-	        			for(i=0;i<s.length;i++)
-	        				s[i]=(short) (x[j]*Math.sin(((double)i)/5)+x[j]/10);		 
-		           	 at.write(s, 0, s.length);
-		            }
-	        	
-	        	if(checkY)
-	        		for(int j=0;j<y.length;j++) {
-	        			for(i=0;i<s.length;i++)
-	        				s[i]=(short) (y[j]*Math.sin(((double)i)/5)+y[j]/10);			 
-		           	 at.write(s, 0, s.length);
-		            }
-	        	
-	        	if(checkZ)
-	        		for(int j=0;j<z.length;j++) {
-	        			for(i=0;i<s.length;i++)
-	        				s[i]=(short) (z[j]*Math.sin(((double)i)/5)+z[j]/10);			 
-		           	 at.write(s, 0, s.length);
-		            }
-	        	
-	        	break;
-	        } //Fine case 2 "Scelta 2" durata=ncamp*minsize/44100  <-- LUNGO/PSICADELICO -->
-	        
-	       	        
-        } //Fine switch*/
+       	/*-- Merging previous arrays into one --*/
+         short[] finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
+         System.arraycopy(s1, 0, finale, 0, s1.length);	
+         System.arraycopy(s2, 0, finale, s1.length, s2.length);	
+         System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
+         System.arraycopy(s4, 0, finale, s1.length+s2.length+s3.length, s4.length);
+         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
+         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
         
        
-	    //Creazione dell'oggetto AudioTrack in modalita' statica     
+     	/*-- Creation and initialization of AudioTrack object in static mode --*/    
         at = new AudioTrack(AudioManager.STREAM_MUSIC, 24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
         					AudioTrack.MODE_STATIC);
         
-        //Scrittura nel buffer interno
+    	/*-- Writing finale array into AudioTrack internal buffer --*/
         at.write(finale, 0, finale.length); 
         
-        //Impostazione del Loop della musica
+        /*-- Setting music loop (infinte) --*/
         at.setLoopPoints(0, finale.length-1, -1);
         
-        //Riproduzione
+        /*-- Playback --*/
         at.play();
         
         
@@ -297,8 +262,8 @@ public class PlayRecord extends IntentService {
 	  
   }
   
-  //Metodo che calcola il coefficiente di sovracampionamento in base al numero dei campioni
-  //e alla posizione della SeekBar di sovracampionamento
+  /*-- Method used to calculate upsampling coefficient, based on numeber of samples recorded and
+    on the upsamplig SeekBar position --*/
   public static int calcoloSovra(int s, int camp){
 	  if(camp>=1000) return (int) (30*s/100);
 	  else if (camp<1000) return (int) (40*s/100);
@@ -308,8 +273,7 @@ public class PlayRecord extends IntentService {
 	  
   }
   
-  	
-	
+  		
  }
 	
                  
