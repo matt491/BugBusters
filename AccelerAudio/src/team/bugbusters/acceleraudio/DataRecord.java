@@ -27,7 +27,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private int i,j,k,durata_def;
 	private String freq;
 	private DbAdapter dbHelper;
-	private boolean ric_UI3;
+	private boolean ric_UI3,ric_LIL;
 	private float NOISE;
 	private float[] valprec;
 	
@@ -47,10 +47,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		 	broadcastIntent = new Intent();
 	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
 	        
-	      //Intent usato per comunicare con il Broadcast Receiver dei widget
-	        broadcastWidget = new Intent(this,widget_lil.class);
-			broadcastWidget.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-	        
+        
 	        //Inizializzo il database
 	        dbHelper = new DbAdapter(this);
 	        
@@ -82,7 +79,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	
 	        	valprec=new float[3];
 	        	ric_UI3=intent.getBooleanExtra("fromUI3", false);
- 	
+	        	ric_LIL=intent.getBooleanExtra("fromLIL", false);
+	        	
 	        	acquisizione();
        	
 	        	//Ogni 25 ms si controlla se il tempo trascorso supera la durata massima impostata
@@ -180,6 +178,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 				/*-- Signal to widget that the REC is over due to time elapsed expired --*/
 				
+			    /*-- Intent used to comunicate with little or big widget --*/
+				if(ric_LIL)  broadcastWidget = new Intent(this,widget_lil.class);
+				else  broadcastWidget = new Intent(this,widget_big.class);
+				
+				broadcastWidget.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 				broadcastWidget.putExtra("TempoScaduto",true);
 				sendBroadcast(broadcastWidget);
 				

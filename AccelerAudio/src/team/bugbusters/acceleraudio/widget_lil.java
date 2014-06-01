@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 public class widget_lil extends AppWidgetProvider {
 	private static Intent i_record;
-	private static boolean runnig=false;
+	private static boolean running=false;
 	
 	@Override
 	/*-- Handles the first instance of the widget --*/
@@ -77,15 +77,16 @@ public class widget_lil extends AppWidgetProvider {
             /*-- calling the DataRecord.class -- */
             
             i_record = new Intent(context, DataRecord.class);
+            i_record.putExtra("fromLIL", true);
             
             /*-- catching the signal from DataRecord which notify  that the recording time is expired --*/
             
-            runnig = intent.getBooleanExtra("TempoScaduto", false);
+            running = intent.getBooleanExtra("TempoScaduto", false);
  
             /*-- finish recording --*/
             
-            if(runnig)  {
-            	runnig=false;
+            if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && running)  {
+            	running=false;
             	Toast.makeText(context,"Registrazione terminata" , Toast.LENGTH_SHORT).show();
             	rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
                 rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
@@ -99,7 +100,7 @@ public class widget_lil extends AppWidgetProvider {
                 rw.setViewVisibility(R.id.rec_lil, View.INVISIBLE);
             }
             
-            /*-- stop check --*/
+            /*-- Stop check --*/
             
             if(action.equals("STOP_REC")){
             	context.stopService(i_record);
