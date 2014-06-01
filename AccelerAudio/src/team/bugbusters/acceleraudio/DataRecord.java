@@ -49,7 +49,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        
 	      //Intent usato per comunicare con il Broadcast Receiver dei widget
 	        broadcastWidget = new Intent(this,widget_lil.class);
-			broadcastWidget.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+			broadcastWidget.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 	        
 	        //Inizializzo il database
 	        dbHelper = new DbAdapter(this);
