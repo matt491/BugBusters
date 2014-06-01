@@ -183,7 +183,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				else  broadcastWidget = new Intent(this,widget_big.class);
 				
 				broadcastWidget.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-				broadcastWidget.putExtra("TempoScaduto",true);
+				broadcastWidget.putExtra("Terminata",true);
 				sendBroadcast(broadcastWidget);
 				
 			}

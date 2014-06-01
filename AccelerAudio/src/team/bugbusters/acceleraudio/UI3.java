@@ -161,16 +161,20 @@ public class UI3 extends Activity {
             public void onClick(View v) { 
             	if(toggle.isChecked()){
             		if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
-	            		avan.setEnabled(false);
-	            		pause_resume.setEnabled(true);
-	            		stop.setEnabled(true);
-	            		rec.setEnabled(false);
-	            		toggle.setEnabled(false);
-	            		end_time=prefs.getInt("duratadef", 30);
-	            		pb.setMax(end_time);
-	            		creaRecordTimer(end_time*1000, INTERVALLO, 0 );
-	            		intentToSer.putExtra("fromUI3", true);
-	            		startService(intentToSer);
+            			if(widget_lil.record_running==false) {
+	            			widget_lil.record_running=true;
+		            		avan.setEnabled(false);
+		            		pause_resume.setEnabled(true);
+		            		stop.setEnabled(true);
+		            		rec.setEnabled(false);
+		            		toggle.setEnabled(false);
+		            		end_time=prefs.getInt("duratadef", 30);
+		            		pb.setMax(end_time);
+		            		creaRecordTimer(end_time*1000, INTERVALLO, 0 );
+		            		intentToSer.putExtra("fromUI3", true);
+		            		startService(intentToSer);
+            			}
+	            		else Toast.makeText(getApplicationContext(), R.string.alreadyRecording, Toast.LENGTH_SHORT).show();
             		}
             		else Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
             	}
@@ -216,6 +220,7 @@ public class UI3 extends Activity {
         		
             		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
             		
+            		widget_lil.record_running=false;
             		startActivity(intent);
             		finish();
             	}
@@ -334,7 +339,10 @@ public class UI3 extends Activity {
 		@Override
 		public void onBackPressed() {
 				if(timer!=null) timer.cancel();
-    			stopService(intentToSer);
+    			if(widget_lil.record_widget==false) {
+    				stopService(intentToSer);
+    				widget_lil.record_running=false;
+    			}
 				Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
 	        	startActivity(returnIntent);
 	        	finish();	

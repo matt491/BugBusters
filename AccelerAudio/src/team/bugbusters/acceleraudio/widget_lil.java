@@ -12,7 +12,8 @@ import android.widget.Toast;
 
 public class widget_lil extends AppWidgetProvider {
 	private static Intent i_record;
-	private static boolean running=false;
+	private static boolean terminated=false;
+	public static boolean record_running=false, record_widget=false;
 	
 	@Override
 	/*-- Handles the first instance of the widget --*/
@@ -43,18 +44,17 @@ public class widget_lil extends AppWidgetProvider {
 			/*-- Remote View Reference --*/
 			
 			RemoteViews view = new RemoteViews (context.getPackageName(), R.layout.widget_lil_layout);
+			view.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
 			
-			/*-- Intents for start and stop atcions --*/
+			/*-- Intents for start and stop actions --*/
 			
 			Intent start = new Intent (context,widget_lil.class);
 			start.setAction("START_REC");
-			
-			
+	
 			Intent stop = new Intent (context,widget_lil.class);
 			stop.setAction("STOP_REC");
 			
 			/*-- OnClick events calling start and stop intents --*/
-
 			view.setOnClickPendingIntent(R.id.stop_lil, PendingIntent.getBroadcast(context, 0,  stop, 0));
 			view.setOnClickPendingIntent(R.id.rec_lil, PendingIntent.getBroadcast(context, 0, start, 0));
 				
@@ -81,32 +81,42 @@ public class widget_lil extends AppWidgetProvider {
             
             /*-- catching the signal from DataRecord which notify  that the recording time is expired --*/
             
-            running = intent.getBooleanExtra("TempoScaduto", false);
+            terminated = intent.getBooleanExtra("Terminata", false);
  
             /*-- finish recording --*/
             
-            if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && running)  {
-            	running=false;
-            	Toast.makeText(context,"Registrazione terminata" , Toast.LENGTH_SHORT).show();
+            if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated)  {
+            	record_running=false;
+            	record_widget=false;
+            	terminated=false;
+            	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
             	rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
-                rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
+                rw.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
             }
             
             /*-- Start check --*/
             
             if(action.equals("START_REC")){
-            	context.startService(i_record);
-            	rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
-                rw.setViewVisibility(R.id.rec_lil, View.INVISIBLE);
+            	if(record_running==false) {
+	            	record_running=true;
+	            	record_widget=true;
+	            	context.startService(i_record);
+	            	rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
+	                rw.setViewVisibility(R.id.rec_lil, View.INVISIBLE);
+            	}
+            	else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
             }
+                
             
             /*-- Stop check --*/
             
             if(action.equals("STOP_REC")){
             	context.stopService(i_record);
             	rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
-                rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
+                rw.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
             }
+
+            
             
             /*-- Update  --*/
             
