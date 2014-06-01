@@ -28,7 +28,7 @@ public class PlayRecord extends IntentService {
 	public static final int minsize=7000;
 	private int sc;
 	
-	//Creazione del ricevitore
+	/*-- Creation and initialization of receiver --*/
 	private BroadcastReceiver receiver=new BroadcastReceiver(){
 		 
 		@Override
