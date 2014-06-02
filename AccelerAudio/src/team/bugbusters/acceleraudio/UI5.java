@@ -1,10 +1,12 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -30,16 +32,14 @@ public class UI5 extends Activity {
 	private String freqdef;
 	private TextView scampdef;
 	private TextView dmax;
-
+	private boolean fromWidget;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        
-	        
 	        setContentView(R.layout.ui5_layout);
 	        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-	        defX=(CheckBox)findViewById(R.id.checkXdef);
-	        
+	        defX=(CheckBox)findViewById(R.id.checkXdef);  
 	        defY=(CheckBox)findViewById(R.id.checkYdef);
 	        defZ=(CheckBox)findViewById(R.id.checkZdef);
 	        sbdurdef =(SeekBar)findViewById(R.id.durdef);
@@ -49,6 +49,9 @@ public class UI5 extends Activity {
 	    	dmax=(TextView)findViewById(R.id.durmax);
 	    	
       
+	    	Intent intent=getIntent();
+	    	fromWidget=intent.getBooleanExtra("prefFromWidget", false);
+	    	
 	    	OnCheckedChangeListener listener = new OnCheckedChangeListener() {
 	        	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 	        		if(!isChecked){
@@ -78,18 +81,13 @@ public class UI5 extends Activity {
 	        	defZ.setOnCheckedChangeListener(listener);
 	        	
 	        	
-	        //Menu a tendina per la scelta della Frequenza
-	        spinner = (Spinner)findViewById(R.id.spinner1);
-	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-	        		this,
-	        		android.R.layout.simple_spinner_item,
-	        		new String[]{"Lento","Normale","Veloce"}
-	        		);
-	         spinner.setAdapter(adapter);
-    
-	         
-	         
-	         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+	        	/*-- Spinner menu to select recording deafult sampling --*/
+	        	spinner = (Spinner)findViewById(R.id.spinner1);
+	        	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,
+	        			new String[]{"Lento","Normale","Veloce"});
+	        	spinner.setAdapter(adapter);
+   
+	        	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 	        	public void onItemSelected(AdapterView<?> adapter, View view,int pos, long id) {
 	        		String selected = (String)adapter.getItemAtPosition(pos);
 	        		freqdef=selected;
@@ -98,7 +96,7 @@ public class UI5 extends Activity {
 	        	});
 	        
 	         
-	        	//Lettura delle impostazioni già salvate
+	         	/*-- Reading settings from Shared Preferences --*/
 	        	defX.setChecked(prefs.getBoolean("Xselect", true));
 	        	defY.setChecked(prefs.getBoolean("Yselect", true));
 	        	defZ.setChecked(prefs.getBoolean("Zselect", true));
@@ -109,7 +107,7 @@ public class UI5 extends Activity {
 	        	scampdef.setText(""+sbsovradef.getProgress());
 	
 	         
-	        	//Sovrascritti i metodi della SeekBar della durata di default
+	        	/*-- Methods override of seekbar which set default duration --*/
 	        	sbdurdef.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
 	            @Override
 	            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -126,7 +124,7 @@ public class UI5 extends Activity {
 				}});
 
 	        
-	        	//Sovrascritti i metodi della SeekBar del Sovracampionamento di default
+	        	/*-- Methods override of seekbar which set default upsampling --*/
 	        	sbsovradef.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
 
 	                @Override
@@ -146,7 +144,7 @@ public class UI5 extends Activity {
 	        	
 	        	
 	        	
-	        	//Tasto Salva premuto
+	        	/*-- Salva button pressed --*/
 	        	salva.setOnClickListener(new View.OnClickListener() {
 	                public void onClick(View v) {
 
@@ -164,10 +162,10 @@ public class UI5 extends Activity {
 	                }});
 	        	
 	
-	}//Fine onCreate
+	}
 	
 	
-	//Quando viene premuto il tasto Back
+	/*-- Back button pressed --*/
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
@@ -175,7 +173,13 @@ public class UI5 extends Activity {
 	return;
 	}
 	
+	public void onPause(){
+		super.onPause();
+		if(fromWidget) finish();
+	}
 	
+	
+	/*-- Method used to set spinner selection --*/
 	public static int stringToFreq(String s){
 		if(s.equals("Lento")) return 0;
 		if(s.equals("Normale")) return 1;

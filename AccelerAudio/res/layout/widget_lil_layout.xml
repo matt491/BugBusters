@@ -15,11 +15,11 @@
         android:src="@android:drawable/ic_btn_speak_now" />
 
     <ImageButton
-        android:id="@+id/stop_lil"
+        android:id="@+id/pref_lil"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/rec_lil"
-        android:src="@android:drawable/ic_media_pause" />
+        android:src="@android:drawable/ic_menu_manage" />
 
 </RelativeLayout>

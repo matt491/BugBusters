@@ -441,7 +441,7 @@ public class UI1 extends Activity {
 		
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
-			final Editor prefsEditor = prefs.edit();;
+			final Editor prefsEditor = prefs.edit();
 			final CustomList runningCl = (CustomList) lv.getAdapter();
 			final List<String[]> nuovaLista = runningCl.getList();
 			

@@ -6,14 +6,14 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class widget_lil extends AppWidgetProvider {
-	private static Intent i_record;
+	private static Intent i_record, i_pref;
 	private static boolean terminated=false;
 	public static boolean record_running=false, record_widget=false;
+	
 	
 	@Override
 	/*-- Handles the first instance of the widget --*/
@@ -44,18 +44,17 @@ public class widget_lil extends AppWidgetProvider {
 			/*-- Remote View Reference --*/
 			
 			RemoteViews view = new RemoteViews (context.getPackageName(), R.layout.widget_lil_layout);
-			view.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
 			
 			/*-- Intents for start and stop actions --*/
 			
-			Intent start = new Intent (context,widget_lil.class);
-			start.setAction("START_REC");
+			Intent start = new Intent (context, widget_lil.class);
+			start.setAction("START_STOP_REC");
 	
-			Intent stop = new Intent (context,widget_lil.class);
-			stop.setAction("STOP_REC");
+			Intent pref = new Intent (context, widget_lil.class);
+			pref.setAction("PREF");
 			
 			/*-- OnClick events calling start and stop intents --*/
-			view.setOnClickPendingIntent(R.id.stop_lil, PendingIntent.getBroadcast(context, 0,  stop, 0));
+	     	view.setOnClickPendingIntent(R.id.pref_lil, PendingIntent.getBroadcast(context, 0,  pref, 0));
 			view.setOnClickPendingIntent(R.id.rec_lil, PendingIntent.getBroadcast(context, 0, start, 0));
 				
 			/*-- Update the widget --*/
@@ -79,6 +78,12 @@ public class widget_lil extends AppWidgetProvider {
             i_record = new Intent(context, DataRecord.class);
             i_record.putExtra("fromLIL", true);
             
+            /*-- calling the UI5.class (Preferences) -- */
+            
+            i_pref = new Intent(context, UI5.class);
+            i_pref.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i_pref.putExtra("prefFromWidget", true);
+            
             /*-- catching the signal from DataRecord which notify  that the recording time is expired --*/
             
             terminated = intent.getBooleanExtra("Terminata", false);
@@ -89,35 +94,34 @@ public class widget_lil extends AppWidgetProvider {
             	record_running=false;
             	record_widget=false;
             	terminated=false;
+        		rw.setImageViewResource(R.id.rec_lil, android.R.drawable.ic_btn_speak_now);
             	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
-            	rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
-                rw.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
             }
             
-            /*-- Start check --*/
+            /*-- Start and Stop check --*/
             
-            if(action.equals("START_REC")){
-            	if(record_running==false) {
-	            	record_running=true;
-	            	record_widget=true;
-	            	context.startService(i_record);
-	            	rw.setViewVisibility(R.id.stop_lil, View.VISIBLE);
-	                rw.setViewVisibility(R.id.rec_lil, View.INVISIBLE);
+            if(action.equals("START_STOP_REC")){
+            	if(!record_widget) {  	
+	            	if(record_running==false) {
+		            	record_running=true;
+		            	record_widget=true;
+		            	rw.setImageViewResource(R.id.rec_lil, android.R.drawable.ic_media_pause);
+		            	context.startService(i_record);
+	            	}
+	            	else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
             	}
-            	else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
+            	else {	
+            		context.stopService(i_record);
+            	}
             }
                 
             
-            /*-- Stop check --*/
+            /*-- Preferences check --*/
             
-            if(action.equals("STOP_REC")){
-            	context.stopService(i_record);
-            	rw.setViewVisibility(R.id.rec_lil, View.VISIBLE);
-                rw.setViewVisibility(R.id.stop_lil, View.INVISIBLE);
-            }
-
+            if(action.equals("PREF")) 
+            	context.startActivity(i_pref);
             
-            
+ 
             /*-- Update  --*/
             
             AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_lil.class), rw);
