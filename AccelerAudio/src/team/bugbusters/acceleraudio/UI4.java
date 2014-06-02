@@ -59,7 +59,7 @@ public class UI4 extends Activity {
         next=(ImageButton)findViewById(R.id.imageButton3);
         previous=(ImageButton)findViewById(R.id.imageButton2);
         iv = (ImageView) findViewById(R.id.imageView1);
-        name = (TextView) findViewById(R.id.textView1);
+        name = (TextView) findViewById(R.id.title_widget_big);
         duration = (TextView) findViewById(R.id.textView3);
         time = (TextView) findViewById(R.id.textView4);
         sbtime=(SeekBar)findViewById(R.id.seekBar1);

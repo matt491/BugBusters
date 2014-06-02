@@ -76,7 +76,7 @@
         android:progress="1" />
     
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/title_widget_big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -90,8 +90,8 @@
         android:id="@+id/sovradef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView1"
-        android:layout_toRightOf="@+id/textView1"
+        android:layout_alignBaseline="@+id/title_widget_big"
+        android:layout_toRightOf="@+id/title_widget_big"
         android:layout_marginLeft="10dp" />
    
 
@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/title_widget_big"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
