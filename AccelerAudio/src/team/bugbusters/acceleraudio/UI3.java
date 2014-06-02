@@ -177,7 +177,7 @@ public class UI3 extends Activity {
             			}
 	            		else Toast.makeText(getApplicationContext(), R.string.alreadyRecording, Toast.LENGTH_SHORT).show();
             		}
-            		else Toast.makeText(getApplicationContext(), "Impossibile registrare!", Toast.LENGTH_SHORT).show();
+            		else Toast.makeText(getApplicationContext(), R.string.accelUnavailable, Toast.LENGTH_SHORT).show();
             	}
             	else Toast.makeText(getApplicationContext(), R.string.lockScreen, Toast.LENGTH_SHORT).show();
             }

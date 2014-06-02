@@ -65,5 +65,6 @@
     <string name="alreadySortedByInsertion">La lista è già ordinata per inserimento</string>
     <string name="alreadySortedByDuration">La lista è già ordinata per durata</string>
     <string name="alreadyRecording">Registrazione già in corso!</string>
+    <string name="accelUnavailable">Accelerometro non disponibile!</string>
 
 </resources>

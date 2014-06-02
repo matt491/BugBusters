@@ -77,7 +77,7 @@ public class widget_big extends AppWidgetProvider {
         /*-- Accelerometer unavailable notification --*/
         
         if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) &&  widget_lil.noaccel)
-        	Toast.makeText(context, "Impossibile registrare!" , Toast.LENGTH_SHORT).show();
+        	Toast.makeText(context, R.string.accelUnavailable , Toast.LENGTH_SHORT).show();
 
 
         /*-- finish recording --*/
