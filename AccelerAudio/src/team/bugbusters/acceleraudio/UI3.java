@@ -56,14 +56,21 @@ public class UI3 extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState!=null){
+        	boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
+  	      if(keyboard)
+  	    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+        setContentView(R.layout.ui3_layout);
         
-        receiver = new MyUI3Receiver();
         intentToSer = new Intent(UI3.this, DataRecord.class);
+        
+        receiver = new MyUI3Receiver();   
         filter = new IntentFilter(MyUI3Receiver.PROCESS_RESPONSE);
         registerReceiver(receiver,filter);
         packageManager = getApplicationContext().getPackageManager();
         
-        setContentView(R.layout.ui3_layout);
+        
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         dbHelper = new DbAdapter(this);
         
@@ -358,15 +365,6 @@ public class UI3 extends Activity {
 		  savedInstanceState.putBoolean("KeyboardVisible", true);
 
 		}
-		
-		@Override
-		public void onRestoreInstanceState(Bundle savedInstanceState) {
-		  super.onRestoreInstanceState(savedInstanceState);
-		  boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
-	      if(keyboard){
-	    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-	      }
-		}
-	   
+		   
 	
 	}

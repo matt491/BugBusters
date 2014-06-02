@@ -51,7 +51,11 @@ public class UI2 extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-                
+        if(savedInstanceState!=null){
+        	boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
+  	      if(keyboard)
+  	    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }        
         setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
         pkg_r=getPackageName();
@@ -281,14 +285,6 @@ public class UI2 extends Activity {
 
 	}
 	
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-	  super.onRestoreInstanceState(savedInstanceState);
-	  boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
-      if(keyboard){
-    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-      }
-	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
