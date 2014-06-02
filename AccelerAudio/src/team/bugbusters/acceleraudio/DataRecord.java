@@ -195,6 +195,12 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	//Metodo che inizializza l'acquisizione dei dati da parte dell'accelerometro
 	protected void acquisizione(){
     	if(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null) {
+    		
+    		 /*-- Intent used to comunicate with little or big widget --*/
+			if(ric_LIL)  broadcastWidget = new Intent(this,widget_lil.class);
+			else  broadcastWidget = new Intent(this,widget_big.class);
+			
+    		broadcastWidget.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
     		broadcastWidget.putExtra("NoAccelerometro",true);
 			sendBroadcast(broadcastWidget);
     	}

@@ -16,8 +16,10 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -106,10 +108,9 @@ public class UI3 extends Activity {
 					Display disp = wm.getDefaultDisplay();
 					int orientation = disp.getRotation();
 					
-					if(orientation==0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
-					if(orientation==1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-					//Non è supportato nelle API8, perchè nelle API8 non era previsto il reverse landscape
-					if(orientation==3) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+					if(orientation==Surface.ROTATION_0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
+					if(orientation==Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+					if(orientation==Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 								
 				}
 				else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -339,7 +340,7 @@ public class UI3 extends Activity {
 		@Override
 		public void onBackPressed() {
 				if(timer!=null) timer.cancel();
-    			if(widget_lil.record_widget==false) {
+    			if(!widget_lil.record_widget_lil && !widget_big.record_widget_big) {
     				stopService(intentToSer);
     				widget_lil.record_running=false;
     			}
@@ -347,6 +348,24 @@ public class UI3 extends Activity {
 	        	startActivity(returnIntent);
 	        	finish();	
 
+		}
+		
+		
+		@Override
+		public void onSaveInstanceState(Bundle savedInstanceState) {
+		  super.onSaveInstanceState(savedInstanceState);
+		  if(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText())
+		  savedInstanceState.putBoolean("KeyboardVisible", true);
+
+		}
+		
+		@Override
+		public void onRestoreInstanceState(Bundle savedInstanceState) {
+		  super.onRestoreInstanceState(savedInstanceState);
+		  boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
+	      if(keyboard){
+	    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+	      }
 		}
 	   
 	

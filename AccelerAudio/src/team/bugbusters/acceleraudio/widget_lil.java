@@ -12,7 +12,7 @@ import android.widget.Toast;
 public class widget_lil extends AppWidgetProvider {
 	private static Intent i_record, i_pref;
 	private static boolean terminated=false;
-	public static boolean record_running=false, record_widget=false;
+	public static boolean record_running=false, record_widget_lil=false, noaccel=false;
 	
 	
 	@Override
@@ -87,12 +87,21 @@ public class widget_lil extends AppWidgetProvider {
             /*-- catching the signal from DataRecord which notify  that the recording time is expired --*/
             
             terminated = intent.getBooleanExtra("Terminata", false);
+            
+            /*-- catching the signal from DataRecord which notify  that accelerometer is unavailable --*/
+            
+            noaccel = intent.getBooleanExtra("NoAccelerometro", false);
+            
+            /*-- Accelerometer unavailable notification --*/
+            
+            if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && noaccel)
+            	Toast.makeText(context, "Impossibile registrare!" , Toast.LENGTH_SHORT).show();
  
             /*-- finish recording --*/
             
             if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated)  {
             	record_running=false;
-            	record_widget=false;
+            	record_widget_lil=false;
             	terminated=false;
         		rw.setImageViewResource(R.id.rec_lil, android.R.drawable.ic_btn_speak_now);
             	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
@@ -101,18 +110,19 @@ public class widget_lil extends AppWidgetProvider {
             /*-- Start and Stop check --*/
             
             if(action.equals("START_STOP_REC")){
-            	if(!record_widget) {  	
+            	if(!record_widget_lil && !widget_big.record_widget_big) {  	
 	            	if(record_running==false) {
 		            	record_running=true;
-		            	record_widget=true;
+		            	record_widget_lil=true;
 		            	rw.setImageViewResource(R.id.rec_lil, android.R.drawable.ic_media_pause);
 		            	context.startService(i_record);
 	            	}
 	            	else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
             	}
-            	else {	
-            		context.stopService(i_record);
-            	}
+            	else if (widget_big.record_widget_big)
+            		Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
+            	
+            	else context.stopService(i_record);
             }
                 
             
@@ -120,7 +130,7 @@ public class widget_lil extends AppWidgetProvider {
             
             if(action.equals("PREF")) 
             	context.startActivity(i_pref);
-            
+
  
             /*-- Update  --*/
             

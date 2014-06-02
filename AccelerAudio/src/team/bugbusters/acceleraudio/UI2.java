@@ -1,6 +1,7 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -10,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -48,6 +51,7 @@ public class UI2 extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+                
         setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
         pkg_r=getPackageName();
@@ -266,6 +270,24 @@ public class UI2 extends Activity {
         	startActivity(returnIntent);
         	finish();	
 	return;
+	}
+	
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	  super.onSaveInstanceState(savedInstanceState);
+	  if(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText())
+	  savedInstanceState.putBoolean("KeyboardVisible", true);
+
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	  super.onRestoreInstanceState(savedInstanceState);
+	  boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
+      if(keyboard){
+    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+      }
 	}
 	
 	@Override

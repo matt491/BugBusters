@@ -21,7 +21,6 @@ public class PlayRecord extends IntentService {
 	private boolean checkX,checkY,checkZ;
 	private int sovrac,campx,campy,campz;
 	private String[] s,p,q;
- 	private short[] x,y,z;
 	private boolean  pausa,riprendi,stop;
 	private int g,i,j;
 	private AudioTrack at;
@@ -59,7 +58,7 @@ public class PlayRecord extends IntentService {
 				
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-		    	   at.setPlaybackHeadPosition(g-200);
+		    	   at.setPlaybackHeadPosition(g-250);
 		    	   at.play();    
 		       }		
 		}	
@@ -103,30 +102,30 @@ public class PlayRecord extends IntentService {
         
         
     	/*-- Tokenization and conversion of samples to short arrays --*/       
-        if(!asseX.equals(""))
+        if(asseX.length()!=0)
         	s=asseX.split(" "); 
         else {
         	s=new String[1];
         	s[0]="0";
         }
         
-        if(!asseY.equals(""))
+        if(asseY.length()!=0)
         	p=asseY.split(" "); 
         else {
         	p=new String[1];
         	p[0]="0";
         }
         
-        if(!asseZ.equals(""))
+        if(asseZ.length()!=0)
         	q=asseZ.split(" ");
         else {
         	q=new String[1];
         	q[0]="0";
         }
         
-        x=new short[s.length];
-        y=new short[p.length];
-        z=new short[q.length];
+        short[] x=new short[s.length];
+        short[] y=new short[p.length];
+        short[] z=new short[q.length];
         
 
         for(i=0;i<s.length;i++)
