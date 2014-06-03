@@ -24,15 +24,19 @@ public class widget_big extends AppWidgetProvider {
 	{
 		
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
-		/* -- Handles the refreshing of the widgets and/or his components --*/
-
 		
+		/* -- Handles the refreshing of the widgets if there is more that 1 instance --*/
+
 		for (int i = 0; i < appWidgetIds.length;i++)
 		{
 	
 		/*-- setting the view which we are going to update --*/
 			
 		RemoteViews view = new RemoteViews(context.getPackageName(),R.layout.widget_big_layout);
+		
+		/*--
+		 *  Setting Intents
+		 *  --*/
 		
 		/*--Record Intent --*/
 		
@@ -44,13 +48,29 @@ public class widget_big extends AppWidgetProvider {
 		Intent start_play = new Intent(context,widget_big.class);
 		start_play.setAction("START_STOP_PLAY");
 		
+		/*-- Previous Intent --*/
 		
-		/*-- Performing the action --*/
+		Intent start_pre = new Intent (context,widget_big.class);
+		start_pre.setAction("START_PRE");
+		
+		/*-- Forward Intent --*/
+		Intent start_for = new Intent (context,widget_big.class);
+		start_for.setAction("START_FOR");
+		
+		/*--
+		 *  Performing the action 
+		 *  --*/
 		
 		view.setOnClickPendingIntent(R.id.rec_big, PendingIntent.getBroadcast(context, 0, start_rec, 0));
+		
 		view.setOnClickPendingIntent(R.id.play_big, PendingIntent.getBroadcast(context, 0, start_play, 0));
 		
+		view.setOnClickPendingIntent(R.id.backward_big, PendingIntent.getBroadcast(context, 0, start_pre, 0));
+
+		view.setOnClickPendingIntent(R.id.forward_big, PendingIntent.getBroadcast(context, 0, start_for, 0));
+		
 		/*-- Updating the widget --*/
+		
 		appWidgetManager.updateAppWidget(appWidgetIds[i], view);
 		}
 		
