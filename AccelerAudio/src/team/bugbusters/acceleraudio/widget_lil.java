@@ -114,7 +114,7 @@ public class widget_lil extends AppWidgetProvider {
 	            	if(record_running==false) {
 		            	record_running=true;
 		            	record_widget_lil=true;
-		            	rw.setImageViewResource(R.id.rec_lil, android.R.drawable.ic_media_pause);
+		            	rw.setImageViewResource(R.id.rec_lil, android.R.drawable.stat_notify_call_mute);
 		            	context.startService(i_record);
 	            	}
 	            	else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
