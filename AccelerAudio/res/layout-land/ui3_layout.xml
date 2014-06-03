@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView8"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/textView8"
-       	android:layout_marginLeft="5dp"
         android:ems="10"
         android:hint="@string/hintName"
         android:imeOptions="actionSend"
@@ -22,19 +22,19 @@
         android:id="@+id/avanz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="10dp"
+        android:layout_marginRight="16dp"
         android:text="@string/avanti" />
 
     <Button
         android:id="@+id/stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-       android:layout_alignBaseline="@+id/avanz"
-        android:layout_toLeftOf="@+id/avanz"
+        android:layout_alignBaseline="@+id/avanz"
         android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/avanz"
         android:text="@string/stop" />
 
     <TextView
@@ -42,8 +42,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2"
         android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/textView2"
         android:text="@string/AsseY"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -51,10 +51,9 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/z_axis"
         android:layout_marginLeft="25dp"
-        android:layout_below="@+id/title_widget_big"
         android:layout_marginTop="25dp"
+        android:layout_toRightOf="@+id/z_axis"
         android:text="@string/nameChoosing"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -63,8 +62,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/stop"
-        android:layout_toLeftOf="@+id/stop"
         android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/stop"
         android:text="@string/pause" />
 
     <TextView
@@ -72,8 +71,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView7"
-        android:layout_toRightOf="@+id/textView7"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/textView7" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -83,42 +82,19 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/textView6"
-        android:layout_marginTop="5dp"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_centerVertical="true"
-         />
-
-    <ToggleButton
-        android:id="@+id/toggleButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/title_widget_big"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/title_widget_big"
-        android:textOff="@string/ifUnlocked"
-        android:textOn="@string/ifLocked" />
-
-    <TextView
-        android:id="@+id/title_widget_big"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
-       	android:layout_toRightOf="@+id/x_axis"
-        android:layout_marginLeft="25dp"
-        android:text="@string/toggleButtonString"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="17sp" />
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/progressBar1"
         android:layout_marginLeft="16dp"
-		android:layout_below="@+id/progressBar1"
-		android:layout_marginTop="10dp"       
+        android:layout_marginTop="10dp"
         android:text="@string/campioniRegistratiString"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -126,10 +102,10 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="45dp"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="45dp"
         android:text="@string/Assi"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -138,28 +114,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="16dp"
         android:layout_below="@+id/textView2"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="50dp"
         android:text="@string/time"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
 
     <TextView
         android:id="@+id/last"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView6"
-        android:layout_toRightOf="@+id/textView6"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/textView6" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView4"
         android:layout_alignParentTop="true"
         android:layout_marginTop="20dp"
-        android:layout_alignLeft="@+id/textView4"
         android:text="@string/AsseX"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -168,8 +143,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView4"
-        android:layout_marginTop="3dp"
         android:layout_below="@+id/textView2"
+        android:layout_marginTop="3dp"
         android:text="@string/AsseZ"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -180,9 +155,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/textView3"
         android:layout_marginBottom="10dp"
-        android:layout_toRightOf="@+id/textView3"
         android:layout_marginLeft="5dp"
-        
+        android:layout_toRightOf="@+id/textView3"
         android:max="15" />
 
     <ProgressBar
@@ -191,9 +165,9 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/x_axis"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="1dp"
         android:layout_toRightOf="@+id/textView4"
-        android:layout_marginLeft="5dp"
         android:max="15" />
 
     <ProgressBar
@@ -202,17 +176,17 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/y_axis"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="8dp"
-        android:layout_toRightOf="@+id/textView5"
-        android:layout_marginLeft="5dp" />
+        android:layout_toRightOf="@+id/textView5" />
 
     <Button
         android:id="@+id/record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/pause_res"
-        android:layout_toLeftOf="@+id/pause_res"
         android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/pause_res"
         android:text="@string/record" />
 
 </RelativeLayout>

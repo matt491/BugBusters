@@ -1,11 +1,15 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,6 +17,7 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,7 +26,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,25 +47,29 @@ public class UI3 extends Activity {
     private Button pause_resume,stop,rec,avan;								
     private EditText nome_music;						//Campo di testo del nome della registrazione
     private TextView t,varcamp;
+    private CheckBox cb;
     Intent intent,intentToSer;
     private SharedPreferences prefs;
     private DbAdapter dbHelper;
     private MyUI3Receiver receiver;
     private IntentFilter filter;
-    private ToggleButton toggle;
     private boolean in_pausa=false;
+    private boolean isChecked;
     private RecordCounter timer;
     private final long INTERVALLO=100L;
     private PackageManager packageManager;
+    private AlertDialog alertDialog;
     		
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null){
+        	isChecked = savedInstanceState.getBoolean("isChecked", false);
         	boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
   	      if(keyboard)
   	    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
+        
         setContentView(R.layout.ui3_layout);
         
         intentToSer = new Intent(UI3.this, DataRecord.class);
@@ -73,11 +82,6 @@ public class UI3 extends Activity {
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         dbHelper = new DbAdapter(this);
-        
-        
-        
-        //Toggle button che blocca la rotazione dello schermo
-        toggle = (ToggleButton) findViewById(R.id.toggleButton1);
     
         //Intent predisposto per passare alla UI2
         intent=new Intent(getApplicationContext(), UI2.class);
@@ -104,26 +108,6 @@ public class UI3 extends Activity {
         stop.setEnabled(false);
         avan.setEnabled(false);
         rec.setEnabled(true);
-        
-        
-        //Toggle premuto
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if(isChecked) {
-					WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
-					Display disp = wm.getDefaultDisplay();
-					int orientation = disp.getRotation();
-					
-					if(orientation==Surface.ROTATION_0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
-					if(orientation==Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-					if(orientation==Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-								
-				}
-				else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-						
-			}
-		});
        
         //Tasto Pausa/Resume premuto
         pause_resume.setOnClickListener(new View.OnClickListener() {
@@ -167,15 +151,19 @@ public class UI3 extends Activity {
         //Tasto Record premuto
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
-            	if(toggle.isChecked()){
             		if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
             			if(widget_lil.record_running==false) {
+            				WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+							Display disp = wm.getDefaultDisplay();
+							int orientation = disp.getRotation();
+							if(orientation==Surface.ROTATION_0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
+							if(orientation==Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+							if(orientation==Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 	            			widget_lil.record_running=true;
 		            		avan.setEnabled(false);
 		            		pause_resume.setEnabled(true);
 		            		stop.setEnabled(true);
 		            		rec.setEnabled(false);
-		            		toggle.setEnabled(false);
 		            		end_time=prefs.getInt("duratadef", 30);
 		            		pb.setMax(end_time);
 		            		creaRecordTimer(end_time*1000, INTERVALLO, 0 );
@@ -185,8 +173,6 @@ public class UI3 extends Activity {
 	            		else Toast.makeText(getApplicationContext(), R.string.alreadyRecording, Toast.LENGTH_SHORT).show();
             		}
             		else Toast.makeText(getApplicationContext(), R.string.accelUnavailable, Toast.LENGTH_SHORT).show();
-            	}
-            	else Toast.makeText(getApplicationContext(), R.string.lockScreen, Toast.LENGTH_SHORT).show();
             }
         });
         
@@ -238,9 +224,43 @@ public class UI3 extends Activity {
                
     }    //FINE onCreate()
     
+    @Override
+    public void onResume() {
+    	AlertDialog.Builder alert = new AlertDialog.Builder(this);
+    	LayoutInflater inflater = LayoutInflater.from(this);
+    	View dialogView = inflater.inflate(R.layout.notshowagain, null);
+    	cb = (CheckBox) dialogView.findViewById(R.id.checkBox1);
+    	cb.setChecked(isChecked);
+    	alert.setView(dialogView);
+    	alert.setTitle(R.string.alertTitle);
+    	alert.setIcon(android.R.drawable.ic_lock_lock);
+    	alert.setCancelable(false);
+    	alert.setPositiveButton(R.string.okAlert, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if(cb.isChecked()) {
+					Editor prefsEditor = prefs.edit();
+					prefsEditor.putBoolean("notShowAgain", true).commit();
+				}
+				dialog.dismiss();
+				}	
+			});
+    	
+    	if(!prefs.getBoolean("notShowAgain", false)){
+    		alertDialog = alert.create();
+    		alertDialog.show();
+    	}
+    	super.onResume();
+    }
+
+    
  
      @Override
      public void onDestroy() {
+    	 if(alertDialog != null && alertDialog.isShowing()) {
+    		 alertDialog.dismiss();
+    	 }
          this.unregisterReceiver(receiver);
          super.onDestroy();
      }
@@ -361,6 +381,7 @@ public class UI3 extends Activity {
 		@Override
 		public void onSaveInstanceState(Bundle savedInstanceState) {
 		  super.onSaveInstanceState(savedInstanceState);
+		  savedInstanceState.putBoolean("isChecked", cb.isChecked());
 		  if(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText())
 		  savedInstanceState.putBoolean("KeyboardVisible", true);
 

@@ -66,5 +66,7 @@
     <string name="alreadySortedByDuration">La lista è già ordinata per durata</string>
     <string name="alreadyRecording">Registrazione già in corso!</string>
     <string name="accelUnavailable">Accelerometro non disponibile!</string>
+    <string name="AvvisoBloccoRotazioneSchermo">Per non perdere i dati registrati, l\'orientazione dello schermo verrà bloccata nella posizione in cui è alla pressione del tasto Registra.</string>
+    <string name="DontShowAgain">Non mostrare più!</string>
 
 </resources>
