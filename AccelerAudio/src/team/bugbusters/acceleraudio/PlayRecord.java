@@ -1,5 +1,6 @@
 package team.bugbusters.acceleraudio;
 
+import team.bugbusters.acceleraudio.UI4.MyUI4Receiver;
 import android.app.IntentService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.media.AudioTrack.OnPlaybackPositionUpdateListener;
 import android.os.SystemClock;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ public class PlayRecord extends IntentService {
 	private AudioTrack at;
 	public static final int minsize=7000;
 	private int sc;
+	private Intent broadUI4;
 	
 	/*-- Creation and initialization of receiver --*/
 	private BroadcastReceiver receiver=new BroadcastReceiver(){
@@ -58,7 +61,7 @@ public class PlayRecord extends IntentService {
 				
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-		    	   at.setPlaybackHeadPosition(g-250);
+		    	   at.setPlaybackHeadPosition(g-300);
 		    	   at.play();    
 		       }		
 		}	
@@ -74,6 +77,8 @@ public class PlayRecord extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		/*-- Registering Broadcast receiver --*/
         registerReceiver(receiver,new IntentFilter(UI4.THREAD_RESPONSE));
+        
+        
         
         dbHelper = new DbAdapter(this);
         id_to_process=intent.getLongExtra("ID", -1);
@@ -220,18 +225,40 @@ public class PlayRecord extends IntentService {
        
      	/*-- Creation and initialization of AudioTrack object in static mode --*/    
         at = new AudioTrack(AudioManager.STREAM_MUSIC, 24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
-        					AudioTrack.MODE_STATIC);
+        					AudioTrack.MODE_STATIC); 
         
-    	/*-- Writing finale array into AudioTrack internal buffer --*/
+        at.setPlaybackPositionUpdateListener(new OnPlaybackPositionUpdateListener() {
+            @Override
+            public void onPeriodicNotification(AudioTrack track) {
+            	System.out.println("Audio track end of file reached...");
+            	}
+            
+            @Override
+            public void onMarkerReached(AudioTrack track) {
+            	System.out.println("Audio track end of file reached...");
+            	broadUI4=new Intent();
+                broadUI4.setAction(MyUI4Receiver.END);
+                broadUI4.putExtra("Fine",true);
+            	sendBroadcast(broadUI4);
+            }
+        });
+        
+        /*-- Writing finale array into AudioTrack internal buffer --*/
         at.write(finale, 0, finale.length); 
         
         /*-- Setting music loop (infinte) --*/
         at.setLoopPoints(0, finale.length-1, -1);
         
+        at.setNotificationMarkerPosition(finale.length);
+        at.setPositionNotificationPeriod(finale.length);
+        
+        
+
+        
         /*-- Playback --*/
         at.play();
         
-        
+        System.out.println(""+at.getNotificationMarkerPosition());
        // 10 ore di Sleep
         SystemClock.sleep(36000000);
         

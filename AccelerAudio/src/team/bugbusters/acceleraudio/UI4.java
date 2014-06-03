@@ -1,7 +1,10 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -16,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
@@ -42,6 +46,7 @@ public class UI4 extends Activity {
 	private long prec,endtime,starttime;
 	private final long INTERVALLO=1L;
 	private boolean on_play=true;
+	private MyUI4Receiver receiver;
 	private static final int PREVIOUS = 0;
 	private static final int NEXT = 1;
 	private static final int BY_INSERTION = -1;
@@ -66,6 +71,9 @@ public class UI4 extends Activity {
         sbtime.setEnabled(false);
         starttime=System.currentTimeMillis();
         db = new DbAdapter(this);
+        
+        receiver = new MyUI4Receiver();
+        registerReceiver(receiver,new IntentFilter(MyUI4Receiver.END));
         
         pkg_r=getPackageName();   
         id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
@@ -307,6 +315,11 @@ public class UI4 extends Activity {
         pause_resume.setImageResource(android.R.drawable.ic_media_pause);
         }
 	
+	public void onDestroy(){
+		this.unregisterReceiver(receiver);
+		super.onDestroy();
+	}
+	
 	//Quando viene premuto il tasto Back
 	@Override
 	public void onBackPressed() {
@@ -365,7 +378,7 @@ public class UI4 extends Activity {
 	      @Override
 	      public void onFinish() {
 	    	  time.setText((float)((end+previous)/100)/10+"");
-	    	  creaPlayTimer(end+previous, INTERVALLO, 0);
+	    	 // creaPlayTimer(end+previous, INTERVALLO, 0);
 	      }
 	      
 	      public long myCancel(){
@@ -383,6 +396,21 @@ public class UI4 extends Activity {
 	          last=previous+end-curr;
 	      }
 	  }
+	
+	
+	public class MyUI4Receiver extends BroadcastReceiver{
+
+		   public static final String END = "team.bugbusters.acceleraudio.intent.action.END_PLAYBACK";
+	        @Override
+	        	public void onReceive(Context context, Intent intent) {
+	        	
+	        	prec=timer.myCancel();
+	        	Toast.makeText(getApplicationContext(),""+intent.getBooleanExtra("Fine", false), Toast.LENGTH_SHORT).show();
+            	creaPlayTimer(endtime-prec, INTERVALLO, prec);
+	        	
+	        	}
+	        }
+
 
 		
 }
