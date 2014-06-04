@@ -453,7 +453,8 @@ public class UI1 extends Activity {
 	            return(true);
 	            
 			case R.id.Ordina:
-				while(runningCl.isEmpty()) {
+				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(prefs.getBoolean("sortedByName", false)) {
@@ -476,7 +477,8 @@ public class UI1 extends Activity {
 				return(true);
 			
 			case R.id.Numera:
-				while(runningCl.isEmpty()) {
+				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false)) {
@@ -498,7 +500,8 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaData:
-				while(runningCl.isEmpty()) {
+				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(prefs.getBoolean("sortedByDate", false)) {
@@ -520,7 +523,8 @@ public class UI1 extends Activity {
 				return(true);
 				
 			case R.id.OrdinaDurata:
-				while(runningCl.isEmpty()) {
+				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(prefs.getBoolean("sortedByDuration", false)){

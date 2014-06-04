@@ -10,13 +10,7 @@
     <string name="SelAssi">Seleziona assi:</string>
     <string name="Upsampling">Sovracampionamento:</string>
     <string name="Play">Riproduci sessione</string>
-    <string name="Orientation">Scegli orientazione schermo:</string>
-    <string name="Orientation_port">portrait</string>
-    <string name="Orientation_land">landscape</string>
     <string name="Assi">Assi:</string>
-    <string name="toggleButtonString">Blocca orientazione:</string>
-    <string name="ifLocked">Sblocca</string>
-    <string name="ifUnlocked">Blocca</string>
     <string name="time">Tempo:</string>
     <string name="campioniRegistratiString">Campioni registrati:</string>
     <string name="nameChoosing">Nome:</string>
@@ -68,5 +62,6 @@
     <string name="accelUnavailable">Accelerometro non disponibile!</string>
     <string name="AvvisoBloccoRotazioneSchermo">Per non perdere i dati registrati, l\'orientazione dello schermo verrà bloccata nella posizione in cui è alla pressione del tasto Registra.</string>
     <string name="DontShowAgain">Non mostrare più!</string>
+    <string name="addSessionPlease">Registra almeno un paio di sessioni prima di riordinare la lista!</string>
 
 </resources>
