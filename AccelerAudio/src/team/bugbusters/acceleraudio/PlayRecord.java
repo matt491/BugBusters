@@ -10,9 +10,7 @@ import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.media.AudioTrack.OnPlaybackPositionUpdateListener;
 import android.os.SystemClock;
-import android.widget.Toast;
 
 public class PlayRecord extends IntentService {
 
@@ -23,49 +21,15 @@ public class PlayRecord extends IntentService {
 	private boolean checkX,checkY,checkZ;
 	private int sovrac,campx,campy,campz;
 	private String[] s,p,q;
-	private boolean  pausa,riprendi,stop;
+	private boolean  pausa,riprendi,stop,from_UI4;
 	private int g,i,j;
 	private AudioTrack at;
-	public static final int minsize=7000;
+	public static final int minsize=7500;
 	private int sc;
 	private Intent broadUI4;
-	
-	/*-- Creation and initialization of receiver --*/
-	private BroadcastReceiver receiver=new BroadcastReceiver(){
-		 
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			pausa=intent.getBooleanExtra("Pausa", false);
-		    riprendi=intent.getBooleanExtra("Riprendi", false);
-		    stop=intent.getBooleanExtra("Stop", false);
-
-	       if(stop){
-	           if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
-		    	   at.pause();
-		    	   at.flush();
-		    	   at.release();
-	           }
-		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
-					at.flush();
-					at.release();
-					}      
-			   stopSelf();
-	       }
-	       
-	       if(pausa) {
-	       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
-	    	   g=at.getPlaybackHeadPosition();	
-	    	   at.pause();   
-	       		
-	       }
-				
-		    if(riprendi) {
-		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-		    	   at.setPlaybackHeadPosition(g-300);
-		    	   at.play();    
-		       }		
-		}	
-	};
+	private short[] finale;
+	private CommandReceiver receiver=new CommandReceiver();
+		 	
 	
 	//Costruttore
 	public PlayRecord() {
@@ -75,10 +39,15 @@ public class PlayRecord extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		
 		/*-- Registering Broadcast receiver --*/
-        registerReceiver(receiver,new IntentFilter(UI4.THREAD_RESPONSE));
+        registerReceiver(receiver,new IntentFilter(UI4.COMMAND_RESPONSE));
         
-        
+        from_UI4=intent.getBooleanExtra("fromUI4", false);
+        if(from_UI4) {
+        	broadUI4=new Intent();
+        	broadUI4.setAction(MyUI4Receiver.NOTIFY_FRAME);
+        }
         
         dbHelper = new DbAdapter(this);
         id_to_process=intent.getLongExtra("ID", -1);
@@ -214,7 +183,7 @@ public class PlayRecord extends IntentService {
 			   
            	
        	/*-- Merging previous arrays into one --*/
-         short[] finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
+         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
          System.arraycopy(s1, 0, finale, 0, s1.length);	
          System.arraycopy(s2, 0, finale, s1.length, s2.length);	
          System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
@@ -227,40 +196,23 @@ public class PlayRecord extends IntentService {
         at = new AudioTrack(AudioManager.STREAM_MUSIC, 24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
         					AudioTrack.MODE_STATIC); 
         
-        at.setPlaybackPositionUpdateListener(new OnPlaybackPositionUpdateListener() {
-            @Override
-            public void onPeriodicNotification(AudioTrack track) {
-            	System.out.println("Audio track end of file reached...");
-            	}
-            
-            @Override
-            public void onMarkerReached(AudioTrack track) {
-            	System.out.println("Audio track end of file reached...");
-            	broadUI4=new Intent();
-                broadUI4.setAction(MyUI4Receiver.END);
-                broadUI4.putExtra("Fine",true);
-            	sendBroadcast(broadUI4);
-            }
-        });
-        
         /*-- Writing finale array into AudioTrack internal buffer --*/
         at.write(finale, 0, finale.length); 
+           
         
         /*-- Setting music loop (infinte) --*/
         at.setLoopPoints(0, finale.length-1, -1);
         
-        at.setNotificationMarkerPosition(finale.length);
-        at.setPositionNotificationPeriod(finale.length);
-        
-        
-
         
         /*-- Playback --*/
         at.play();
         
-        System.out.println(""+at.getNotificationMarkerPosition());
-       // 10 ore di Sleep
+        broadUI4.putExtra("Inizia", true);
+        sendBroadcast(broadUI4);
+        
+        // 10 ore di Sleep
         SystemClock.sleep(36000000);
+	
         
         //Dopo 10 ore si termina il servizio e l'AudioTrack
         //ES: si è dimenticati il telefono in ricarica con la riproduzione in corso o in pausa
@@ -276,19 +228,17 @@ public class PlayRecord extends IntentService {
 				
         stopSelf();
 	
-      
 	
 	}
 	  
         
   public void onDestroy(){
 	  this.unregisterReceiver(receiver);
-	  Toast.makeText(getApplicationContext(), "Servizio Terminato", Toast.LENGTH_SHORT).show();
-	  super.onDestroy();
-	  
+	  super.onDestroy();  
   }
   
-  /*-- Method used to calculate upsampling coefficient, based on numeber of samples recorded and
+  
+  /*-- Method used to calculate upsampling coefficient, based on number of samples recorded and
     on the upsamplig SeekBar position --*/
   public static int calcoloSovra(int s, int camp){
 	  if(camp>=1000) return (int) (30*s/100);
@@ -300,7 +250,53 @@ public class PlayRecord extends IntentService {
   }
   
   		
- }
+ 
+  /*-- Inner class of commands receiver --*/
+	public class CommandReceiver extends BroadcastReceiver{
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			pausa=intent.getBooleanExtra("Pausa", false);
+		riprendi=intent.getBooleanExtra("Riprendi", false);
+		stop=intent.getBooleanExtra("Stop", false);
+		
+		   if(stop){
+		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
+		    	   at.pause();
+		    	   at.flush();
+		    	   at.release();
+		       }
+		       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
+					at.flush();
+					at.release();
+					}      
+			   stopSelf();
+		   }
+		   
+		   if(pausa) {
+		   if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) 
+			    g=at.getPlaybackHeadPosition();	
+		   		if(from_UI4) {
+			   		broadUI4.putExtra("Inizia", false);
+			   		broadUI4.putExtra("CurrFrame",g);
+			   		sendBroadcast(broadUI4);
+		   		}
+		   		at.pause();   
+			
+	       }
+				
+		    if(riprendi) {
+		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
+		    	   at.setPlaybackHeadPosition(g);
+		    	   at.play();    
+		       }		
+		}
+		
+	}
+	
+}
+	
+
 	
                  
             

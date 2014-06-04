@@ -19,7 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
@@ -39,20 +39,21 @@ public class UI4 extends Activity {
 	private long durata;
 	private SharedPreferences prefs;
 	private static boolean primavolta=true;
-	public static final String THREAD_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
+	public static final String COMMAND_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
 	private TextView time;
 	private SeekBar sbtime;
 	private TimerCounter timer;
-	private long prec,endtime,starttime;
-	private final long INTERVALLO=1L;
+	private long endtime,starttime;
+	private final long INTERVALLO=10;
 	private boolean on_play=true;
 	private MyUI4Receiver receiver;
-	private static final int PREVIOUS = 0;
-	private static final int NEXT = 1;
-	private static final int BY_INSERTION = -1;
-	private static final int BY_NAME = 0;
-	private static final int BY_DATE = 1;
-	private static final int BY_DURATION = 2;
+	private int frame;
+	public static final int PREVIOUS = 0;
+	public static final int NEXT = 1;
+	public static final int BY_INSERTION = -1;
+	public static final int BY_NAME = 0;
+	public static final int BY_DATE = 1;
+	public static final int BY_DURATION = 2;
 	
 	
 	@Override
@@ -73,7 +74,7 @@ public class UI4 extends Activity {
         db = new DbAdapter(this);
         
         receiver = new MyUI4Receiver();
-        registerReceiver(receiver,new IntentFilter(MyUI4Receiver.END));
+        registerReceiver(receiver,new IntentFilter(MyUI4Receiver.NOTIFY_FRAME));
         
         pkg_r=getPackageName();   
         id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
@@ -81,15 +82,15 @@ public class UI4 extends Activity {
         impostaUI4(id);
         
         broadcastIntent = new Intent();
-        broadcastIntent.setAction(THREAD_RESPONSE);
+        broadcastIntent.setAction(COMMAND_RESPONSE);
         playIntentService=new Intent(UI4.this, PlayRecord.class);
         
         if(primavolta){
         	primavolta=false;
+        	playIntentService.putExtra("fromUI4", true);
 	        playIntentService.putExtra("ID", id);
 	    	endtime=durata;
 	    	sbtime.setMax((int) endtime);
-	    	creaPlayTimer(endtime,INTERVALLO,0);
 	    	startService(playIntentService);
         }
         
@@ -98,19 +99,19 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	if(System.currentTimeMillis()-starttime>500) {
             		starttime=System.currentTimeMillis();
+            		timer.cancel();
 	            	broadcastIntent.putExtra("Stop", true);
 	            	broadcastIntent.putExtra("Pausa", false);
 	            	broadcastIntent.putExtra("Riprendi", false);  
 	            	sendBroadcast(broadcastIntent);
 	            	stopService(playIntentService);
-	            	timer.cancel();
 	            	id = searchId(id, PREVIOUS, currentSorting());
 	            	broadcastIntent.putExtra("Stop", false);  
 	            	impostaUI4(id);
+	            	playIntentService.putExtra("fromUI4", true);
 	            	playIntentService.putExtra("ID", id);
 	            	endtime=durata;
 	            	sbtime.setMax((int) endtime);
-	            	creaPlayTimer(endtime,INTERVALLO,0);
 	            	startService(playIntentService);
             	}
             	
@@ -120,19 +121,19 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	if(System.currentTimeMillis()-starttime>500) {
             		starttime=System.currentTimeMillis();
+            		timer.cancel();
 	            	broadcastIntent.putExtra("Stop", true);
 	            	broadcastIntent.putExtra("Pausa", false);
 	            	broadcastIntent.putExtra("Riprendi", false);  	
 	            	sendBroadcast(broadcastIntent);
 	            	stopService(playIntentService);
-	            	timer.cancel();
 	            	id = searchId(id, NEXT, currentSorting());
 	            	broadcastIntent.putExtra("Stop", false);  
 	            	impostaUI4(id);
+	            	playIntentService.putExtra("fromUI4", true);
 	            	playIntentService.putExtra("ID", id);
 	            	endtime=durata;
 	            	sbtime.setMax((int) endtime);
-	            	creaPlayTimer(endtime,INTERVALLO,0);
 	            	startService(playIntentService);
             	}            	
             }});
@@ -141,17 +142,19 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	if(on_play){
             		on_play=false;
+            		timer.cancel();
 	            	broadcastIntent.putExtra("Pausa", true);
 	            	broadcastIntent.putExtra("Riprendi", false);
 	            	sendBroadcast(broadcastIntent);
-	            	prec=timer.myCancel();
 	            	pause_resume.setImageResource(android.R.drawable.ic_media_play);
             	}
             	else{
             		on_play=true;
             		broadcastIntent.putExtra("Riprendi", true);
                 	broadcastIntent.putExtra("Pausa", false);
-                	creaPlayTimer(endtime-prec, INTERVALLO, prec);
+                	sendBroadcast(broadcastIntent);	
+                	timer=new TimerCounter(endtime-(frame/24), INTERVALLO, frame/24);
+                	timer.start();
                 	sendBroadcast(broadcastIntent);	
                 	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
             	}
@@ -249,13 +252,6 @@ public class UI4 extends Activity {
  			 return previousOrNextId;	 
  	 }
     }
-	
-	private void creaPlayTimer(long fine, long this_intervallo, long prev ){
-		timer=new TimerCounter(fine, this_intervallo);
-    	timer.end=fine;
-    	timer.previous=prev;
-    	timer.start();
-	}
 	
 	
 	public void impostaUI4(long this_id){
@@ -363,51 +359,49 @@ public class UI4 extends Activity {
 	}
 
 	
-	
-	
+	/*-- Inner class used as timer which updates duration progress bar --*/
 	public class TimerCounter extends CountDownTimer{
 		 private long end;
-		 private long last;
-		 private long previous=0;
-		 private long curr;
-		 
-	      public TimerCounter(long millisInFuture, long countDownInterval) {
+		 private long previous;
+		 private long curr=0;
+		  
+	     public TimerCounter(long millisInFuture, long countDownInterval, long prev) {
 	          super(millisInFuture, countDownInterval);
+	          previous=prev;
+	          end=millisInFuture;	
 	      }
 
 	      @Override
-	      public void onFinish() {
-	    	  time.setText((float)((end+previous)/100)/10+"");
-	    	 // creaPlayTimer(end+previous, INTERVALLO, 0);
+	     public void onFinish() {
+	    	  time.setText((float)((previous+end)/100)/10+"");
+	    	  timer=new TimerCounter(previous+end, INTERVALLO, 0);
+	    	  timer.start();   	  
 	      }
-	      
-	      public long myCancel(){
-	    	  last=previous+end-curr;
-	    	  super.cancel(); 
-	    	  return last;
-	      }
-	      
+	       
 
 	      @Override
 	      public void onTick(long millisUntilFinished) {
 	    	  curr=millisUntilFinished;
 	          time.setText((float)((previous+end-curr)/100)/10 +" s");
 	          sbtime.setProgress((int)(previous+end-curr));
-	          last=previous+end-curr;
 	      }
 	  }
 	
 	
+	
 	public class MyUI4Receiver extends BroadcastReceiver{
 
-		   public static final String END = "team.bugbusters.acceleraudio.intent.action.END_PLAYBACK";
+		   public static final String NOTIFY_FRAME = "team.bugbusters.acceleraudio.intent.action.NOTIFY_FRAME";
 	        @Override
-	        	public void onReceive(Context context, Intent intent) {
+	        	public void onReceive(Context context, Intent intent) {	
 	        	
-	        	prec=timer.myCancel();
-	        	Toast.makeText(getApplicationContext(),""+intent.getBooleanExtra("Fine", false), Toast.LENGTH_SHORT).show();
-            	creaPlayTimer(endtime-prec, INTERVALLO, prec);
-	        	
+	        		frame=intent.getIntExtra("CurrFrame", 0);
+	        		
+	        		if(intent.getBooleanExtra("Inizia", false)){
+	        			timer=new TimerCounter(endtime,INTERVALLO,0);
+	        	    	timer.start();
+	        		}
+	        			
 	        	}
 	        }
 

@@ -14,7 +14,6 @@ import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
-import android.widget.Toast;
 
 public class DataRecord extends IntentService implements SensorEventListener {
 
@@ -33,9 +32,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	
 	public DataRecord() {
-		super("DataRecord");
-		
-		
+		super("DataRecord");	
 	}
 	
 	 @Override
