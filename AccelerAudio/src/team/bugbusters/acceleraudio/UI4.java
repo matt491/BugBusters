@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
@@ -43,11 +44,11 @@ public class UI4 extends Activity {
 	private TextView time;
 	private SeekBar sbtime;
 	private TimerCounter timer;
-	private long endtime,starttime;
+	private long endtime,starttime,starttime1;
 	private final long INTERVALLO=10;
 	private boolean on_play=true;
 	private MyUI4Receiver receiver;
-	private int frame;
+	private int frame=0;
 	public static final int PREVIOUS = 0;
 	public static final int NEXT = 1;
 	public static final int BY_INSERTION = -1;
@@ -71,6 +72,7 @@ public class UI4 extends Activity {
         sbtime=(SeekBar)findViewById(R.id.seekBar1);
         sbtime.setEnabled(false);
         starttime=System.currentTimeMillis();
+        starttime1=starttime;
         db = new DbAdapter(this);
         
         receiver = new MyUI4Receiver();
@@ -106,7 +108,6 @@ public class UI4 extends Activity {
 	            	sendBroadcast(broadcastIntent);
 	            	stopService(playIntentService);
 	            	id = searchId(id, PREVIOUS, currentSorting());
-	            	broadcastIntent.putExtra("Stop", false);  
 	            	impostaUI4(id);
 	            	playIntentService.putExtra("fromUI4", true);
 	            	playIntentService.putExtra("ID", id);
@@ -127,8 +128,7 @@ public class UI4 extends Activity {
 	            	broadcastIntent.putExtra("Riprendi", false);  	
 	            	sendBroadcast(broadcastIntent);
 	            	stopService(playIntentService);
-	            	id = searchId(id, NEXT, currentSorting());
-	            	broadcastIntent.putExtra("Stop", false);  
+	            	id = searchId(id, NEXT, currentSorting()); 
 	            	impostaUI4(id);
 	            	playIntentService.putExtra("fromUI4", true);
 	            	playIntentService.putExtra("ID", id);
@@ -140,11 +140,14 @@ public class UI4 extends Activity {
         
         pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	if(System.currentTimeMillis()-starttime>50) {
+            		starttime=System.currentTimeMillis();
             	if(on_play){
             		on_play=false;
             		timer.cancel();
 	            	broadcastIntent.putExtra("Pausa", true);
 	            	broadcastIntent.putExtra("Riprendi", false);
+	            	broadcastIntent.putExtra("Stop", false);
 	            	sendBroadcast(broadcastIntent);
 	            	pause_resume.setImageResource(android.R.drawable.ic_media_play);
             	}
@@ -152,11 +155,13 @@ public class UI4 extends Activity {
             		on_play=true;
             		broadcastIntent.putExtra("Riprendi", true);
                 	broadcastIntent.putExtra("Pausa", false);
+                	broadcastIntent.putExtra("Stop", false);
                 	sendBroadcast(broadcastIntent);	
                 	timer=new TimerCounter(endtime-(frame/24), INTERVALLO, frame/24);
                 	timer.start();
                 	sendBroadcast(broadcastIntent);	
                 	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
+            	}
             	}
             }});
         
@@ -395,7 +400,8 @@ public class UI4 extends Activity {
 	        @Override
 	        	public void onReceive(Context context, Intent intent) {	
 	        	
-	        		frame=intent.getIntExtra("CurrFrame", 0);
+	        	
+	        			frame=intent.getIntExtra("CurrFrame", 0);
 	        		
 	        		if(intent.getBooleanExtra("Inizia", false)){
 	        			timer=new TimerCounter(endtime,INTERVALLO,0);

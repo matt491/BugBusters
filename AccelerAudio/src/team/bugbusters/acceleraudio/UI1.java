@@ -359,9 +359,9 @@ public class UI1 extends Activity {
 	       
 	       Random r=new Random();
 	       while((cX==checkX && cY==checkY && cZ==checkZ) || (!cX && !cY && !cZ)){
-		       if(r.nextDouble()>=0.5) cX = !checkX;
-		       if(r.nextDouble()>=0.5) cY = !checkY;
-		       if(r.nextDouble()>=0.5) cZ = !checkZ;
+		       if(r.nextDouble()>=0.5) cX = !cX;
+		       if(r.nextDouble()>=0.5) cY = !cY;
+		       if(r.nextDouble()>=0.5) cZ = !cZ;
 	       }
   
 	       sovrac_new = (int)(Math.random()*100);

@@ -22,9 +22,9 @@ public class PlayRecord extends IntentService {
 	private int sovrac,campx,campy,campz;
 	private String[] s,p,q;
 	private boolean  pausa,riprendi,stop,from_UI4;
-	private int g,i,j;
+	private int g=0,i,j;
 	private AudioTrack at;
-	public static final int minsize=7500;
+	public static final int minsize=7000;
 	private int sc;
 	private Intent broadUI4;
 	private short[] finale;
@@ -207,6 +207,7 @@ public class PlayRecord extends IntentService {
         /*-- Playback --*/
         at.play();
         
+        broadUI4.putExtra("CurrFrame",0);
         broadUI4.putExtra("Inizia", true);
         sendBroadcast(broadUI4);
         
@@ -257,8 +258,8 @@ public class PlayRecord extends IntentService {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			pausa=intent.getBooleanExtra("Pausa", false);
-		riprendi=intent.getBooleanExtra("Riprendi", false);
-		stop=intent.getBooleanExtra("Stop", false);
+			riprendi=intent.getBooleanExtra("Riprendi", false);
+			stop=intent.getBooleanExtra("Stop", false);
 		
 		   if(stop){
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
@@ -278,7 +279,7 @@ public class PlayRecord extends IntentService {
 			    g=at.getPlaybackHeadPosition();	
 		   		if(from_UI4) {
 			   		broadUI4.putExtra("Inizia", false);
-			   		broadUI4.putExtra("CurrFrame",g);
+			   		broadUI4.putExtra("CurrFrame",g%finale.length);
 			   		sendBroadcast(broadUI4);
 		   		}
 		   		at.pause();   
@@ -287,7 +288,8 @@ public class PlayRecord extends IntentService {
 				
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
-		    	   at.setPlaybackHeadPosition(g);
+		    	   at.setPlaybackHeadPosition(g%finale.length);
+		       	   at.setLoopPoints(0, finale.length-1, -1);
 		    	   at.play();    
 		       }		
 		}
