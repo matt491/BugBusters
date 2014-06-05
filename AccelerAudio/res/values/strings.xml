@@ -63,5 +63,6 @@
     <string name="AvvisoBloccoRotazioneSchermo">Per non perdere i dati registrati, l\'orientazione dello schermo verrà bloccata nella posizione in cui è alla pressione del tasto Registra.</string>
     <string name="DontShowAgain">Non mostrare più!</string>
     <string name="addSessionPlease">Registra almeno un paio di sessioni prima di riordinare la lista!</string>
+    <string name="spaceUnavailable">Spazio non disponibile!</string>
 
 </resources>

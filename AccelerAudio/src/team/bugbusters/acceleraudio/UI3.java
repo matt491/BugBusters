@@ -14,6 +14,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
+import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.Display;
@@ -150,6 +152,10 @@ public class UI3 extends Activity {
         //Tasto Record premuto
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
+            	StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
+				@SuppressWarnings("deprecation")
+				long kilobytesAvailable = ((long)stat.getBlockSize() *(long)stat.getAvailableBlocks())/1024;
+            	if(kilobytesAvailable>=100) {
             		if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
             			if(widget_lil.record_running==false) {
             				WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
@@ -172,6 +178,8 @@ public class UI3 extends Activity {
 	            		else Toast.makeText(getApplicationContext(), R.string.alreadyRecording, Toast.LENGTH_SHORT).show();
             		}
             		else Toast.makeText(getApplicationContext(), R.string.accelUnavailable, Toast.LENGTH_SHORT).show();
+            	}
+            	else Toast.makeText(getApplicationContext(), R.string.spaceUnavailable, Toast.LENGTH_SHORT).show();
             }
         });
         
