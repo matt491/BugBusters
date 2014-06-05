@@ -5,7 +5,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
 
     <!-- 		APPLICATION		 -->
@@ -36,15 +36,7 @@
     		<meta-data android:name="android.appwidget.provider"
         		       android:resource="@xml/widget_descriptor_lil" />
 		</receiver>
-		
-       <!-- SETTING LOW MEMORY MANAGER RECEIVER -->
-       
-        <receiver android:name="team.bugbusters.acceleraudio.MemoryReceiver" android:enabled="true">
-            <intent-filter>
-        		<action android:name="android.intent.action.ACTION_DEVICE_STORAGE_LOW" />
-    		</intent-filter>
-        </receiver>
-        
+		        
         <service android:name="DataRecord"/>
         <service android:name="PlayRecord"/>
         
