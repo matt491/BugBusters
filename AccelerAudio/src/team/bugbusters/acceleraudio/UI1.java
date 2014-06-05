@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -356,10 +357,11 @@ public class UI1 extends Activity {
 	       int sovrac_new;
 	       boolean cX=checkX, cY=checkY, cZ=checkZ;
 	       
-	       while(cX==checkX && cY==checkY && checkZ==cZ){
-		       if(Math.random()>0.5) cX = !checkX;
-		       if(Math.random()>0.5) cY = !checkY;
-		       if(Math.random()>0.5) cZ = !checkZ;
+	       Random r=new Random();
+	       while((cX==checkX && cY==checkY && cZ==checkZ) || (!cX && !cY && !cZ)){
+		       if(r.nextDouble()>=0.5) cX = !checkX;
+		       if(r.nextDouble()>=0.5) cY = !checkY;
+		       if(r.nextDouble()>=0.5) cZ = !checkZ;
 	       }
   
 	       sovrac_new = (int)(Math.random()*100);
