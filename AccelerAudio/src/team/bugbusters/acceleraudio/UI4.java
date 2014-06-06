@@ -19,8 +19,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
@@ -107,7 +105,7 @@ public class UI4 extends Activity {
 	            	broadcastIntent.putExtra("Riprendi", false);  
 	            	sendBroadcast(broadcastIntent);
 	            	stopService(playIntentService);
-	            	id = searchId(id, PREVIOUS, currentSorting());
+	            	id = searchId(db, id, PREVIOUS, currentSorting());
 	            	impostaUI4(id);
 	            	playIntentService.putExtra("fromUI4", true);
 	            	playIntentService.putExtra("ID", id);
@@ -128,7 +126,7 @@ public class UI4 extends Activity {
 	            	broadcastIntent.putExtra("Riprendi", false);  	
 	            	sendBroadcast(broadcastIntent);
 	            	stopService(playIntentService);
-	            	id = searchId(id, NEXT, currentSorting()); 
+	            	id = searchId(db, id, NEXT, currentSorting()); 
 	            	impostaUI4(id);
 	            	playIntentService.putExtra("fromUI4", true);
 	            	playIntentService.putExtra("ID", id);
@@ -186,27 +184,27 @@ public class UI4 extends Activity {
 		return currentSorting;
 	}
 	
-	public long searchId(long playingId, int nextOrPrevious, int currentSorting) {
+	public static long searchId(DbAdapter this_db, long playingId, int nextOrPrevious, int currentSorting) {
 	long previousOrNextId;
-	
-	db.open();
+	Cursor c;
+	this_db.open();
 	
 	switch(currentSorting) {
 	 
 	 case BY_NAME:
-		 c = db.fetchAllRecordSortedByName();
+		 c = this_db.fetchAllRecordSortedByName();
 		 break;
 		 
 	 case BY_DATE:
-		 c = db.fetchAllRecordSortedByDate();
+		 c = this_db.fetchAllRecordSortedByDate();
 		 break;
 		 
 	 case BY_DURATION:
-		 c = db.fetchAllRecordSortedByDuration();
+		 c = this_db.fetchAllRecordSortedByDuration();
 		 break;
 		 
 	 default:
-		 c = db.fetchAllRecord();
+		 c = this_db.fetchAllRecord();
 		 break;
 	 }
 	
@@ -220,14 +218,14 @@ public class UI4 extends Activity {
 					c.moveToPrevious();
 					previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
 					c.close();
-					db.close();
+					this_db.close();
 					return previousOrNextId;
 				}
 				else {
 					c.moveToLast();
 					previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
 					c.close();
-					db.close();
+					this_db.close();
 					return previousOrNextId;
 				}
 			 }
@@ -240,14 +238,14 @@ public class UI4 extends Activity {
  					 c.moveToNext();
  					 previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
  					 c.close();
- 					 db.close();
+ 					 this_db.close();
  					 return previousOrNextId;
  				 }
  				 else {
  					 c.moveToFirst();
  					 previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
  					 c.close();
- 					 db.close();
+ 					 this_db.close();
  					 return previousOrNextId;
  				 }
  			 }

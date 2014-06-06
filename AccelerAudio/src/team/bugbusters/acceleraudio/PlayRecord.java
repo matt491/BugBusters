@@ -289,7 +289,7 @@ public class PlayRecord extends IntentService {
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
 		    	   at.setPlaybackHeadPosition(g%finale.length);
-		       	   at.setLoopPoints(0, finale.length-1, -1);
+		       	   //at.setLoopPoints(0, finale.length-1, -1);
 		    	   at.play();    
 		       }		
 		}
