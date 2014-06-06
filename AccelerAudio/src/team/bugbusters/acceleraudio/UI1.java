@@ -32,7 +32,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class UI1 extends Activity {
-
+	public static int way;
 	private ListView lv;
 	private DbAdapter db;
 	private String pkg;
@@ -54,7 +54,7 @@ public class UI1 extends Activity {
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		int way;
+		//int way;
 		
 		if(prefs.getBoolean("sortedByName", false)) {
 			way = BY_NAME;
@@ -446,7 +446,8 @@ public class UI1 extends Activity {
 			final Editor prefsEditor = prefs.edit();
 			final CustomList runningCl = (CustomList) lv.getAdapter();
 			final List<String[]> nuovaLista = runningCl.getList();
-			
+			Intent update_way = new Intent (UI1.this,widget_big.class);
+			update_way.setAction("UPDATE");
 			switch(item.getItemId()) {
 			
 			case R.id.Preferenze:
@@ -476,6 +477,8 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
+				update_way.putExtra("WAY", 0);
+				sendBroadcast(update_way);
 				return(true);
 			
 			case R.id.Numera:
@@ -499,6 +502,8 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
+				update_way.putExtra("WAY", -1);
+				sendBroadcast(update_way);
 				return(true);
 				
 			case R.id.OrdinaData:
@@ -522,6 +527,8 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
+				update_way.putExtra("WAY", 1);
+				sendBroadcast(update_way);
 				return(true);
 				
 			case R.id.OrdinaDurata:
@@ -547,6 +554,8 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
+				update_way.putExtra("WAY", 2);
+				sendBroadcast(update_way);
 				return(true);
 			}
 			

@@ -6,7 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
+import android.database.Cursor;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -16,12 +16,13 @@ public class widget_big extends AppWidgetProvider {
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
 	private static Intent i_record,i_play, commandIntent;
 	private static boolean terminated_rec=false,terminated_play=false, pause=false;
-	public static boolean service_running=false;
+	public static boolean service_running=false,playable =false;
 	private static  long currid = 1;
+	private static Cursor c;
+	private static DbAdapter db;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
 	public static boolean record_widget_big=false,play_widget=true;
-	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int [] appWidgetIds)
 	{
@@ -33,6 +34,7 @@ public class widget_big extends AppWidgetProvider {
 		for (int i = 0; i < appWidgetIds.length;i++)
 		{
 	
+			
 		/*-- setting the view which we are going to update --*/
 			
 		RemoteViews view = new RemoteViews(context.getPackageName(),R.layout.widget_big_layout);
@@ -62,25 +64,33 @@ public class widget_big extends AppWidgetProvider {
 		start_for.setAction("START_FOR");
 		
 		
+
+		
+		
+		
 		/*--
 		 *  Performing the action 
 		 *  --*/
 		
 		view.setOnClickPendingIntent(R.id.rec_big, PendingIntent.getBroadcast(context, 0, start_rec, 0));
-		
+		db = new DbAdapter(context);
+		db.open();
+		c= db.fetchAllRecord();
+		if(c.getCount()==0) Toast.makeText(context, "DataBase Empty", Toast.LENGTH_SHORT).show();	
+		else
+		playable = true;
 		view.setOnClickPendingIntent(R.id.play_big, PendingIntent.getBroadcast(context, 0, start_play, 0));
 		
 		view.setOnClickPendingIntent(R.id.backward_big, PendingIntent.getBroadcast(context, 0, start_pre, 0));
 		
 		view.setOnClickPendingIntent(R.id.forward_big, PendingIntent.getBroadcast(context, 0, start_for, 0));
-		
+		db.close();
 		/*-- Updating the widget --*/
 		
 		appWidgetManager.updateAppWidget(appWidgetIds[i], view);
 		}
 		
 	}
-
 
 	@Override
 	public void onReceive(Context context, Intent intent)
@@ -139,7 +149,41 @@ public class widget_big extends AppWidgetProvider {
         	}
         }/*-- End of first action filter --*/
         
-        
+        /*-- PlayRecord Code --*/
+        	/*-- DB Emptiness check --*/
+        	
+    		
+    		if(!playable) Toast.makeText(context, "DataBase Empty", Toast.LENGTH_SHORT).show();	
+    		else
+    		{
+    			db= new DbAdapter(context);
+        		db.open();
+        		switch(intent.getIntExtra("WAY", -2)) {
+        		case 0:
+        			c = db.fetchAllRecordSortedByName();
+        			break;
+        			case 1:
+        			c = db.fetchAllRecordSortedByDate();
+        			break;
+        			case 2:
+        			c = db.fetchAllRecordSortedByDuration();
+        			break;
+        			case -1:  //case BY_INSERTION
+        			c = db.fetchAllRecord();
+        			break;
+    		}
+    		Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();	
+    		if(c.getPosition()==-1)
+    		{
+    		c.moveToFirst();
+    		Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();
+    		rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+    		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+    		}
+    		//c.close();
+    		
+    		
         
         
         /*-- Play code --*/
@@ -186,8 +230,10 @@ public class widget_big extends AppWidgetProvider {
         
         
         if(action.equals("START_PRE")) {
-        	
-        	
+        	c.moveToPrevious();
+        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+    		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
         	if(!play_widget)
     			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
         	
@@ -205,6 +251,7 @@ public class widget_big extends AppWidgetProvider {
         		Intent prev=new Intent(context,widget_big.class);
         		prev.setAction("START_STOP_PLAY");
         		context.sendBroadcast(prev);
+        		
 	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
         	}
         	
@@ -212,7 +259,10 @@ public class widget_big extends AppWidgetProvider {
         	
             if(action.equals("START_FOR")) {
             	
-            	
+            	c.moveToNext();
+            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
             	if(!play_widget)
         			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
             	
@@ -233,26 +283,10 @@ public class widget_big extends AppWidgetProvider {
             		
     	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
             	}
-        	
-        	
-        	
+            }
+            
+            db.close();
         }
-        
-        /*-- Handling the Widget start_play call --*/
-      /*  if(action.equals("START_STOP_PLAY")){
-        	
-        	//checking the service is not being already used by the application 
-        	if(PlayRecord.play_running==false){
-        			//play_running = true;
-        			play_widget =true;
-	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-	            	
-	            	context.startService(i_play);
-	        //}else Toast.makeText(context, "Playing from application, access denied" , Toast.LENGTH_SHORT).show();
-        }
-        else context.stopService(i_play);
-        //}// 2nd filter*/
-        
         /*-- Updating --*/
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_big.class), rw);
 			 super.onReceive(context, intent);

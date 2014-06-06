@@ -35,7 +35,6 @@
         android:layout_above="@+id/modify_big"
         android:layout_alignLeft="@+id/modify_big"
         android:layout_below="@+id/forward_big"
-        android:layout_toLeftOf="@+id/textView1"
         android:text="Title"
         android:textColor="@android:color/background_light"
         android:textColorHint="@android:color/background_light" />
@@ -55,7 +54,6 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/image_big"
         android:layout_alignLeft="@+id/rec_big"
-        android:layout_alignRight="@+id/textView1"
         android:text="Last modified"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/background_light" />
@@ -69,13 +67,12 @@
         android:src="@android:drawable/ic_media_play" />
 
     <TextView
-        android:id="@+id/duration"
+        android:id="@+id/duration_big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/modify_big"
-        android:layout_alignRight="@+id/forward_big"
-        android:text="0:00:00"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/forward_big"
+        android:layout_toRightOf="@+id/backward_big"
+        android:text="DigitalClock"
         android:textColor="@android:color/background_light" />
 
 </RelativeLayout>
