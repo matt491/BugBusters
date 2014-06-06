@@ -13,7 +13,7 @@ import android.widget.Toast;
 public class widget_big extends AppWidgetProvider {
 	
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
-	
+	private DbAdapter db;
 	private static Intent i_record,i_play;
 	private static boolean terminated_rec=false,terminated_play=false;
 	private static  long id =0;
@@ -44,6 +44,11 @@ public class widget_big extends AppWidgetProvider {
 		
 		Intent start_rec = new Intent(context,widget_big.class);
 		start_rec.setAction("START_STOP_REC");
+		
+		db= new DbAdapter(context);
+		id = UI4.searchId(db, id, UI4.NEXT, -1);
+		
+		Toast.makeText(context, "ID" +id, Toast.LENGTH_SHORT).show();
 		
 		/*-- Play Intent --*/
 		
@@ -141,11 +146,16 @@ public class widget_big extends AppWidgetProvider {
         
         /*-- Play code --*/
         
-        if(action.equals("START_STOP_PLAY"))
-        {
+        //if(action.equals("START_STOP_PLAY")) {
+        	db= new DbAdapter(context);
+    		id = UI4.searchId(db, id, UI4.NEXT, -1);
+    		Toast.makeText(context, "ID" +id, Toast.LENGTH_SHORT).show();
         	i_play = new Intent(context, PlayRecord.class);
-        /*-- Handling the PlayRecord call --*/
-        if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_play)  {
+        	i_play.setAction(UI4.COMMAND_RESPONSE);
+        	i_play.putExtra("fromUI4", true);
+        	i_play.putExtra("ID", id);
+        	/*-- Handling the PlayRecord call --*/
+        	if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_play)  {
         	
         	terminated_play=false;
         	play_widget = false;
@@ -162,12 +172,13 @@ public class widget_big extends AppWidgetProvider {
         			//play_running = true;
         			play_widget =true;
 	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-	            	i_play.putExtra("ID", 1);
+	            	
 	            	context.startService(i_play);
 	        //}else Toast.makeText(context, "Playing from application, access denied" , Toast.LENGTH_SHORT).show();
         }
         else context.stopService(i_play);
-        }// 2nd filter
+        //}// 2nd filter
+        
         /*-- Updating --*/
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_big.class), rw);
 			 super.onReceive(context, intent);

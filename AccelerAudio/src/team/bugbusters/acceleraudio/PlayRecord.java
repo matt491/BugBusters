@@ -11,9 +11,10 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.SystemClock;
+import android.util.Log;
 
 public class PlayRecord extends IntentService {
-
+	private long dio;
 	private DbAdapter dbHelper;
 	private Cursor cr;
 	private long id_to_process;
@@ -289,7 +290,7 @@ public class PlayRecord extends IntentService {
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
 		    	   at.setPlaybackHeadPosition(g%finale.length);
-		       	   //at.setLoopPoints(0, finale.length-1, -1);
+		       	   at.setLoopPoints(0, finale.length-1, -1);
 		    	   at.play();    
 		       }		
 		}
