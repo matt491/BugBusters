@@ -177,7 +177,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 			    /*-- Intent used to comunicate with little or big widget --*/
 				if(ric_LIL)  broadcastWidget = new Intent(this,widget_lil.class);
-				else  broadcastWidget = new Intent(this,widget_big.class);
+				else  {
+					broadcastWidget = new Intent(this,widget_big.class);
+					broadcastWidget.putExtra("RS", true);
+				}
 				
 				broadcastWidget.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 				broadcastWidget.putExtra("Terminata",true);

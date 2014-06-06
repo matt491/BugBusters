@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+
 public class widget_big extends AppWidgetProvider {
 	
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
 	
 	private static Intent i_record,i_play;
 	private static boolean terminated_rec=false,terminated_play=false;
+	private static  long id =0;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
 	public static boolean record_widget_big=false,play_widget=false;
@@ -57,6 +59,8 @@ public class widget_big extends AppWidgetProvider {
 		Intent start_for = new Intent (context,widget_big.class);
 		start_for.setAction("START_FOR");
 		
+		//id = searchId(id,UI4.NEXT,-1);
+		
 		/*--
 		 *  Performing the action 
 		 *  --*/
@@ -66,7 +70,7 @@ public class widget_big extends AppWidgetProvider {
 		view.setOnClickPendingIntent(R.id.play_big, PendingIntent.getBroadcast(context, 0, start_play, 0));
 		
 		view.setOnClickPendingIntent(R.id.backward_big, PendingIntent.getBroadcast(context, 0, start_pre, 0));
-
+		
 		view.setOnClickPendingIntent(R.id.forward_big, PendingIntent.getBroadcast(context, 0, start_for, 0));
 		
 		/*-- Updating the widget --*/
@@ -83,57 +87,63 @@ public class widget_big extends AppWidgetProvider {
 		
 		String action = intent.getAction();
         RemoteViews rw = new RemoteViews(context.getPackageName(), R.layout.widget_big_layout); 
-        /*-- calling the DataRecord.class -- */
         
-        i_record = new Intent(context, DataRecord.class);
-        i_play = new Intent(context, PlayRecord.class);
-        /*-- catching the signal from DataRecord which notify  that accelerometer is unavailable --*/
+        /*-- Recording Code -- */
         
-        /*-- Record code --*/
+        if((action.equals("START_STOP_REC"))||(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)&&(intent.getBooleanExtra("RS",false))))
+        {
+        	i_record = new Intent(context, DataRecord.class);
         
-        widget_lil.noaccel = intent.getBooleanExtra("NoAccelerometro", false);
-        /*-- catching the signal from DataRecord which notifies  that the recording time is expired --*/
-        /*-- Can be use with the play record  --*/
-        terminated_rec = intent.getBooleanExtra("Terminata", false);
+        	/*-- catching the signal from DataRecord which notify  that accelerometer is unavailable --*/
+        	
+        	widget_lil.noaccel = intent.getBooleanExtra("NoAccelerometro", false);
+        	/*-- catching the signal from DataRecord which notifies  that the recording time is expired --*/
+        	
+        	terminated_rec = intent.getBooleanExtra("Terminata", false);
         
-        /*-- Accelerometer unavailable notification --*/
-        
-        if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) &&  widget_lil.noaccel)
-        	Toast.makeText(context, R.string.accelUnavailable , Toast.LENGTH_SHORT).show();
+        	/*-- Accelerometer unavailable notification --*/
+        	
+        	if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) &&  widget_lil.noaccel)
+        		Toast.makeText(context, R.string.accelUnavailable , Toast.LENGTH_SHORT).show();
 
-        /*-- Handling the DataRecord call --*/
+        	/*-- Handling the DataRecord call --*/
         
-        if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_rec)  {
+        	if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_rec)  {
         	widget_lil.record_running=false;
         	record_widget_big=false;
         	terminated_rec=false;
     		rw.setImageViewResource(R.id.rec_big, android.R.drawable.ic_btn_speak_now);
         	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
-        }
+        	}
         
         /*-- Handling the widget start_rec call --*/
-        
-        if(action.equals("START_STOP_REC")){
-        	if(!widget_lil.record_widget_lil && !record_widget_big) {  	
-            	if(widget_lil.record_running==false) {
-            		widget_lil.record_running=true;
-            		record_widget_big=true;
-	            	rw.setImageViewResource(R.id.rec_big, android.R.drawable.stat_notify_call_mute);
-	            	context.startService(i_record);
-            	}
-            	else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
-        	}
-        	else if(widget_lil.record_widget_lil)
-        		Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
-        		
-        	else context.stopService(i_record);
         	
-        }
-
+        	else
+        	{
+        		/*-- Checking the mutually exclusive DataRecord service execution --*/
+        		if(!widget_lil.record_widget_lil && !record_widget_big) {  	
+        			if(widget_lil.record_running==false) {
+        				widget_lil.record_running=true;
+        				/*-- Widget Big is free to start the Recording Service --*/
+        				
+        				record_widget_big=true;
+        				rw.setImageViewResource(R.id.rec_big, android.R.drawable.stat_notify_call_mute);
+        				context.startService(i_record);
+        			}
+        			else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
+        		}
+        		else if(widget_lil.record_widget_lil)
+        			Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
+        				else context.stopService(i_record);
+        	}
+        }/*-- End of first action filter --*/
+        
         
         /*-- Play code --*/
         
-        
+        if(action.equals("START_STOP_PLAY"))
+        {
+        	i_play = new Intent(context, PlayRecord.class);
         /*-- Handling the PlayRecord call --*/
         if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_play)  {
         	
@@ -152,11 +162,12 @@ public class widget_big extends AppWidgetProvider {
         			//play_running = true;
         			play_widget =true;
 	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+	            	i_play.putExtra("ID", 1);
 	            	context.startService(i_play);
 	        //}else Toast.makeText(context, "Playing from application, access denied" , Toast.LENGTH_SHORT).show();
         }
         else context.stopService(i_play);
-        
+        }// 2nd filter
         /*-- Updating --*/
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_big.class), rw);
 			 super.onReceive(context, intent);
