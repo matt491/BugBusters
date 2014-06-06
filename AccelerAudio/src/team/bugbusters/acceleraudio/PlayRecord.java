@@ -2,6 +2,7 @@ package team.bugbusters.acceleraudio;
 
 import team.bugbusters.acceleraudio.UI4.MyUI4Receiver;
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,7 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.SystemClock;
-import android.util.Log;
+
 
 public class PlayRecord extends IntentService {
 	private long dio;
@@ -40,7 +41,9 @@ public class PlayRecord extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		
+			
+	    widget_big.service_running=true;
+	    
 		/*-- Registering Broadcast receiver --*/
         registerReceiver(receiver,new IntentFilter(UI4.COMMAND_RESPONSE));
         
@@ -208,9 +211,11 @@ public class PlayRecord extends IntentService {
         /*-- Playback --*/
         at.play();
         
-        broadUI4.putExtra("CurrFrame",0);
-        broadUI4.putExtra("Inizia", true);
-        sendBroadcast(broadUI4);
+        if(from_UI4) {
+	        broadUI4.putExtra("CurrFrame",0);
+	        broadUI4.putExtra("Inizia", true);
+	        sendBroadcast(broadUI4);
+        }
         
         // 10 ore di Sleep
         SystemClock.sleep(36000000);
@@ -235,6 +240,7 @@ public class PlayRecord extends IntentService {
 	  
         
   public void onDestroy(){
+      widget_big.service_running=false;
 	  this.unregisterReceiver(receiver);
 	  super.onDestroy();  
   }
@@ -290,7 +296,7 @@ public class PlayRecord extends IntentService {
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
 		    	   at.setPlaybackHeadPosition(g%finale.length);
-		       	   at.setLoopPoints(0, finale.length-1, -1);
+		       	   //at.setLoopPoints(0, finale.length-1, -1);
 		    	   at.play();    
 		       }		
 		}

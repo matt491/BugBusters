@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -13,13 +14,13 @@ import android.widget.Toast;
 public class widget_big extends AppWidgetProvider {
 	
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
-	private DbAdapter db;
-	private static Intent i_record,i_play;
-	private static boolean terminated_rec=false,terminated_play=false;
-	private static  long id =0;
+	private static Intent i_record,i_play, commandIntent;
+	private static boolean terminated_rec=false,terminated_play=false, pause=false;
+	public static boolean service_running=false;
+	private static  long currid = 1;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
-	public static boolean record_widget_big=false,play_widget=false;
+	public static boolean record_widget_big=false,play_widget=true;
 	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int [] appWidgetIds)
@@ -45,12 +46,8 @@ public class widget_big extends AppWidgetProvider {
 		Intent start_rec = new Intent(context,widget_big.class);
 		start_rec.setAction("START_STOP_REC");
 		
-		db= new DbAdapter(context);
-		id = UI4.searchId(db, id, UI4.NEXT, -1);
 		
-		Toast.makeText(context, "ID" +id, Toast.LENGTH_SHORT).show();
-		
-		/*-- Play Intent --*/
+		/*-- Play - Pause Intent --*/
 		
 		Intent start_play = new Intent(context,widget_big.class);
 		start_play.setAction("START_STOP_PLAY");
@@ -64,7 +61,6 @@ public class widget_big extends AppWidgetProvider {
 		Intent start_for = new Intent (context,widget_big.class);
 		start_for.setAction("START_FOR");
 		
-		//id = searchId(id,UI4.NEXT,-1);
 		
 		/*--
 		 *  Performing the action 
@@ -89,7 +85,7 @@ public class widget_big extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
-		
+
 		String action = intent.getAction();
         RemoteViews rw = new RemoteViews(context.getPackageName(), R.layout.widget_big_layout); 
         
@@ -144,31 +140,109 @@ public class widget_big extends AppWidgetProvider {
         }/*-- End of first action filter --*/
         
         
+        
+        
         /*-- Play code --*/
         
-        //if(action.equals("START_STOP_PLAY")) {
-        	db= new DbAdapter(context);
-    		id = UI4.searchId(db, id, UI4.NEXT, -1);
-    		Toast.makeText(context, "ID" +id, Toast.LENGTH_SHORT).show();
-        	i_play = new Intent(context, PlayRecord.class);
-        	i_play.setAction(UI4.COMMAND_RESPONSE);
-        	i_play.putExtra("fromUI4", true);
-        	i_play.putExtra("ID", id);
-        	/*-- Handling the PlayRecord call --*/
-        	if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_play)  {
+        if(action.equals("START_STOP_PLAY")) {
         	
-        	terminated_play=false;
-        	play_widget = false;
-    		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-        	Toast.makeText(context, "PLay terminated" , Toast.LENGTH_SHORT).show();
+        	i_play = new Intent(context, PlayRecord.class);
+    		commandIntent=new Intent();
+    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+    		
+    		if(!play_widget)
+    			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
+    		
+        	if(!service_running && play_widget){
+        		pause=false;
+	    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
+	        	i_play.putExtra("fromUI4", false);
+	        	i_play.putExtra("ID", currid);
+	        	context.startService(i_play);
+	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+        	}
+        	
+        	else if(service_running && !pause && play_widget) {
+        		pause=true;
+        		commandIntent.putExtra("Pausa", true);
+        		commandIntent.putExtra("Riprendi", false);
+        		commandIntent.putExtra("Stop", false);
+        		context.sendBroadcast(commandIntent);
+        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+        	}
+        	
+        	else if(service_running && pause && play_widget) {
+        		pause=false;
+        		commandIntent.putExtra("Pausa", false);
+        		commandIntent.putExtra("Riprendi", true);
+        		commandIntent.putExtra("Stop", false);
+        		context.sendBroadcast(commandIntent);
+        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+        	}
+        	
+
+        }
         
+        
+        
+        if(action.equals("START_PRE")) {
+        	
+        	
+        	if(!play_widget)
+    			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
+        	
+        	if(play_widget){
+        		i_play = new Intent(context, PlayRecord.class);
+        		commandIntent=new Intent();
+        		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+        		commandIntent.putExtra("Stop", true);
+        		commandIntent.putExtra("Pausa", false);
+        		commandIntent.putExtra("Riprendi", false);  
+        		context.sendBroadcast(commandIntent);
+            	context.stopService(i_play);
+            	
+        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, -1);
+        		Intent prev=new Intent(context,widget_big.class);
+        		prev.setAction("START_STOP_PLAY");
+        		context.sendBroadcast(prev);
+	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+        	}
+        	
+        }
+        	
+            if(action.equals("START_FOR")) {
+            	
+            	
+            	if(!play_widget)
+        			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
+            	
+            	if(play_widget){
+            		i_play = new Intent(context, PlayRecord.class);
+            		commandIntent=new Intent();
+            		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+            		commandIntent.putExtra("Stop", true);
+            		commandIntent.putExtra("Pausa", false);
+            		commandIntent.putExtra("Riprendi", false);  
+            		context.sendBroadcast(commandIntent);
+                	context.stopService(i_play);	
+            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, -1);
+            		
+	            	Intent next=new Intent(context,widget_big.class);
+	            	next.setAction("START_STOP_PLAY");
+	            	context.sendBroadcast(next);
+            		
+    	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+            	}
+        	
+        	
+        	
         }
         
         /*-- Handling the Widget start_play call --*/
-        if(action.equals("START_STOP_PLAY")){
+      /*  if(action.equals("START_STOP_PLAY")){
         	
         	//checking the service is not being already used by the application 
-        	//if(PlayRecord.play_running==false){
+        	if(PlayRecord.play_running==false){
         			//play_running = true;
         			play_widget =true;
 	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
@@ -177,10 +251,18 @@ public class widget_big extends AppWidgetProvider {
 	        //}else Toast.makeText(context, "Playing from application, access denied" , Toast.LENGTH_SHORT).show();
         }
         else context.stopService(i_play);
-        //}// 2nd filter
+        //}// 2nd filter*/
         
         /*-- Updating --*/
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_big.class), rw);
 			 super.onReceive(context, intent);
 	}
+
+
+	private void sendBroadcast(Intent commandIntent2) {
+		// TODO Auto-generated method stub
+		
+	}
 }
+	
+

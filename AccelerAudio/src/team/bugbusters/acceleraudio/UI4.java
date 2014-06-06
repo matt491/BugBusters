@@ -80,7 +80,7 @@ public class UI4 extends Activity {
         id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
         
         impostaUI4(id);
-        
+        widget_big.play_widget=false;
         broadcastIntent = new Intent();
         broadcastIntent.setAction(COMMAND_RESPONSE);
         playIntentService=new Intent(UI4.this, PlayRecord.class);
@@ -254,6 +254,7 @@ public class UI4 extends Activity {
  			 previousOrNextId = playingId;
  			 return previousOrNextId;	 
  	 }
+
     }
 	
 	
@@ -315,6 +316,7 @@ public class UI4 extends Activity {
         }
 	
 	public void onDestroy(){
+		widget_big.play_widget=true;
 		this.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
