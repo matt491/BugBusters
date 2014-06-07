@@ -158,16 +158,16 @@ public class widget_big extends AppWidgetProvider {
         	{
         		switch(intent.getIntExtra("WAY", -2)) {
         		case 0:
-        			c = db.fetchAllRecordSortedByName(); 
+        			c = db.fetchAllRecordSortedByName(); lastposition=-1;
         			break;
         			case 1:
-        			c = db.fetchAllRecordSortedByDate(); 
+        			c = db.fetchAllRecordSortedByDate(); lastposition=-1;
         			break;
         			case 2:
-        			c = db.fetchAllRecordSortedByDuration(); 
+        			c = db.fetchAllRecordSortedByDuration(); lastposition=-1;
         			break;
         			case -1:  //case BY_INSERTION
-        			c = db.fetchAllRecord(); 
+        			c = db.fetchAllRecord(); lastposition=-1;
         			break;
     		}
         	
