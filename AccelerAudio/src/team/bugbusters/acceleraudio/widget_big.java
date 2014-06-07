@@ -15,10 +15,9 @@ public class widget_big extends AppWidgetProvider {
 	
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
 	private static Intent i_record,i_play, commandIntent;
-	private static boolean terminated_rec=false,terminated_play=false, pause=false;
-	public static boolean service_running=false, playable =false;
+	private static boolean terminated_rec=false, pause=false;
+	public static boolean service_running=false;
 	private static  int currid = 1;
-	private boolean fetched=false;
 	private static Cursor c;
 	private static DbAdapter db;
 	private static int lastposition=-1;
@@ -124,7 +123,6 @@ public class widget_big extends AppWidgetProvider {
         	}
         
         /*-- Handling the widget start_rec call --*/
-        	
         	else
         	{
         		/*-- Checking the mutually exclusive DataRecord service execution --*/
@@ -143,7 +141,8 @@ public class widget_big extends AppWidgetProvider {
         			Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
         				else context.stopService(i_record);
         		}
-        }/*-- End of first action filter --*/
+        }
+        /*-- End of first action filter --*/
         else
         {
         /*-- PlayRecord Code --*/
@@ -158,18 +157,18 @@ public class widget_big extends AppWidgetProvider {
         	{
         		switch(intent.getIntExtra("WAY", -2)) {
         		case 0:
-        			c = db.fetchAllRecordSortedByName(); lastposition=-1;
+        			c = db.fetchAllRecordSortedByName(); //lastposition=-1;
         			break;
         			case 1:
-        			c = db.fetchAllRecordSortedByDate(); lastposition=-1;
+        			c = db.fetchAllRecordSortedByDate();// lastposition=-1;
         			break;
         			case 2:
-        			c = db.fetchAllRecordSortedByDuration(); lastposition=-1;
+        			c = db.fetchAllRecordSortedByDuration();// lastposition=-1;
         			break;
         			case -1:  //case BY_INSERTION
-        			c = db.fetchAllRecord(); lastposition=-1;
+        			c = db.fetchAllRecord();// lastposition=-1;
         			break;
-    		}
+        		}
         	
     		//Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();	
     		/*-- First Call--*/
@@ -241,21 +240,25 @@ public class widget_big extends AppWidgetProvider {
         		commandIntent.putExtra("Riprendi", false);  
         		context.sendBroadcast(commandIntent);
             	context.stopService(i_play);
-        	
+            	service_running=false;
+            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+            	
         		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, intent.getIntExtra("WAY", -1));
-        		Intent prev=new Intent(context,widget_big.class);
-        		prev.setAction("START_STOP_PLAY");
-        		context.sendBroadcast(prev);
-        		if(lastposition==0)
-        		{
-        			c.moveToLast();
-        			lastposition =c.getPosition();
-        		}
-        		else
-        		{
-            	c.moveToPosition(lastposition-1);
-            	lastposition=c.getPosition();
-        		}
+//        		Intent prev=new Intent(context,widget_big.class);
+//        		prev.setAction("START_STOP_PLAY");
+//        		context.sendBroadcast(prev);
+//        		if(lastposition==0)
+//        		{
+//        			c.moveToLast();
+//        			lastposition =c.getPosition();
+//        		}
+//        		else
+//        		{
+//            	c.moveToPosition(lastposition-1);
+//            	lastposition=c.getPosition();
+//        		}
+        		c=db.fetchRecordById(currid);
+        		c.moveToNext();
             	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
         		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
         		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
@@ -277,22 +280,25 @@ public class widget_big extends AppWidgetProvider {
             		commandIntent.putExtra("Pausa", false);
             		commandIntent.putExtra("Riprendi", false);  
             		context.sendBroadcast(commandIntent);
-                	context.stopService(i_play);	
+                	context.stopService(i_play);
+                	service_running=false;
+                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
             		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, intent.getIntExtra("WAY", -1));
-            			
-	            	Intent next=new Intent(context,widget_big.class);
-	            	next.setAction("START_STOP_PLAY");
-	            	context.sendBroadcast(next);
-	            	if(lastposition==(c.getCount()-1))
-	        		{
-	        			c.moveToFirst();
-	        			lastposition =c.getPosition();
-	        		}
-	            	else
-	            	{
-	            	c.moveToPosition(lastposition+1);
-	            	lastposition=c.getPosition();
-	            	}
+            		c=db.fetchRecordById(currid);	
+            		c.moveToNext();
+//	            	Intent next=new Intent(context,widget_big.class);
+//	            	next.setAction("START_STOP_PLAY");
+//	            	context.sendBroadcast(next);
+//	            	if(lastposition==(c.getCount()-1))
+//	        		{
+//	        			c.moveToFirst();
+//	        			lastposition =c.getPosition();
+//	        		}
+//	            	else
+//	            	{
+//	            		c.moveToPosition(lastposition+1);
+//	            		lastposition=c.getPosition();
+//	            	}
 	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
 	        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
