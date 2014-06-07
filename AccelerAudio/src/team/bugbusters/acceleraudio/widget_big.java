@@ -225,6 +225,7 @@ public class widget_big extends AppWidgetProvider {
         		context.sendBroadcast(commandIntent);
         		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
         		}
+        	
         	}/*--Start Stop play end --*/
         
         if(action.equals("START_PRE")) {
@@ -242,7 +243,7 @@ public class widget_big extends AppWidgetProvider {
         		commandIntent.putExtra("Riprendi", false);  
         		context.sendBroadcast(commandIntent);
             	context.stopService(i_play);
-        	}	
+        	
         		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, -1);
         		Intent prev=new Intent(context,widget_big.class);
         		prev.setAction("START_STOP_PLAY");
@@ -253,7 +254,7 @@ public class widget_big extends AppWidgetProvider {
         		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
         		
 	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-        	//}
+        	}
         	
         	}
         	
@@ -272,7 +273,7 @@ public class widget_big extends AppWidgetProvider {
             		context.sendBroadcast(commandIntent);
                 	context.stopService(i_play);	
             		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, -1);
-            		}	
+            			
 	            	Intent next=new Intent(context,widget_big.class);
 	            	next.setAction("START_STOP_PLAY");
 	            	context.sendBroadcast(next);
@@ -281,9 +282,9 @@ public class widget_big extends AppWidgetProvider {
 	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
 	        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
     	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-            	//}
+            	}
             }
-            
+            c.close();
             db.close();
         }
         /*-- Updating --*/
