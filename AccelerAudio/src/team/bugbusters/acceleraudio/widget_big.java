@@ -17,7 +17,7 @@ public class widget_big extends AppWidgetProvider {
 	private static Intent i_record,i_play, commandIntent;
 	private static boolean terminated_rec=false, pause=false;
 	public static boolean service_running=false;
-	private static  int currid = 1;
+	public static  int currid = 1;
 	private static Cursor c;
 	private static DbAdapter db;
 	private static int lastposition=-1;

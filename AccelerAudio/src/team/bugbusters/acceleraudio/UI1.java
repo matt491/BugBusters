@@ -301,11 +301,18 @@ public class UI1 extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					nuovaLista.remove(dati);
-					runningCl.notifyDataSetChanged();
-					db.open();
-					db.deleteRecord(id_to_delete);
-					db.close();
+					
+					
+					if(id_to_delete==widget_big.currid)
+						Toast.makeText(UI1.this, "Cannot remove the current playing track" , Toast.LENGTH_SHORT).show();
+					else
+					{
+						db.open();
+						db.deleteRecord(id_to_delete);
+						db.close();
+						nuovaLista.remove(dati);
+						runningCl.notifyDataSetChanged();
+					}
 				}
 			});
 			
