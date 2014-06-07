@@ -242,28 +242,13 @@ public class widget_big extends AppWidgetProvider {
             	context.stopService(i_play);
             	service_running=false;
             	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-            	
         		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, intent.getIntExtra("WAY", -1));
-//        		Intent prev=new Intent(context,widget_big.class);
-//        		prev.setAction("START_STOP_PLAY");
-//        		context.sendBroadcast(prev);
-//        		if(lastposition==0)
-//        		{
-//        			c.moveToLast();
-//        			lastposition =c.getPosition();
-//        		}
-//        		else
-//        		{
-//            	c.moveToPosition(lastposition-1);
-//            	lastposition=c.getPosition();
-//        		}
         		c=db.fetchRecordById(currid);
         		c.moveToNext();
             	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
         		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
         		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
         		
-	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
         		}
         	}/*--  End Start Pre --*/
         	
@@ -286,23 +271,9 @@ public class widget_big extends AppWidgetProvider {
             		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, intent.getIntExtra("WAY", -1));
             		c=db.fetchRecordById(currid);	
             		c.moveToNext();
-//	            	Intent next=new Intent(context,widget_big.class);
-//	            	next.setAction("START_STOP_PLAY");
-//	            	context.sendBroadcast(next);
-//	            	if(lastposition==(c.getCount()-1))
-//	        		{
-//	        			c.moveToFirst();
-//	        			lastposition =c.getPosition();
-//	        		}
-//	            	else
-//	            	{
-//	            		c.moveToPosition(lastposition+1);
-//	            		lastposition=c.getPosition();
-//	            	}
 	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
 	        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
-    	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
             		}
             	}/*--  End Start For --*/
            
