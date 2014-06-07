@@ -244,7 +244,7 @@ public class widget_big extends AppWidgetProvider {
         		context.sendBroadcast(commandIntent);
             	context.stopService(i_play);
         	
-        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, -1);
+        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, intent.getIntExtra("WAY", -1));
         		Intent prev=new Intent(context,widget_big.class);
         		prev.setAction("START_STOP_PLAY");
         		context.sendBroadcast(prev);
@@ -272,7 +272,7 @@ public class widget_big extends AppWidgetProvider {
             		commandIntent.putExtra("Riprendi", false);  
             		context.sendBroadcast(commandIntent);
                 	context.stopService(i_play);	
-            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, -1);
+            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, intent.getIntExtra("WAY", -1));
             			
 	            	Intent next=new Intent(context,widget_big.class);
 	            	next.setAction("START_STOP_PLAY");
