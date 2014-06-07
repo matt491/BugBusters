@@ -16,8 +16,8 @@ public class widget_big extends AppWidgetProvider {
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
 	private static Intent i_record,i_play, commandIntent;
 	private static boolean terminated_rec=false,terminated_play=false, pause=false;
-	public static boolean service_running=false,playable =false;
-	private static  long currid = 1;
+	public static boolean service_running=false, playable =false;
+	private static  int currid = 1;
 	private static Cursor c;
 	private static DbAdapter db;
 	
@@ -47,7 +47,6 @@ public class widget_big extends AppWidgetProvider {
 		
 		Intent start_rec = new Intent(context,widget_big.class);
 		start_rec.setAction("START_STOP_REC");
-		
 		
 		/*-- Play - Pause Intent --*/
 		
@@ -152,34 +151,38 @@ public class widget_big extends AppWidgetProvider {
         /*-- PlayRecord Code --*/
         	/*-- DB Emptiness check --*/
         	
-    		
-    		if(!playable) Toast.makeText(context, "DataBase Empty", Toast.LENGTH_SHORT).show();	
+        	db = new DbAdapter(context);
+        	db.open();
+        	c= db.fetchAllRecord();
+        	if(c.getCount()==0)
+        		Toast.makeText(context, "DataBase Empty from Receiver", Toast.LENGTH_SHORT).show();
     		else
     		{
-    			db= new DbAdapter(context);
-        		db.open();
         		switch(intent.getIntExtra("WAY", -2)) {
         		case 0:
-        			c = db.fetchAllRecordSortedByName();
+        			c = db.fetchAllRecordSortedByName(); currid=1;
+        			
         			break;
         			case 1:
-        			c = db.fetchAllRecordSortedByDate();
+        			c = db.fetchAllRecordSortedByDate(); currid=1;
         			break;
         			case 2:
-        			c = db.fetchAllRecordSortedByDuration();
+        			c = db.fetchAllRecordSortedByDuration(); currid=1;
         			break;
         			case -1:  //case BY_INSERTION
-        			c = db.fetchAllRecord();
+        			c = db.fetchAllRecord(); currid=1;
         			break;
     		}
+        	
     		Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();	
+    		/*-- First Call--*/
     		if(c.getPosition()==-1)
     		{
-    		c.moveToFirst();
-    		Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();
-    		rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-    		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+    			c.moveToPosition(currid);
+    			Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();
+    			rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+    			rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+    			rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
     		}
     		//c.close();
     		
@@ -189,7 +192,6 @@ public class widget_big extends AppWidgetProvider {
         /*-- Play code --*/
         
         if(action.equals("START_STOP_PLAY")) {
-        	
         	i_play = new Intent(context, PlayRecord.class);
     		commandIntent=new Intent();
     		commandIntent.setAction(UI4.COMMAND_RESPONSE);
@@ -204,7 +206,7 @@ public class widget_big extends AppWidgetProvider {
 	        	i_play.putExtra("ID", currid);
 	        	context.startService(i_play);
 	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-        	}
+        		}
         	
         	else if(service_running && !pause && play_widget) {
         		pause=true;
@@ -213,7 +215,7 @@ public class widget_big extends AppWidgetProvider {
         		commandIntent.putExtra("Stop", false);
         		context.sendBroadcast(commandIntent);
         		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-        	}
+        		}
         	
         	else if(service_running && pause && play_widget) {
         		pause=false;
@@ -222,22 +224,16 @@ public class widget_big extends AppWidgetProvider {
         		commandIntent.putExtra("Stop", false);
         		context.sendBroadcast(commandIntent);
         		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-        	}
-        	
-
-        }
-        
-        
+        		}
+        	}/*--Start Stop play end --*/
         
         if(action.equals("START_PRE")) {
-        	c.moveToPrevious();
-        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-    		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+        	
         	if(!play_widget)
     			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
         	
-        	if(play_widget){
+        	if(play_widget)
+        	{
         		i_play = new Intent(context, PlayRecord.class);
         		commandIntent=new Intent();
         		commandIntent.setAction(UI4.COMMAND_RESPONSE);
@@ -246,23 +242,23 @@ public class widget_big extends AppWidgetProvider {
         		commandIntent.putExtra("Riprendi", false);  
         		context.sendBroadcast(commandIntent);
             	context.stopService(i_play);
-            	
+        	}	
         		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, -1);
         		Intent prev=new Intent(context,widget_big.class);
         		prev.setAction("START_STOP_PLAY");
         		context.sendBroadcast(prev);
-        		
-	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-        	}
-        	
-        }
-        	
-            if(action.equals("START_FOR")) {
-            	
-            	c.moveToNext();
+        		c.moveToPosition(currid);
             	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
         		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
         		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+        		
+	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+        	//}
+        	
+        	}
+        	
+            if(action.equals("START_FOR")) {
+            	
             	if(!play_widget)
         			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
             	
@@ -276,13 +272,16 @@ public class widget_big extends AppWidgetProvider {
             		context.sendBroadcast(commandIntent);
                 	context.stopService(i_play);	
             		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, -1);
-            		
+            		}	
 	            	Intent next=new Intent(context,widget_big.class);
 	            	next.setAction("START_STOP_PLAY");
 	            	context.sendBroadcast(next);
-            		
+	            	c.moveToPosition(currid);
+	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+	        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
     	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-            	}
+            	//}
             }
             
             db.close();

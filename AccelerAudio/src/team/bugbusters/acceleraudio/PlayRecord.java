@@ -15,10 +15,9 @@ import android.os.SystemClock;
 
 
 public class PlayRecord extends IntentService {
-	private long dio;
 	private DbAdapter dbHelper;
 	private Cursor cr;
-	private long id_to_process;
+	private int id_to_process;
 	private String asseX,asseY,asseZ;
 	private boolean checkX,checkY,checkZ;
 	private int sovrac,campx,campy,campz;
@@ -54,7 +53,7 @@ public class PlayRecord extends IntentService {
         }
         
         dbHelper = new DbAdapter(this);
-        id_to_process=intent.getLongExtra("ID", -1);
+        id_to_process=intent.getIntExtra("ID", -1);
         
         /*-- Opening DB --*/
         dbHelper.open();

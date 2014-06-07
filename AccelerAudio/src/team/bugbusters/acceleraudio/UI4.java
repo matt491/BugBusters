@@ -23,7 +23,7 @@ import android.widget.TextView;
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
 
-	private long id;
+	private int id;
 	private String pkg_r;
 	private Intent playIntentService;
 	private ImageButton pause_resume,next,previous;
@@ -77,7 +77,7 @@ public class UI4 extends Activity {
         registerReceiver(receiver,new IntentFilter(MyUI4Receiver.NOTIFY_FRAME));
         
         pkg_r=getPackageName();   
-        id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
+        id=getIntent().getIntExtra(pkg_r+".myServiceID", -1);
         
         impostaUI4(id);
         widget_big.play_widget=false;
@@ -184,8 +184,8 @@ public class UI4 extends Activity {
 		return currentSorting;
 	}
 	
-	public static long searchId(DbAdapter this_db, long playingId, int nextOrPrevious, int currentSorting) {
-	long previousOrNextId;
+	public static int searchId(DbAdapter this_db, int playingId, int nextOrPrevious, int currentSorting) {
+	int previousOrNextId;
 	Cursor c;
 	this_db.open();
 	
@@ -213,17 +213,17 @@ public class UI4 extends Activity {
  	 switch(nextOrPrevious) {
  	 case PREVIOUS:
  		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			if(c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+			if(c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
 				if(!c.isFirst()) {
 					c.moveToPrevious();
-					previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+					previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
 					c.close();
 					this_db.close();
 					return previousOrNextId;
 				}
 				else {
 					c.moveToLast();
-					previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+					previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
 					c.close();
 					this_db.close();
 					return previousOrNextId;
@@ -236,14 +236,14 @@ public class UI4 extends Activity {
  			 if(c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
  				 if(!c.isLast()) {
  					 c.moveToNext();
- 					 previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+ 					 previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
  					 c.close();
  					 this_db.close();
  					 return previousOrNextId;
  				 }
  				 else {
  					 c.moveToFirst();
- 					 previousOrNextId = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+ 					 previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
  					 c.close();
  					 this_db.close();
  					 return previousOrNextId;
