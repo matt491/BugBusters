@@ -78,13 +78,20 @@ public class UI4 extends Activity {
         
         pkg_r=getPackageName();   
         id=getIntent().getIntExtra(pkg_r+".myServiceID", -1);
-        
-        impostaUI4(id);
-        widget_big.play_widget=false;
-        broadcastIntent = new Intent();
-        broadcastIntent.setAction(COMMAND_RESPONSE);
         playIntentService=new Intent(UI4.this, PlayRecord.class);
         
+        /*-- Layout settings --*/
+        impostaUI4(id);
+        
+        /*-- Set Lock for Play --*/
+        widget_big.play_widget=false;
+        
+        /*-- Broadcast used to send playback commands to Play Record service --*/
+        broadcastIntent = new Intent();
+        broadcastIntent.setAction(COMMAND_RESPONSE);
+        
+        
+        /*-- Only on activity start --*/
         if(primavolta){
         	primavolta=false;
         	playIntentService.putExtra("fromUI4", true);
@@ -94,7 +101,7 @@ public class UI4 extends Activity {
 	    	startService(playIntentService);
         }
         
- 
+        /*-- Previous button pressed --*/
         previous.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(System.currentTimeMillis()-starttime>500) {
@@ -116,6 +123,7 @@ public class UI4 extends Activity {
             	
             }});
         
+        /*-- Next button pressed --*/
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(System.currentTimeMillis()-starttime>500) {
@@ -136,36 +144,38 @@ public class UI4 extends Activity {
             	}            	
             }});
         
+        
+        /*-- Pause/Resume button pressed --*/
         pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if(System.currentTimeMillis()-starttime>50) {
+            	if(System.currentTimeMillis()-starttime>100) {
             		starttime=System.currentTimeMillis();
-            	if(on_play){
-            		on_play=false;
-            		timer.cancel();
-	            	broadcastIntent.putExtra("Pausa", true);
-	            	broadcastIntent.putExtra("Riprendi", false);
-	            	broadcastIntent.putExtra("Stop", false);
-	            	sendBroadcast(broadcastIntent);
-	            	pause_resume.setImageResource(android.R.drawable.ic_media_play);
-            	}
-            	else{
-            		on_play=true;
-            		broadcastIntent.putExtra("Riprendi", true);
-                	broadcastIntent.putExtra("Pausa", false);
-                	broadcastIntent.putExtra("Stop", false);
-                	sendBroadcast(broadcastIntent);	
-                	timer=new TimerCounter(endtime-(frame/24), INTERVALLO, frame/24);
-                	timer.start();
-                	sendBroadcast(broadcastIntent);	
-                	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
-            	}
+	            	if(on_play){
+	            		on_play=false;
+	            		timer.cancel();
+		            	broadcastIntent.putExtra("Pausa", true);
+		            	broadcastIntent.putExtra("Riprendi", false);
+		            	broadcastIntent.putExtra("Stop", false);
+		            	sendBroadcast(broadcastIntent);
+		            	pause_resume.setImageResource(android.R.drawable.ic_media_play);
+	            	}
+	            	else{
+	            		on_play=true;
+	            		broadcastIntent.putExtra("Riprendi", true);
+	                	broadcastIntent.putExtra("Pausa", false);
+	                	broadcastIntent.putExtra("Stop", false);
+	                	sendBroadcast(broadcastIntent);	
+	                	timer=new TimerCounter(endtime-(frame/24), INTERVALLO, frame/24);
+	                	timer.start();
+	                	sendBroadcast(broadcastIntent);	
+	                	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
+	            	}
             	}
             }});
         
 
         
-	} //FINE onCreate()
+	} /*-- onCreate End --*/
 	
 	public int currentSorting() {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -278,50 +288,54 @@ public class UI4 extends Activity {
         iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
         
         switch(Integer.parseInt(thumbnail.substring(11))) {
-		case 0:
-			iv.setImageResource(R.drawable.ic_music_0);
-			break;
-		case 1:
-			iv.setImageResource(R.drawable.ic_music_1);
-			break;
-		case 2:
-			iv.setImageResource(R.drawable.ic_music_2);
-			break;
-		case 3:
-			iv.setImageResource(R.drawable.ic_music_3);
-			break;
-		case 4:
-			iv.setImageResource(R.drawable.ic_music_4);
-			break;
-		case 5: 
-			iv.setImageResource(R.drawable.ic_music_5);
-			break;
-		case 6:
-			iv.setImageResource(R.drawable.ic_music_6);
-			break;
-		case 7:
-			iv.setImageResource(R.drawable.ic_music_7);
-			break;
-		case 8:
-			iv.setImageResource(R.drawable.ic_music_8);
-			break;
-		case 9:
-			iv.setImageResource(R.drawable.ic_music_9);
-			break;
+			case 0:
+				iv.setImageResource(R.drawable.ic_music_0);
+				break;
+			case 1:
+				iv.setImageResource(R.drawable.ic_music_1);
+				break;
+			case 2:
+				iv.setImageResource(R.drawable.ic_music_2);
+				break;
+			case 3:
+				iv.setImageResource(R.drawable.ic_music_3);
+				break;
+			case 4:
+				iv.setImageResource(R.drawable.ic_music_4);
+				break;
+			case 5: 
+				iv.setImageResource(R.drawable.ic_music_5);
+				break;
+			case 6:
+				iv.setImageResource(R.drawable.ic_music_6);
+				break;
+			case 7:
+				iv.setImageResource(R.drawable.ic_music_7);
+				break;
+			case 8:
+				iv.setImageResource(R.drawable.ic_music_8);
+				break;
+			case 9:
+				iv.setImageResource(R.drawable.ic_music_9);
+				break;
 		}
+        
         name.setText(nome);
         duration.setText(((float)(durata/10)/100) + " secondi");
         on_play=true;
         pause_resume.setImageResource(android.R.drawable.ic_media_pause);
-        }
+	}
 	
 	public void onDestroy(){
+		
+		/*-- Release Lock for Play --*/
 		widget_big.play_widget=true;
+		
 		this.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 	
-	//Quando viene premuto il tasto Back
+	/*-- back button pressed --*/
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
@@ -350,6 +364,8 @@ public class UI4 extends Activity {
 		return super.onPrepareOptionsMenu(menu);
 	}
 	
+	
+	/*-- Option menu --*/
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
