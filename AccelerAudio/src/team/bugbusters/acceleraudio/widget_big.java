@@ -172,7 +172,6 @@ public class widget_big extends AppWidgetProvider {
         			break;
         		}
         	
-    		//Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();	
     		/*-- First Call--*/
     		if(lastposition==-1)
     		{
@@ -181,7 +180,8 @@ public class widget_big extends AppWidgetProvider {
     			Toast.makeText(context, c.getPosition() +"" , Toast.LENGTH_SHORT).show();
     			rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
     			rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-    			rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+    			float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+    			rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
     			String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
     			int alpha = Integer.parseInt(thumb.substring(0, 3));
     	        int red = Integer.parseInt(thumb.substring(3, 6));
@@ -291,7 +291,8 @@ public class widget_big extends AppWidgetProvider {
 	        		c.moveToNext();
 	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-	        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+	        		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+	    			rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
 	        		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
 	    			int alpha = Integer.parseInt(thumb.substring(0, 3));
 	    	        int red = Integer.parseInt(thumb.substring(3, 6));
@@ -357,7 +358,8 @@ public class widget_big extends AppWidgetProvider {
 	            		c.moveToNext();
 		            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 		        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-		        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+		        		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+		    			rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
 		        		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
 		    			int alpha = Integer.parseInt(thumb.substring(0, 3));
 		    	        int red = Integer.parseInt(thumb.substring(3, 6));

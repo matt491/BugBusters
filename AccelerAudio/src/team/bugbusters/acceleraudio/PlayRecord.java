@@ -219,9 +219,6 @@ public class PlayRecord extends IntentService {
         // 10 ore di Sleep
         SystemClock.sleep(36000000);
 	
-        
-        //Dopo 10 ore si termina il servizio e l'AudioTrack
-        //ES: si è dimenticati il telefono in ricarica con la riproduzione in corso o in pausa
         if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
 	    	   at.pause();
 	    	   at.flush();

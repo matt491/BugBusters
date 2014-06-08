@@ -346,26 +346,24 @@ public class UI1 extends Activity {
 	}
 	
 	
-	/*
-	 * Con questo metodo viene duplicata una music session nel database
-	 */
-	   private String[] duplica(long id){
-		   db.open();
-		   Cursor c=db.fetchRecordById(id);
-		   c.moveToNext();
-		   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-	       String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
-	       String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
-	       String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
-	       boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
-	       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
-	       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-	       int ncampx=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
-	       int ncampy=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
-	       int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
-	       int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
-	       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
-	       String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
+	/*-- Method used to duplicate a music session --*/
+	private String[] duplica(long id){
+	   db.open();
+	   Cursor c=db.fetchRecordById(id);
+	   c.moveToNext();
+	   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
+       String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
+       String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
+       String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
+       boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
+       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
+       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+       int ncampx=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
+       int ncampy=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
+       int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
+       int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
+       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
+       String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 	       int sovrac_new;
 	       boolean cX=checkX, cY=checkY, cZ=checkZ;
 	       
@@ -383,21 +381,21 @@ public class UI1 extends Activity {
 	       long dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
 	       
 	       long id_new = db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+cX, ""+cY, ""+cZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
-		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
-		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
-			
-		   c.close();
-		   db.close();
-		   
-		   String[] ret = new String[5];
-		   ret[0] = "" + id_new;
-		   ret[1] = code;
-		   ret[2] = n + "_" + id_new;
-		   ret[3] = dataul;
-		   ret[4] = ""+dur;
-		   
-		   return ret;
-	   }
+	   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
+	   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
+		
+	   c.close();
+	   db.close();
+	   
+	   String[] ret = new String[5];
+	   ret[0] = "" + id_new;
+	   ret[1] = code;
+	   ret[2] = n + "_" + id_new;
+	   ret[3] = dataul;
+	   ret[4] = ""+dur;
+	   
+	   return ret;
+   }
 	
 	/*
 	 * Metodo che controlla se e gia' presente un NOME di una music session nel DB

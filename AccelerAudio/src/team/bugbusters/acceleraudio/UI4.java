@@ -104,6 +104,8 @@ public class UI4 extends Activity {
         /*-- Previous button pressed --*/
         previous.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	
+            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations --*/
             	if(System.currentTimeMillis()-starttime>500) {
             		starttime=System.currentTimeMillis();
             		timer.cancel();
@@ -126,6 +128,8 @@ public class UI4 extends Activity {
         /*-- Next button pressed --*/
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	
+            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations --*/
             	if(System.currentTimeMillis()-starttime>500) {
             		starttime=System.currentTimeMillis();
             		timer.cancel();
@@ -148,6 +152,8 @@ public class UI4 extends Activity {
         /*-- Pause/Resume button pressed --*/
         pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	
+            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations --*/
             	if(System.currentTimeMillis()-starttime>100) {
             		starttime=System.currentTimeMillis();
 	            	if(on_play){
@@ -177,6 +183,8 @@ public class UI4 extends Activity {
         
 	} /*-- onCreate End --*/
 	
+	
+	/*-- Method that read and return current sorting from Shared Preferences --*/
 	public int currentSorting() {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		int currentSorting = BY_INSERTION; //Default
@@ -194,47 +202,48 @@ public class UI4 extends Activity {
 		return currentSorting;
 	}
 	
+	
+	/*-- Static method used to search a previously or next coming ID respect on saved current sorting --*/
 	public static int searchId(DbAdapter this_db, int playingId, int nextOrPrevious, int currentSorting) {
 	int previousOrNextId;
-	Cursor c;
+	Cursor cursor;
 	this_db.open();
 	
 	switch(currentSorting) {
 	 
 	 case BY_NAME:
-		 c = this_db.fetchAllRecordSortedByName();
+		 cursor = this_db.fetchAllRecordSortedByName();
 		 break;
 		 
 	 case BY_DATE:
-		 c = this_db.fetchAllRecordSortedByDate();
+		 cursor = this_db.fetchAllRecordSortedByDate();
 		 break;
 		 
 	 case BY_DURATION:
-		 c = this_db.fetchAllRecordSortedByDuration();
+		 cursor = this_db.fetchAllRecordSortedByDuration();
 		 break;
 		 
 	 default:
-		 c = this_db.fetchAllRecord();
+		 cursor = this_db.fetchAllRecord();
 		 break;
 	 }
 	
-	
-	
+
  	 switch(nextOrPrevious) {
  	 case PREVIOUS:
- 		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			if(c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
-				if(!c.isFirst()) {
-					c.moveToPrevious();
-					previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
-					c.close();
+ 		for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+			if(cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+				if(!cursor.isFirst()) {
+					cursor.moveToPrevious();
+					previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+					cursor.close();
 					this_db.close();
 					return previousOrNextId;
 				}
 				else {
-					c.moveToLast();
-					previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
-					c.close();
+					cursor.moveToLast();
+					previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+					cursor.close();
 					this_db.close();
 					return previousOrNextId;
 				}
@@ -242,19 +251,19 @@ public class UI4 extends Activity {
 			}
  		 
  	 case NEXT:
- 		 for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
- 			 if(c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
- 				 if(!c.isLast()) {
- 					 c.moveToNext();
- 					 previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
- 					 c.close();
+ 		 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+ 			 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+ 				 if(!cursor.isLast()) {
+ 					 cursor.moveToNext();
+ 					 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+ 					 cursor.close();
  					 this_db.close();
  					 return previousOrNextId;
  				 }
  				 else {
- 					 c.moveToFirst();
- 					 previousOrNextId = c.getInt(c.getColumnIndex(DbAdapter.KEY_RECORDID));
- 					 c.close();
+ 					 cursor.moveToFirst();
+ 					 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+ 					 cursor.close();
  					 this_db.close();
  					 return previousOrNextId;
  				 }
@@ -268,6 +277,7 @@ public class UI4 extends Activity {
     }
 	
 	
+	/*-- Method used to set UI4's layout --*/
 	public void impostaUI4(long this_id){
         db.open();
         c = db.fetchRecordById(this_id);
@@ -321,7 +331,7 @@ public class UI4 extends Activity {
 		}
         
         name.setText(nome);
-        duration.setText(((float)(durata/10)/100) + " secondi");
+        duration.setText(String.format("%.2f secondi", (float) durata/1000));
         on_play=true;
         pause_resume.setImageResource(android.R.drawable.ic_media_pause);
 	}
@@ -335,7 +345,7 @@ public class UI4 extends Activity {
 		super.onDestroy();
 	}
 	
-	/*-- back button pressed --*/
+	/*-- Back button pressed --*/
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
@@ -394,7 +404,7 @@ public class UI4 extends Activity {
 
 	      @Override
 	     public void onFinish() {
-	    	  time.setText((float)((previous+end)/100)/10+"");
+	    	  time.setText(String.format("%.2f s", (float)(previous+end)/1000));
 	    	  timer=new TimerCounter(previous+end, INTERVALLO, 0);
 	    	  timer.start();   	  
 	      }
@@ -403,22 +413,23 @@ public class UI4 extends Activity {
 	      @Override
 	      public void onTick(long millisUntilFinished) {
 	    	  curr=millisUntilFinished;
-	          time.setText((float)((previous+end-curr)/100)/10 +" s");
+	          time.setText(String.format("%.2f s", (float)(previous+end-curr)/1000));
 	          sbtime.setProgress((int)(previous+end-curr));
 	      }
 	  }
 	
 	
-	
+	 /*-- Customized BroadcastReceiver used to receive notification from Play Record class --*/
 	public class MyUI4Receiver extends BroadcastReceiver{
 
 		   public static final String NOTIFY_FRAME = "team.bugbusters.acceleraudio.intent.action.NOTIFY_FRAME";
 	        @Override
 	        	public void onReceive(Context context, Intent intent) {	
 	        	
-	        	
-	        			frame=intent.getIntExtra("CurrFrame", 0);
+	        		/*-- Current frame (sample) (received when playback is on pause) --*/
+	        		frame=intent.getIntExtra("CurrFrame", 0);
 	        		
+	        		/*-- Play Record service notifies that playback being started --*/
 	        		if(intent.getBooleanExtra("Inizia", false)){
 	        			timer=new TimerCounter(endtime,INTERVALLO,0);
 	        	    	timer.start();

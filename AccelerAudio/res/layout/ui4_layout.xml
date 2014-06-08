@@ -55,7 +55,7 @@
         android:layout_marginRight="30dp"
         android:layout_below="@+id/imageView1"
         android:layout_marginTop="25dp"
-        android:text="0.0 s"
+        android:text="0,00 s"
         android:textAppearance="?android:attr/textAppearanceSmall" />
      
 <!-- Rappresenta la posizione di riproduzione, se non vogliamo implementare la funzionalità che consente all'utente di andare avanti e indietro spostandone il cursore potremmo sostituirla con una semplice progressbar -->

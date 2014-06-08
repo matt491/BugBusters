@@ -326,7 +326,7 @@ public class UI3 extends Activity {
  	/*-- Customized CountDownTimer used to count up to default duration --*/
 	public class RecordCounter extends CountDownTimer{
 		 private long end;
-		 private long previous=0;
+		 private long previous;
 		 private long curr;
 		 
 	     public RecordCounter(long millisInFuture, long countDownInterval, long prev) {
@@ -337,7 +337,7 @@ public class UI3 extends Activity {
 	 
 	        @Override
 	        public void onFinish() {
-	        	timeView.setText((float)((end+previous)/100)/10+"");
+	        	timeView.setText(String.format("%.1f s", (float)(previous+end)/1000));
 	            pb.setProgress((int)(end+previous)/1000);
 	            Toast.makeText(UI3.this, R.string.registrationEnd, Toast.LENGTH_SHORT).show();
 	            stopService(intentToSer);
@@ -349,7 +349,7 @@ public class UI3 extends Activity {
 	        @Override
 	        public void onTick(long millisUntilFinished) {
 	        	curr=millisUntilFinished;
-	        	timeView.setText((float)((previous+end-curr)/100)/10 +"");
+	        	timeView.setText(String.format("%.1f s", (float)(previous+end-curr)/1000));
 	            pb.setProgress((int)(previous+end-curr)/1000);
 	        }
 	        
@@ -360,7 +360,7 @@ public class UI3 extends Activity {
 	 }
 	
 	   
-	 /*-- Customized BroadcastReceiver used to receive data from DataRecord class --*/
+	 /*-- Customized BroadcastReceiver used to receive data from Data Record class --*/
 	 public class MyUI3Receiver extends BroadcastReceiver{
 
 		 public static final String DATA_RESPONSE = "team.bugbusters.acceleraudio.intent.action.DATA_RESPONSE";
