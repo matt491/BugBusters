@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -15,12 +16,13 @@ public class widget_big extends AppWidgetProvider {
 	
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
 	private static Intent i_record,i_play, commandIntent;
-	private static boolean terminated_rec=false, pause=false;
-	public static boolean service_running=false;
+	private static boolean terminated_rec=false;
+	public static boolean service_running=false, pause=true;
 	public static  int currid = 1;
 	private static Cursor c;
 	private static DbAdapter db;
 	private static int lastposition=-1;
+	private static long starttime=System.currentTimeMillis();
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
 	public static boolean record_widget_big=false,play_widget=true;
@@ -180,6 +182,44 @@ public class widget_big extends AppWidgetProvider {
     			rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
     			rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
     			rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+    			String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+    			int alpha = Integer.parseInt(thumb.substring(0, 3));
+    	        int red = Integer.parseInt(thumb.substring(3, 6));
+    	        int green = Integer.parseInt(thumb.substring(6, 9));
+    	        int blue = Integer.parseInt(thumb.substring(9, 12));
+    	        rw.setInt(R.id.image_big, "setBackgroundColor", Color.argb(alpha, red, green, blue));
+    	        switch(Integer.parseInt(thumb.substring(11))) {
+	    			case 0:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_0);
+	    				break;
+	    			case 1:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_1);
+	    				break;
+	    			case 2:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_2);
+	    				break;
+	    			case 3:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_3);
+	    				break;
+	    			case 4:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_4);
+	    				break;
+	    			case 5: 
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_5);
+	    				break;
+	    			case 6:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_6);
+	    				break;
+	    			case 7:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_7);
+	    				break;
+	    			case 8:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_8);
+	    				break;
+	    			case 9:
+	    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_9);
+	    				break;
+    			}
     		}
     		//c.close();
     		
@@ -189,92 +229,175 @@ public class widget_big extends AppWidgetProvider {
         /*-- Play code --*/
         
         if(action.equals("START_STOP_PLAY")) {
-        	i_play = new Intent(context, PlayRecord.class);
-    		commandIntent=new Intent();
-    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
-    		
-    		if(!play_widget)
-    			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
-    		
-        	if(!service_running && play_widget){
-        		pause=false;
-	    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
-	        	i_play.putExtra("fromUI4", false);
-	        	i_play.putExtra("ID", currid);
-	        	context.startService(i_play);
-	        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-        		}
-        	
-        	else if(service_running && !pause && play_widget) {
-        		pause=true;
-        		commandIntent.putExtra("Pausa", true);
-        		commandIntent.putExtra("Riprendi", false);
-        		commandIntent.putExtra("Stop", false);
-        		context.sendBroadcast(commandIntent);
-        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-        		}
-        	
-        	else if(service_running && pause && play_widget) {
-        		pause=false;
-        		commandIntent.putExtra("Pausa", false);
-        		commandIntent.putExtra("Riprendi", true);
-        		commandIntent.putExtra("Stop", false);
-        		context.sendBroadcast(commandIntent);
-        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-        		}
+        	if(System.currentTimeMillis()-starttime>300) {
+        		starttime=System.currentTimeMillis();
+	        	i_play = new Intent(context, PlayRecord.class);
+	    		commandIntent=new Intent();
+	    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+	    		
+	    		if(!play_widget)
+	    			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
+	    		
+	        	if(!service_running && play_widget){
+	        		pause=false;
+		    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
+		        	i_play.putExtra("fromUI4", false);
+		        	i_play.putExtra("ID", currid);
+		        	context.startService(i_play);
+		        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+	        		}
+	        	
+	        	else if(service_running && !pause && play_widget) {
+	        		pause=true;
+	        		commandIntent.putExtra("Pausa", true);
+	        		commandIntent.putExtra("Riprendi", false);
+	        		commandIntent.putExtra("Stop", false);
+	        		context.sendBroadcast(commandIntent);
+	        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+	        		}
+	        	
+	        	else if(service_running && pause && play_widget) {
+	        		pause=false;
+	        		commandIntent.putExtra("Pausa", false);
+	        		commandIntent.putExtra("Riprendi", true);
+	        		commandIntent.putExtra("Stop", false);
+	        		context.sendBroadcast(commandIntent);
+	        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+	        		}
+	        	}
         	
         	}/*--Start Stop play end --*/
         
         if(action.equals("START_PRE")) {
-        	
-        	if(!play_widget)
-    			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
-        	
-        	if(play_widget)
-        	{
-        		i_play = new Intent(context, PlayRecord.class);
-        		commandIntent=new Intent();
-        		commandIntent.setAction(UI4.COMMAND_RESPONSE);
-        		commandIntent.putExtra("Stop", true);
-        		commandIntent.putExtra("Pausa", false);
-        		commandIntent.putExtra("Riprendi", false);  
-        		context.sendBroadcast(commandIntent);
-            	context.stopService(i_play);
-            	service_running=false;
-            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, intent.getIntExtra("WAY", -1));
-        		c=db.fetchRecordById(currid);
-        		c.moveToNext();
-            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
-        		
+        	if(System.currentTimeMillis()-starttime>300) {
+        		starttime=System.currentTimeMillis();
+	        	if(!play_widget)
+	    			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
+	        	
+	        	if(play_widget)
+	        	{
+	        		i_play = new Intent(context, PlayRecord.class);
+	        		commandIntent=new Intent();
+	        		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+	        		commandIntent.putExtra("Stop", true);
+	        		commandIntent.putExtra("Pausa", false);
+	        		commandIntent.putExtra("Riprendi", false);  
+	        		context.sendBroadcast(commandIntent);
+	            	context.stopService(i_play);
+	            	service_running=false;
+	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, intent.getIntExtra("WAY", -1));
+	        		c=db.fetchRecordById(currid);
+	        		c.moveToNext();
+	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+	        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+	        		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+	    			int alpha = Integer.parseInt(thumb.substring(0, 3));
+	    	        int red = Integer.parseInt(thumb.substring(3, 6));
+	    	        int green = Integer.parseInt(thumb.substring(6, 9));
+	    	        int blue = Integer.parseInt(thumb.substring(9, 12));
+	    	        rw.setInt(R.id.image_big, "setBackgroundColor", Color.argb(alpha, red, green, blue));
+	    	        switch(Integer.parseInt(thumb.substring(11))) {
+		    			case 0:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_0);
+		    				break;
+		    			case 1:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_1);
+		    				break;
+		    			case 2:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_2);
+		    				break;
+		    			case 3:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_3);
+		    				break;
+		    			case 4:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_4);
+		    				break;
+		    			case 5: 
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_5);
+		    				break;
+		    			case 6:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_6);
+		    				break;
+		    			case 7:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_7);
+		    				break;
+		    			case 8:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_8);
+		    				break;
+		    			case 9:
+		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_9);
+		    				break;
+		    		}
+	        		}
         		}
         	}/*--  End Start Pre --*/
         	
             if(action.equals("START_FOR")) {
+            	if(System.currentTimeMillis()-starttime>300) {
+            		starttime=System.currentTimeMillis();
             	
-            	if(!play_widget)
-        			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
-            	
-            	if(play_widget){
-            		i_play = new Intent(context, PlayRecord.class);
-            		commandIntent=new Intent();
-            		commandIntent.setAction(UI4.COMMAND_RESPONSE);
-            		commandIntent.putExtra("Stop", true);
-            		commandIntent.putExtra("Pausa", false);
-            		commandIntent.putExtra("Riprendi", false);  
-            		context.sendBroadcast(commandIntent);
-                	context.stopService(i_play);
-                	service_running=false;
-                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, intent.getIntExtra("WAY", -1));
-            		c=db.fetchRecordById(currid);	
-            		c.moveToNext();
-	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-	        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
-            		}
+	            	if(!play_widget)
+	        			Toast.makeText(context, "Riproduzione già in corso!", Toast.LENGTH_SHORT).show();
+	            	
+	            	if(play_widget){
+	            		i_play = new Intent(context, PlayRecord.class);
+	            		commandIntent=new Intent();
+	            		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+	            		commandIntent.putExtra("Stop", true);
+	            		commandIntent.putExtra("Pausa", false);
+	            		commandIntent.putExtra("Riprendi", false);  
+	            		context.sendBroadcast(commandIntent);
+	                	context.stopService(i_play);
+	                	service_running=false;
+	                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, intent.getIntExtra("WAY", -1));
+	            		c=db.fetchRecordById(currid);	
+	            		c.moveToNext();
+		            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+		        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+		        		rw.setTextViewText(R.id.duration_big,""+ c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+		        		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+		    			int alpha = Integer.parseInt(thumb.substring(0, 3));
+		    	        int red = Integer.parseInt(thumb.substring(3, 6));
+		    	        int green = Integer.parseInt(thumb.substring(6, 9));
+		    	        int blue = Integer.parseInt(thumb.substring(9, 12));
+		    	        rw.setInt(R.id.image_big, "setBackgroundColor", Color.argb(alpha, red, green, blue));
+		    	        switch(Integer.parseInt(thumb.substring(11))) {
+			    			case 0:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_0);
+			    				break;
+			    			case 1:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_1);
+			    				break;
+			    			case 2:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_2);
+			    				break;
+			    			case 3:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_3);
+			    				break;
+			    			case 4:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_4);
+			    				break;
+			    			case 5: 
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_5);
+			    				break;
+			    			case 6:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_6);
+			    				break;
+			    			case 7:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_7);
+			    				break;
+			    			case 8:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_8);
+			    				break;
+			    			case 9:
+			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_9);
+			    				break;
+			    			}
+	            		}
+	            	}
             	}/*--  End Start For --*/
            
            db.close();

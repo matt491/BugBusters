@@ -38,7 +38,7 @@ public class UI4 extends Activity {
 	private long durata;
 	private SharedPreferences prefs;
 	private static boolean primavolta=true;
-	public static final String COMMAND_RESPONSE = "team.bugbusters.acceleraudio.intent.action.THREAD_RESPONSE";
+	public static final String COMMAND_RESPONSE = "team.bugbusters.acceleraudio.intent.action.COMMAND_RESPONSE";
 	private TextView time;
 	private SeekBar sbtime;
 	private TimerCounter timer;

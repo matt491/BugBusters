@@ -304,13 +304,13 @@ public class UI1 extends Activity {
 					
 					
 					if(id_to_delete==widget_big.currid)
-						Toast.makeText(UI1.this, "Cannot remove the current playing track" , Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), R.string.cannoteDelete , Toast.LENGTH_SHORT).show();
 					else
 					{
+						nuovaLista.remove(dati);
 						db.open();
 						db.deleteRecord(id_to_delete);
 						db.close();
-						nuovaLista.remove(dati);
 						runningCl.notifyDataSetChanged();
 					}
 				}
@@ -328,12 +328,17 @@ public class UI1 extends Activity {
 			return(true);
 			
 		case R.id.Riproduci:
-			String[] dati_sessione = (String[]) lv.getAdapter().getItem(info.position);
-			Intent toUi4 = new Intent(this, UI4.class);
-			pkg = getPackageName();
-			toUi4.putExtra(pkg + ".myServiceID", Long.parseLong(dati_sessione[0]));
-			startActivity(toUi4);
-			return(true);
+			if(widget_big.pause){
+				stopService(new Intent(this, PlayRecord.class));
+				String[] dati_sessione = (String[]) lv.getAdapter().getItem(info.position);
+				Intent toUi4 = new Intent(this, UI4.class);
+				pkg = getPackageName();
+				toUi4.putExtra(pkg + ".myServiceID", Integer.parseInt(dati_sessione[0]));
+				startActivity(toUi4);
+				return(true);
+			}
+			else Toast.makeText(getApplicationContext(), R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+				return(true);
 		}
 		
 		

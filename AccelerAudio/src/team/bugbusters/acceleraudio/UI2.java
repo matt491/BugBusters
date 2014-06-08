@@ -224,45 +224,53 @@ public class UI2 extends Activity {
             						""+sb.getProgress(), dataulitmamodifica);
             				dbHelper.close();
             		
-            
-            				//Alla UI4 viene spedito l'ID del record creato/aggiornato
-            				Intent intentToUI4=new Intent(UI2.this, UI4.class);
-            				intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
-            				startActivity(intentToUI4);
+            				prosegui();
               			}
             	}
-            	else {
-            		Intent intentToUI4=new Intent(UI2.this, UI4.class);
-            		intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
-            		startActivity(intentToUI4);
-            	}
+            	else prosegui();
+            	
             }
         });
 
                
 	} //Fine onCreate()
 	
+	
+	private void prosegui(){
+		if(widget_big.pause){
+			stopService(new Intent(this, PlayRecord.class));
+			Intent intentToUI4=new Intent(UI2.this, UI4.class);
+			intentToUI4.putExtra(pkg_r+".myServiceID", (int) id_ric);
+			startActivity(intentToUI4);
+		}
+		else {
+			Toast.makeText(getApplicationContext(), R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+			aggiornaDati();
+		}
+	}
+	
+	private void aggiornaDati(){
+		dbHelper.open();
+        cr=dbHelper.fetchRecordById(id_ric);
+        cr.moveToNext();
+        
+        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
+        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
+        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
+        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
+        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
+        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
+        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
+        
+        cr.close();
+        dbHelper.close();
+        ultimavar.setText(dataulitmamodifica.substring(0, 16));
+	}
+	
 	public void onResume() {
 		super.onResume();
-			dbHelper.open();
-	        //Query al DB: dato l'ID recupero tutta la tupla
-	        cr=dbHelper.fetchRecordById(id_ric);
-	        cr.moveToNext();
-	        
-	        //Recupero delle informazioni dalla query fatta al DB
-	        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
-	        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
-	        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
-	        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
-	        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
-	        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-	        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
-	        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
-	        
-	        //Chiusura Cursor e DB
-	        cr.close();
-	        dbHelper.close();
-	        ultimavar.setText(dataulitmamodifica.substring(0, 16));
+		aggiornaDati();
 	}
 	
 	
