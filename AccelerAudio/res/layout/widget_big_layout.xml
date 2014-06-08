@@ -5,19 +5,28 @@
     android:background="@android:drawable/alert_dark_frame" >
 
     <ImageButton
-        android:id="@+id/rec_big"
+        android:id="@+id/play_big"
         android:layout_width="56dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/play_big"
-        android:src="@android:drawable/ic_btn_speak_now" />
+        android:layout_toRightOf="@+id/rec_big"
+        android:src="@android:drawable/ic_media_play"
+        />
+    
+   <ImageButton
+        android:id="@+id/rec_big" 
+        android:layout_width="56dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@android:drawable/ic_btn_speak_now"  />
 
     <ImageButton
         android:id="@+id/backward_big"
         android:layout_width="56dp"
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/rec_big"
+        android:layout_toRightOf="@+id/play_big"
         android:src="@android:drawable/ic_media_previous" />
 
     <ImageButton
@@ -43,9 +52,9 @@
         android:id="@+id/image_big"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignLeft="@+id/play_big"
-        android:layout_below="@+id/play_big"
-        android:layout_toLeftOf="@+id/rec_big"
+        android:layout_alignLeft="@+id/rec_big"
+        android:layout_below="@+id/rec_big"
+        android:layout_toLeftOf="@+id/play_big"
         android:src="@drawable/ic_launcher" />
 
     <TextView
@@ -53,18 +62,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/image_big"
-        android:layout_alignLeft="@+id/rec_big"
+        android:layout_alignLeft="@+id/play_big"
         android:text="Last modified"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/background_light" />
 
-    <ImageButton
-        android:id="@+id/play_big"
-        android:layout_width="56dp"
-        android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:src="@android:drawable/ic_media_play" />
+
 
     <TextView
         android:id="@+id/duration_big"
@@ -72,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/forward_big"
         android:layout_toRightOf="@+id/backward_big"
-        android:text="DigitalClock"
+        android:text="0,00 s"
         android:textColor="@android:color/background_light" />
 
 </RelativeLayout>
