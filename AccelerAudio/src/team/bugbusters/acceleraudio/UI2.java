@@ -52,9 +52,10 @@ public class UI2 extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null){
-        	boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
-  	      if(keyboard)
-  	    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+	        	
+	        /*-- Show Keyboard if was already visible before --*/
+	      	if(savedInstanceState.getBoolean("KeyboardVisible",false))
+	      		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }        
         setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();

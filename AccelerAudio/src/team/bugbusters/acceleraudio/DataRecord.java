@@ -42,7 +42,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		 	
 		 	//Intent usato per comunicare con il Broadcast Receiver della UI3
 		 	broadcastIntent = new Intent();
-	        broadcastIntent.setAction(MyUI3Receiver.PROCESS_RESPONSE);
+	        broadcastIntent.setAction(MyUI3Receiver.DATA_RESPONSE);
 	        
         
 	        //Inizializzo il database

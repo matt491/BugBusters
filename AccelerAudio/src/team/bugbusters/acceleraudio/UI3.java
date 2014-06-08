@@ -42,18 +42,17 @@ public class UI3 extends Activity {
 	private int i,j,k,end_time;									
     private long prec;							
     private String freq_curr;						
-    private String nome; 								// Nome inserito dall'utente tramite EditText
+    private String nome; 								
     private String ts;
     private String pkg;
     private Button pause_resume,stop,rec,avan;								
-    private EditText nome_music;						//Campo di testo del nome della registrazione
-    private TextView t,varcamp;
+    private EditText nome_music;
+    private TextView timeView,varcamp;
     private CheckBox cb;
     Intent intent,intentToSer;
     private SharedPreferences prefs;
-    private DbAdapter dbHelper;
+    private DbAdapter db;
     private MyUI3Receiver receiver;
-    private IntentFilter filter;
     private boolean in_pausa=false;
     private boolean isChecked;
     private RecordCounter timer;
@@ -65,52 +64,55 @@ public class UI3 extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null){
-        	isChecked = savedInstanceState.getBoolean("isChecked", false);
-        	boolean keyboard=savedInstanceState.getBoolean("KeyboardVisible",false);
-  	      if(keyboard)
-  	    	  getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+	        isChecked = savedInstanceState.getBoolean("isChecked", false);
+	        
+	        /*-- Show Keyboard if it was already visible before --*/
+	  	    if(savedInstanceState.getBoolean("KeyboardVisible",false))
+	  	    	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
         
         setContentView(R.layout.ui3_layout);
-        
-        intentToSer = new Intent(UI3.this, DataRecord.class);
-        
-        receiver = new MyUI3Receiver();   
-        filter = new IntentFilter(MyUI3Receiver.PROCESS_RESPONSE);
-        registerReceiver(receiver,filter);
         packageManager = getApplicationContext().getPackageManager();
         
+        intentToSer = new Intent(UI3.this, DataRecord.class);
+        intent=new Intent(UI3.this, UI2.class);     
         
+        /*-- Create and register receiver which update time progress bar and axes progress bars --*/
+        receiver = new MyUI3Receiver();   
+        registerReceiver(receiver, new IntentFilter(MyUI3Receiver.DATA_RESPONSE));
+        
+        
+        /*-- Reading Shared Preferences --*/
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        dbHelper = new DbAdapter(this);
+        db = new DbAdapter(this);
     
-        //Intent predisposto per passare alla UI2
-        intent=new Intent(getApplicationContext(), UI2.class);
-        
-        pause_resume=(Button)findViewById(R.id.pause_res);		//Tasto pause/resume
-        stop=(Button)findViewById(R.id.stop);					//Tasto Stop
-        rec=(Button)findViewById(R.id.record);					//Tasto Record
-        avan=(Button)findViewById(R.id.avanz);					//Tasto Avanti
-        nome_music = (EditText)findViewById(R.id.nome);			//Campo di testo del nome della registrazione
-        t= (TextView)findViewById(R.id.last);					//Mostra la durata della registrazione in corso
+        /*-- Set layout view resources --*/
+        pause_resume = (Button)findViewById(R.id.pause_res);
+        stop = (Button)findViewById(R.id.stop);
+        rec = (Button)findViewById(R.id.record);
+        avan = (Button)findViewById(R.id.avanz);
+        nome_music = (EditText)findViewById(R.id.nome);
+        timeView = (TextView)findViewById(R.id.last);
       
-        //3 ProgressBar per visualizzare la variazione di accelerazione lungo i 3 assi
+        /*-- ProgressBars which show acceleration changes on every axis --*/
 		 pbX=(ProgressBar)findViewById(R.id.x_axis);
 		 pbY=(ProgressBar)findViewById(R.id.y_axis);
 		 pbZ=(ProgressBar)findViewById(R.id.z_axis);
+		 
+		 /*-- ProgressBar which show recording time --*/
 		 pb=(ProgressBar)findViewById(R.id.progressBar1);
 				 
-		//Visualizza il numero di campioni registrati
+		/*-- Show recorded samples --*/
 		varcamp=(TextView)findViewById(R.id.campioni);
 
         
-        //Diabilito i pulsanti all'inizio
+        /*-- Enable/Disable buttons --*/
         pause_resume.setEnabled(false);
         stop.setEnabled(false);
         avan.setEnabled(false);
         rec.setEnabled(true);
        
-        //Tasto Pausa/Resume premuto
+        /*-- Pause/Resume button pressed --*/
         pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(!in_pausa){
@@ -131,14 +133,15 @@ public class UI3 extends Activity {
             		intentToSer.putExtra("attCampY", j);
             		intentToSer.putExtra("attCampZ", k);	
             		in_pausa=false;
-            		creaRecordTimer(end_time*1000-prec, INTERVALLO, prec);
+            		timer=new RecordCounter(end_time*1000-prec, INTERVALLO, prec);
+            		timer.start();
             		startService(intentToSer);
             	}
             }
         });
         
 
-        //Tasto Stop premuto
+        /*-- Stop button pressed --*/
         stop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             		avan.setEnabled(true);
@@ -149,29 +152,42 @@ public class UI3 extends Activity {
             	}
         });
          
-        //Tasto Record premuto
+        /*-- Record button pressed --*/
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
+            	
+            	/*-- Check free space (at least 100kb to record a session) --*/
             	StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
 				@SuppressWarnings("deprecation")
 				long kilobytesAvailable = ((long)stat.getBlockSize() *(long)stat.getAvailableBlocks())/1024;
+				
             	if(kilobytesAvailable>=100) {
+            		
+            		/*-- Check if accelerometer is available --*/
             		if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
+            			
+            			/*-- Check if another record is still running --*/
             			if(widget_lil.record_running==false) {
+            				
+            				/*-- Lock the screen in the current position --*/
             				WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 							Display disp = wm.getDefaultDisplay();
 							int orientation = disp.getRotation();
 							if(orientation==Surface.ROTATION_0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
 							if(orientation==Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 							if(orientation==Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+							
+							/*-- Set Lock for Record --*/
 	            			widget_lil.record_running=true;
+	            			
 		            		avan.setEnabled(false);
 		            		pause_resume.setEnabled(true);
 		            		stop.setEnabled(true);
 		            		rec.setEnabled(false);
 		            		end_time=prefs.getInt("duratadef", 30);
 		            		pb.setMax(end_time);
-		            		creaRecordTimer(end_time*1000, INTERVALLO, 0 );
+		            		timer=new RecordCounter(end_time*1000, INTERVALLO, 0 );
+		            		timer.start();
 		            		intentToSer.putExtra("fromUI3", true);
 		            		startService(intentToSer);
             			}
@@ -183,21 +199,22 @@ public class UI3 extends Activity {
             }
         });
         
-        //Tasto Avanti premuto
+        
+        /*-- Avanti button pressed --*/
         avan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	pkg=getPackageName();
             	String nomeinserito=nome_music.getText().toString();
             	
-            	//Se il nome inserito e' non valido o  gia' presente nel DB allora
+            	/*-- If name isn't valid or already exists do --*/
             	if(nomeinserito.contains("'") || nomeinserito.contains("_")) {
             		Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
             	}
-            	else if((nomeinserito.equals("")) || UI1.sameName(dbHelper,nomeinserito)) {
+            	else if((nomeinserito.equals("")) || UI1.sameName(db,nomeinserito)) {
             		Toast.makeText(getApplicationContext(), R.string.validName, Toast.LENGTH_SHORT).show();
             	}
             	
-            	//Altrimenti inserisci il record nel DB
+            	/*-- Otherwise insert the new record into DB --*/
             	else {	
             		nome = nome_music.getText().toString();
             		ts = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
@@ -205,23 +222,25 @@ public class UI3 extends Activity {
             		long dur=DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 							prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
             		
-            		dbHelper.open();           	
+            		db.open();           	
         				
-            		long id_to_ui2=dbHelper.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
+            		long id_to_ui2=db.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
             				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
         					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
-            	            		
+            	    
+            		
+            		/*-- Calculate and update image code of new record --*/
             		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
         		
-            		//Update dei dati immagine
-            		dbHelper.updateImageCode(id_to_ui2, cod);
+            		db.updateImageCode(id_to_ui2, cod);
             		
-            		//Chiusura del DB
-            		dbHelper.close();
+            		db.close();
         		
             		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
             		
+            		/*-- Release Lock for Record --*/
             		widget_lil.record_running=false;
+            		
             		startActivity(intent);
             		finish();
             	}
@@ -229,7 +248,7 @@ public class UI3 extends Activity {
           }
        });
                
-    }    //FINE onCreate()
+    } /*-- OnCreate End --*/
     
     @Override
     public void onResume() {
@@ -273,7 +292,7 @@ public class UI3 extends Activity {
      }
 
 	 
-	//Menu Option, passa alla UI5
+	/*-- Option menu --*/
      @Override
  	public boolean onCreateOptionsMenu(Menu menu) {
  		MenuInflater menuInflater = getMenuInflater();
@@ -303,26 +322,22 @@ public class UI3 extends Activity {
  	}
  	
  	
- 	public void creaRecordTimer(long fine, long this_intervallo, long prev ){
-		timer=new RecordCounter(fine, this_intervallo);
-    	timer.end=fine;
-    	timer.previous=prev;
-    	timer.start();
-	}
- 
-	  public class RecordCounter extends CountDownTimer{
+ 	
+ 	/*-- Customized CountDownTimer used to count up to default duration --*/
+	public class RecordCounter extends CountDownTimer{
 		 private long end;
-		 private long last;
 		 private long previous=0;
 		 private long curr;
 		 
-	        public RecordCounter(long millisInFuture, long countDownInterval) {
-	            super(millisInFuture, countDownInterval);
-	        }
+	     public RecordCounter(long millisInFuture, long countDownInterval, long prev) {
+	          super(millisInFuture, countDownInterval);
+	          previous=prev;
+	          end=millisInFuture;	
+	      }
 	 
 	        @Override
 	        public void onFinish() {
-	            t.setText((float)((end+previous)/100)/10+"");
+	        	timeView.setText((float)((end+previous)/100)/10+"");
 	            pb.setProgress((int)(end+previous)/1000);
 	            Toast.makeText(UI3.this, R.string.registrationEnd, Toast.LENGTH_SHORT).show();
 	            stopService(intentToSer);
@@ -334,45 +349,50 @@ public class UI3 extends Activity {
 	        @Override
 	        public void onTick(long millisUntilFinished) {
 	        	curr=millisUntilFinished;
-	            t.setText((float)((previous+end-curr)/100)/10 +"");
+	        	timeView.setText((float)((previous+end-curr)/100)/10 +"");
 	            pb.setProgress((int)(previous+end-curr)/1000);
-	            last=previous+end-curr;
 	        }
 	        
 	        public long myCancel(){
-		    	  last=previous+end-curr;
 		    	  super.cancel(); 
-		    	  return last;
+		    	  return previous+end-curr;
 		      }
-	    }
+	 }
 	
+	   
+	 /*-- Customized BroadcastReceiver used to receive data from DataRecord class --*/
+	 public class MyUI3Receiver extends BroadcastReceiver{
 
-	   public class MyUI3Receiver extends BroadcastReceiver{
-
-		   public static final String PROCESS_RESPONSE = "team.bugbusters.acceleraudio.intent.action.PROCESS_RESPONSE";
-	        @Override
-	        	public void onReceive(Context context, Intent intent) {
-	        		pbX.setProgress(intent.getIntExtra("intPbX", 0));
-	        		pbY.setProgress(intent.getIntExtra("intPbY", 0));
-	        		pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
-	            
-	        		i=intent.getIntExtra("serCampX",0);
-	        		j=intent.getIntExtra("serCampY",0);
-	        		k=intent.getIntExtra("serCampZ",0);
-
-	        		varcamp.setText(""+(i+j+k));
-	        		datoX=intent.getStringExtra("ValoreX");
-	        		datoY=intent.getStringExtra("ValoreY");
-	        		datoZ=intent.getStringExtra("ValoreZ");
-	        		freq_curr=intent.getStringExtra("serFreq");
-	        		end_time=intent.getIntExtra("serDur",0);       
-	        	}
+		 public static final String DATA_RESPONSE = "team.bugbusters.acceleraudio.intent.action.DATA_RESPONSE";
+	      @Override
+	       public void onReceive(Context context, Intent intent) {
+	    	  
+	    	    /*-- Update progress bars --*/  
+        		pbX.setProgress(intent.getIntExtra("intPbX", 0));
+        		pbY.setProgress(intent.getIntExtra("intPbY", 0));
+        		pbZ.setProgress(intent.getIntExtra("intPbZ", 0));
+            
+           		/*-- Update recorded samples --*/
+        		i=intent.getIntExtra("serCampX",0);
+        		j=intent.getIntExtra("serCampY",0);
+        		k=intent.getIntExtra("serCampZ",0);
+        		varcamp.setText(""+(i+j+k));
+        		
+        		/*-- Update recorded axes data --*/
+        		datoX=intent.getStringExtra("ValoreX");
+        		datoY=intent.getStringExtra("ValoreY");
+        		datoZ=intent.getStringExtra("ValoreZ");
+        		
+        		/*-- Data received to maintain current settings (end time and recording samplerate) --*/
+        		freq_curr=intent.getStringExtra("serFreq");
+        		end_time=intent.getIntExtra("serDur",0);       
 	        }
+	  }
 
 	   
-		//Quando viene premuto il tasto Back
-		@Override
-		public void onBackPressed() {
+	  /*-- Back button pressed --*/
+	  @Override
+	  public void onBackPressed() {
 				if(timer!=null) timer.cancel();
     			if(!widget_lil.record_widget_lil && !widget_big.record_widget_big) {
     				stopService(intentToSer);
@@ -384,7 +404,7 @@ public class UI3 extends Activity {
 
 		}
 		
-		
+		/*-- Method used to save current state --*/
 		@Override
 		public void onSaveInstanceState(Bundle savedInstanceState) {
 		  super.onSaveInstanceState(savedInstanceState);
