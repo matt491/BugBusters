@@ -43,8 +43,7 @@ public class UI2 extends Activity {
     private boolean x_selected, y_selected, z_selected;
 	private long id_ric;
 	private String pkg_r;
-	
-	private DbAdapter dbHelper;
+	private DbAdapter db;
 	private Cursor cr;
 
 	
@@ -61,19 +60,22 @@ public class UI2 extends Activity {
         Intent intent_r=getIntent();
         pkg_r=getPackageName();
         
-        dbHelper = new DbAdapter(this);
+        db = new DbAdapter(this);
      
-        nomevar= (EditText)findViewById(R.id.nomeSessione);
-        timevar= (TextView)findViewById(R.id.datareg);
-        ultimavar= (TextView)findViewById(R.id.dataulmod);
-        result= (TextView)findViewById(R.id.res);
-        fineui2=(Button)findViewById(R.id.toPlay);
-        chX=(CheckBox)findViewById(R.id.checkBoxX);
-        chY=(CheckBox)findViewById(R.id.checkBoxY);
-        chZ=(CheckBox)findViewById(R.id.checkBoxZ);
+        /*-- Set layout view resources --*/
+        nomevar = (EditText)findViewById(R.id.nomeSessione);
+        timevar = (TextView)findViewById(R.id.datareg);
+        ultimavar = (TextView)findViewById(R.id.dataulmod);
+        result = (TextView)findViewById(R.id.res);
+        fineui2 =(Button)findViewById(R.id.toPlay);
+        chX = (CheckBox)findViewById(R.id.checkBoxX);
+        chY = (CheckBox)findViewById(R.id.checkBoxY);
+        chZ = (CheckBox)findViewById(R.id.checkBoxZ);
         sb = (SeekBar)findViewById(R.id.seekBar1);
         iv = (ImageView) findViewById(R.id.thumbnail);
         
+        
+        /*-- Checkboxes listener: used to have at least one checkbox checked --*/
         OnCheckedChangeListener listener = new OnCheckedChangeListener() {
         	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
         		if(!isChecked){
@@ -102,87 +104,14 @@ public class UI2 extends Activity {
         	chY.setOnCheckedChangeListener(listener);
         	chZ.setOnCheckedChangeListener(listener);
         
-        
-        
-        
-   
+
         id_ric=intent_r.getLongExtra(pkg_r+".myIdToUi2", -1);
-        //Apertura DB
-        dbHelper.open();
-        //Query al DB: dato l'ID recupero tutta la tupla
-        cr=dbHelper.fetchRecordById(id_ric);
-        cr.moveToNext();
         
-        //Recupero delle informazioni dalla query fatta al DB
-        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
-        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
-        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
-        ncampx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
-        ncampy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
-        ncampz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
-        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
-        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
-        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
-        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
-        
-        //Chiusura Cursor e DB
-        cr.close();
-        dbHelper.close();
-        
-        int alpha = Integer.parseInt(codifica.substring(0, 3));
-        int red = Integer.parseInt(codifica.substring(3, 6));
-        int green = Integer.parseInt(codifica.substring(6, 9));
-        int blue = Integer.parseInt(codifica.substring(9, 12));
-        
-        iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
-        
-        switch(Integer.parseInt(codifica.substring(11))) {
-		case 0:
-			iv.setImageResource(R.drawable.ic_music_0);
-			break;
-		case 1:
-			iv.setImageResource(R.drawable.ic_music_1);
-			break;
-		case 2:
-			iv.setImageResource(R.drawable.ic_music_2);
-			break;
-		case 3:
-			iv.setImageResource(R.drawable.ic_music_3);
-			break;
-		case 4:
-			iv.setImageResource(R.drawable.ic_music_4);
-			break;
-		case 5: 
-			iv.setImageResource(R.drawable.ic_music_5);
-			break;
-		case 6:
-			iv.setImageResource(R.drawable.ic_music_6);
-			break;
-		case 7:
-			iv.setImageResource(R.drawable.ic_music_7);
-			break;
-		case 8:
-			iv.setImageResource(R.drawable.ic_music_8);
-			break;
-		case 9:
-			iv.setImageResource(R.drawable.ic_music_9);
-			break;
-		}
-        
-        chX.setChecked(x_selected);
-        chY.setChecked(y_selected);
-        chZ.setChecked(z_selected);
-        nomevar.setText(nome_ric);
-        nomevar.setSelection(nomevar.getText().length());
-        timevar.setText(timestamp_ric.substring(0, 16));
-        ultimavar.setText(dataulitmamodifica.substring(0, 16));
-        result.setText(""+sovra_ric);
-        sb.setProgress(sovra_ric);
+        aggiornaDati(true);
         
         
        
-        //Barra del Sovracampionamento
+        /*-- Upsampling seekbar listener --*/
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
 
             @Override
@@ -202,31 +131,39 @@ public class UI2 extends Activity {
 			}});
         
         
+        /*-- Riproduci sessione button pressed --*/
         fineui2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
             	String nomeNuovo=nomevar.getText().toString();
             	
+            	/*-- Check for changes --*/
             	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
             		sb.getProgress()!=sovra_ric || !(nome_ric.equals(nomeNuovo)) ){
             	
+            		/*-- Check name to prevent errors and if it is already on DB --*/
             		if(nomeNuovo.contains("'") || (nomeNuovo.contains("_") && !(nome_ric.equals(nomeNuovo))))
             			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
             	
-            		else if((!(nome_ric.equals(nomeNuovo)) && UI1.sameName(dbHelper, nomeNuovo)) || nomeNuovo.equals(""))
+            		else if((!(nome_ric.equals(nomeNuovo)) && UI1.sameName(db, nomeNuovo)) || nomeNuovo.equals(""))
             			Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_SHORT).show();
             	
-            			else {
-            				nome_ric=nomeNuovo;
-            				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
-            				long dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());	
-            				dbHelper.open();
-            				dbHelper.updateRecord(id_ric, nome_ric, ""+dur, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
-            						""+sb.getProgress(), dataulitmamodifica);
-            				dbHelper.close();
-            		
-            				prosegui();
-              			}
+            			/*-- Check if the track to update is already on play --*/
+            			else if (id_ric==widget_big.currid && !widget_big.pause)
+            				Toast.makeText(getApplicationContext(), R.string.cannotUpdate, Toast.LENGTH_SHORT).show();
+            				
+            				/*-- Then update existing record with new informations --*/
+	            			else {
+	            				nome_ric=nomeNuovo;
+	            				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
+	            				long dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());	
+	            				db.open();
+	            				db.updateRecord(id_ric, nome_ric, ""+dur, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
+	            						""+sb.getProgress(), dataulitmamodifica);
+	            				db.close();
+	            		
+	            				prosegui();
+	              			}
             	}
             	else prosegui();
             	
@@ -234,9 +171,11 @@ public class UI2 extends Activity {
         });
 
                
-	} //Fine onCreate()
+	} /*-- onCreate End --*/
 	
 	
+	/*-- Method which check if playback isn't already running, in this case 
+	 *-- we send ID to UI4 to play it, otherwise a toast appears and current displayed data will be update --*/
 	private void prosegui(){
 		if(widget_big.pause){
 			stopService(new Intent(this, PlayRecord.class));
@@ -246,13 +185,15 @@ public class UI2 extends Activity {
 		}
 		else {
 			Toast.makeText(getApplicationContext(), R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
-			aggiornaDati();
+			aggiornaDati(false);
 		}
 	}
 	
-	private void aggiornaDati(){
-		dbHelper.open();
-        cr=dbHelper.fetchRecordById(id_ric);
+	
+	/*-- Method which reads updated data from DB and displays correct informations --*/
+	private void aggiornaDati(boolean first_time){
+		db.open();
+        cr=db.fetchRecordById(id_ric);
         cr.moveToNext();
         
         nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
@@ -264,19 +205,77 @@ public class UI2 extends Activity {
         sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
         codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
         
-        cr.close();
-        dbHelper.close();
         ultimavar.setText(dataulitmamodifica.substring(0, 16));
+        
+        if(first_time){
+            ncampx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
+            ncampy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
+            ncampz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
+            
+            int alpha = Integer.parseInt(codifica.substring(0, 3));
+            int red = Integer.parseInt(codifica.substring(3, 6));
+            int green = Integer.parseInt(codifica.substring(6, 9));
+            int blue = Integer.parseInt(codifica.substring(9, 12));
+            
+            iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
+            
+            switch(Integer.parseInt(codifica.substring(11))) {
+    			case 0:
+    				iv.setImageResource(R.drawable.ic_music_0);
+    				break;
+    			case 1:
+    				iv.setImageResource(R.drawable.ic_music_1);
+    				break;
+    			case 2:
+    				iv.setImageResource(R.drawable.ic_music_2);
+    				break;
+    			case 3:
+    				iv.setImageResource(R.drawable.ic_music_3);
+    				break;
+    			case 4:
+    				iv.setImageResource(R.drawable.ic_music_4);
+    				break;
+    			case 5: 
+    				iv.setImageResource(R.drawable.ic_music_5);
+    				break;
+    			case 6:
+    				iv.setImageResource(R.drawable.ic_music_6);
+    				break;
+    			case 7:
+    				iv.setImageResource(R.drawable.ic_music_7);
+    				break;
+    			case 8:
+    				iv.setImageResource(R.drawable.ic_music_8);
+    				break;
+    			case 9:
+    				iv.setImageResource(R.drawable.ic_music_9);
+    				break;
+    		}
+            
+            chX.setChecked(x_selected);
+            chY.setChecked(y_selected);
+            chZ.setChecked(z_selected);
+            nomevar.setText(nome_ric);
+            nomevar.setSelection(nomevar.getText().length());
+            timevar.setText(timestamp_ric.substring(0, 16));
+            result.setText(""+sovra_ric);
+            sb.setProgress(sovra_ric);
+        }
+        
+        cr.close();
+        db.close();
+        
 	}
 	
+	/*-- On activity resume (e.g. come back from UI4) it displays updated informations --*/
 	public void onResume() {
 		super.onResume();
-		aggiornaDati();
+		aggiornaDati(false);
 	}
 	
 	
 	
-	//Quando viene premuto il tasto Back
+	/*-- Back button pressed --*/
 	@Override
 	public void onBackPressed() {
 			Intent returnIntent = new Intent(UI2.this, UI1.class);
@@ -286,15 +285,17 @@ public class UI2 extends Activity {
 	}
 	
 	
+	/*-- Method used to save current state --*/
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 	  super.onSaveInstanceState(savedInstanceState);
 	  if(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText())
-	  savedInstanceState.putBoolean("KeyboardVisible", true);
+		  savedInstanceState.putBoolean("KeyboardVisible", true);
 
 	}
 	
 	
+	/*-- Option menu --*/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();

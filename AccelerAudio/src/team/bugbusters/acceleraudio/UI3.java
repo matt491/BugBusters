@@ -409,8 +409,9 @@ public class UI3 extends Activity {
 		public void onSaveInstanceState(Bundle savedInstanceState) {
 		  super.onSaveInstanceState(savedInstanceState);
 		  savedInstanceState.putBoolean("isChecked", cb.isChecked());
+		  
 		  if(((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText())
-		  savedInstanceState.putBoolean("KeyboardVisible", true);
+			  savedInstanceState.putBoolean("KeyboardVisible", true);
 
 		}
 		   

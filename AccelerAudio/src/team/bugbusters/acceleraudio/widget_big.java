@@ -284,6 +284,7 @@ public class widget_big extends AppWidgetProvider {
 	        		context.sendBroadcast(commandIntent);
 	            	context.stopService(i_play);
 	            	service_running=false;
+	            	pause=true;
 	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
 	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, intent.getIntExtra("WAY", -1));
 	        		c=db.fetchRecordById(currid);
@@ -351,6 +352,7 @@ public class widget_big extends AppWidgetProvider {
 	            		context.sendBroadcast(commandIntent);
 	                	context.stopService(i_play);
 	                	service_running=false;
+	                	pause=true;
 	                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
 	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, intent.getIntExtra("WAY", -1));
 	            		c=db.fetchRecordById(currid);	

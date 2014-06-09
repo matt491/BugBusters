@@ -65,6 +65,7 @@
     <string name="addSessionPlease">Registra almeno un paio di sessioni prima di riordinare la lista!</string>
     <string name="spaceUnavailable">Spazio non disponibile!</string>
     <string name="alreadyPlaying">Riproduzione già in corso!</string>
-    <string name="cannoteDelete">Impossibile la traccia in esecuzione!</string>
+    <string name="cannoteDelete">Impossibile eliminare la traccia in esecuzione!</string>
+    <string name="cannotUpdate">Impossibile aggiornare la traccia in esecuzione!</string>
 
 </resources>
