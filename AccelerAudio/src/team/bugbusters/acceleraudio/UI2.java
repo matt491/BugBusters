@@ -41,6 +41,7 @@ public class UI2 extends Activity {
 	private String dataulitmamodifica;
 	private String codifica;
     private boolean x_selected, y_selected, z_selected;
+    private final boolean INIZIO=true;
 	private long id_ric;
 	private String pkg_r;
 	private DbAdapter db;
@@ -107,7 +108,7 @@ public class UI2 extends Activity {
 
         id_ric=intent_r.getLongExtra(pkg_r+".myIdToUi2", -1);
         
-        aggiornaDati(true);
+        aggiornaDati(INIZIO);
         
         
        
@@ -185,7 +186,7 @@ public class UI2 extends Activity {
 		}
 		else {
 			Toast.makeText(getApplicationContext(), R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
-			aggiornaDati(false);
+			aggiornaDati(!INIZIO);
 		}
 	}
 	
@@ -270,7 +271,7 @@ public class UI2 extends Activity {
 	/*-- On activity resume (e.g. come back from UI4) it displays updated informations --*/
 	public void onResume() {
 		super.onResume();
-		aggiornaDati(false);
+		aggiornaDati(!INIZIO);
 	}
 	
 	
