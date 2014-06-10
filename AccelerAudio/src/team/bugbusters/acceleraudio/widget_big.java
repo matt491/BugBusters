@@ -6,8 +6,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -23,9 +25,21 @@ public class widget_big extends AppWidgetProvider {
 	private static DbAdapter db;
 	private static int lastposition=-1;
 	private static long starttime=System.currentTimeMillis();
+	private SharedPreferences prefs;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
 	public static boolean record_widget_big=false,play_widget=true;
+	
+	/*-- Handles the destruction event --*/
+	@Override
+	public void onDeleted(Context context, int[] appWidgetIds)
+	{
+		super.onDeleted(context, appWidgetIds);
+		lastposition=-1;
+		
+		Toast.makeText(context,"Distrutto", Toast.LENGTH_SHORT).show();
+	}
+	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int [] appWidgetIds)
 	{
@@ -286,7 +300,7 @@ public class widget_big extends AppWidgetProvider {
 	            	service_running=false;
 	            	pause=true;
 	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, intent.getIntExtra("WAY", -1));
+	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, currentSorting(context)/*intent.getIntExtra("WAY", -1)*/);
 	        		c=db.fetchRecordById(currid);
 	        		c.moveToNext();
 	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
@@ -354,7 +368,7 @@ public class widget_big extends AppWidgetProvider {
 	                	service_running=false;
 	                	pause=true;
 	                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, intent.getIntExtra("WAY", -1));
+	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT,  currentSorting(context)/*intent.getIntExtra("WAY", -1)*/);
 	            		c=db.fetchRecordById(currid);	
 	            		c.moveToNext();
 		            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
@@ -409,13 +423,28 @@ public class widget_big extends AppWidgetProvider {
         /*-- Updating --*/
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_big.class), rw);
 			 super.onReceive(context, intent);
+			 
+				
+			 
 	}
 
-
-	private void sendBroadcast(Intent commandIntent2) {
-		// TODO Auto-generated method stub
+	private int currentSorting(Context context) {
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		int currentSorting = UI4.BY_INSERTION; //Default
 		
+		if(prefs.getBoolean("sortedByName", false)) {
+			currentSorting = UI4.BY_NAME;
+		}
+		else if(prefs.getBoolean("sortedByDate", false)) {
+			currentSorting = UI4.BY_DATE;
+		}
+		else if(prefs.getBoolean("sortedByDuration", false)) {
+			currentSorting = UI4.BY_DURATION;
+		}
+		
+		return currentSorting;
 	}
+
 }
 	
 
