@@ -27,6 +27,8 @@ public class widget_lil extends AppWidgetProvider {
 	public void onDeleted(Context context, int[] appWidgetIds)
 	{
 		super.onDeleted(context, appWidgetIds);
+		if(record_running && record_widget_lil)
+			context.stopService(new Intent(context, DataRecord.class));
 		Toast.makeText(context,"Distrutto", Toast.LENGTH_SHORT).show();
 	}
 	

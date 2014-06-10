@@ -36,7 +36,14 @@ public class widget_big extends AppWidgetProvider {
 	{
 		super.onDeleted(context, appWidgetIds);
 		lastposition=-1;
-		
+		if(play_widget && service_running) {
+			commandIntent=new Intent();
+    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+			commandIntent.putExtra("Pausa", false);
+    		commandIntent.putExtra("Riprendi", false);
+    		commandIntent.putExtra("Stop", true);
+    		context.sendBroadcast(commandIntent);
+		}
 		Toast.makeText(context,"Distrutto", Toast.LENGTH_SHORT).show();
 	}
 	

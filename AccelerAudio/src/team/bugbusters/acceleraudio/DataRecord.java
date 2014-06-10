@@ -25,7 +25,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private long sendtime;
 	private int i,j,k,durata_def;
 	private String freq;
-	private DbAdapter dbHelper;
+	private DbAdapter db;
 	private boolean ric_UI3,ric_LIL;
 	private float NOISE;
 	private float[] valprec;
@@ -46,7 +46,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        
         
 	        //Inizializzo il database
-	        dbHelper = new DbAdapter(this);
+	        db = new DbAdapter(this);
 	        
 	        //Ripristino parametri dopo una pausa
 	        if(intent.hasExtra("VecchioX")){
@@ -163,15 +163,15 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
 				
-				dbHelper.open();
-				long id=dbHelper.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
+				db.open();
+				long id=db.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
 						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
 						timestamp, timestamp, null);
 
 				
 				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
-				dbHelper.updateRecordNameAndImage(id, "Rec_"+id, code);
-				dbHelper.close();
+				db.updateRecordNameAndImage(id, "Rec_"+id, code);
+				db.close();
 				
 				/*-- Signal to widget that the REC is over due to time elapsed expired --*/
 				
