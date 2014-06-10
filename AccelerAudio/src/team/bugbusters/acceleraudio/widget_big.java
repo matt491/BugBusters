@@ -387,6 +387,7 @@ public class widget_big extends AppWidgetProvider {
 	            	
 	            	if(play_widget){
 	            		i_play = new Intent(context, PlayRecord.class);
+	            		
 	            		commandIntent=new Intent();
 	            		commandIntent.setAction(UI4.COMMAND_RESPONSE);
 	            		commandIntent.putExtra("Stop", true);
