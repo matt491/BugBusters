@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -253,6 +254,8 @@ public class UI4 extends Activity {
  	 case NEXT:
  		 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
  			 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+ 				 
+ 				 Log.i("CAZZO","ENTRATO");
  				 if(!cursor.isLast()) {
  					 cursor.moveToNext();
  					 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));

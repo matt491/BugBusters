@@ -43,19 +43,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/modify_big"
         android:layout_alignLeft="@+id/modify_big"
+        android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
         android:text="Title"
         android:textColor="@android:color/background_light"
         android:textColorHint="@android:color/background_light" />
-
-    <ImageView
-        android:id="@+id/image_big"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignLeft="@+id/rec_big"
-        android:layout_below="@+id/rec_big"
-        android:layout_toLeftOf="@+id/play_big"
-        android:src="@drawable/ic_launcher" />
 
     <TextView
         android:id="@+id/modify_big"
@@ -67,14 +59,21 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/background_light" />
 
-
+    <ImageView
+        android:id="@+id/image_big"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignLeft="@+id/rec_big"
+        android:layout_alignRight="@+id/rec_big"
+        android:layout_below="@+id/rec_big"
+        android:src="@drawable/ic_launcher1" />
 
     <TextView
         android:id="@+id/duration_big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
-        android:layout_toRightOf="@+id/backward_big"
         android:text="0,00 s"
         android:textColor="@android:color/background_light" />
 

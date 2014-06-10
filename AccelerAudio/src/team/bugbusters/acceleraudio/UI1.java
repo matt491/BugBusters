@@ -9,6 +9,7 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -303,15 +304,23 @@ public class UI1 extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					
 					
-					if(id_to_delete==widget_big.currid)
+					if((id_to_delete==widget_big.currid)&&!widget_big.pause)
+					{
 						Toast.makeText(getApplicationContext(), R.string.cannoteDelete , Toast.LENGTH_SHORT).show();
+					}
 					else
 					{
 						nuovaLista.remove(dati);
+						Intent notifica = new Intent(UI1.this,widget_big.class);
+						notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+						widget_big.delete=true;
+						sendBroadcast(notifica);
 						db.open();
 						db.deleteRecord(id_to_delete);
 						db.close();
+						
 						runningCl.notifyDataSetChanged();
+						
 					}
 				}
 			});
@@ -456,8 +465,6 @@ public class UI1 extends Activity {
 			final Editor prefsEditor = prefs.edit();
 			final CustomList runningCl = (CustomList) lv.getAdapter();
 			final List<String[]> nuovaLista = runningCl.getList();
-			Intent update_way = new Intent (UI1.this,widget_big.class);
-			update_way.setAction("UPDATE");
 			switch(item.getItemId()) {
 			
 			case R.id.Preferenze:
@@ -487,8 +494,6 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
-				update_way.putExtra("WAY", 0);
-				sendBroadcast(update_way);
 				return(true);
 			
 			case R.id.Numera:
@@ -512,8 +517,6 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
-				update_way.putExtra("WAY", -1);
-				sendBroadcast(update_way);
 				return(true);
 				
 			case R.id.OrdinaData:
@@ -537,8 +540,6 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
-				update_way.putExtra("WAY", 1);
-				sendBroadcast(update_way);
 				return(true);
 				
 			case R.id.OrdinaDurata:
@@ -564,8 +565,6 @@ public class UI1 extends Activity {
 				});
 				
 				runningCl.notifyDataSetChanged();
-				update_way.putExtra("WAY", 2);
-				sendBroadcast(update_way);
 				return(true);
 			}
 			
