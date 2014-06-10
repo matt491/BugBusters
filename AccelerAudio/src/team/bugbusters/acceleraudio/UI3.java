@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +60,7 @@ public class UI3 extends Activity {
     private final long INTERVALLO=100L;
     private PackageManager packageManager;
     private AlertDialog alertDialog;
+    private static boolean alreadyShowed = false;;
     		
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -272,20 +274,22 @@ public class UI3 extends Activity {
 				dialog.dismiss();
 				}	
 			});
-    	
+    	if(!alreadyShowed) {
     	if(!prefs.getBoolean("notShowAgain", false)){
     		alertDialog = alert.create();
     		alertDialog.show();
+    		alreadyShowed = true;
+    	}
+    		
     	}
     	super.onResume();
     }
-
-    
  
      @Override
      public void onDestroy() {
     	 if(alertDialog != null && alertDialog.isShowing()) {
     		 alertDialog.dismiss();
+    		 alreadyShowed = false;
     	 }
          this.unregisterReceiver(receiver);
          super.onDestroy();
@@ -398,6 +402,7 @@ public class UI3 extends Activity {
     				stopService(intentToSer);
     				widget_lil.record_running=false;
     			}
+    			alreadyShowed = false;
 				Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
 	        	startActivity(returnIntent);
 	        	finish();	
