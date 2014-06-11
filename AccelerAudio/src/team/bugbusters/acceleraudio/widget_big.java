@@ -149,11 +149,15 @@ public class widget_big extends AppWidgetProvider {
         	/*-- Handling the DataRecord call --*/
         
         	if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_rec)  {
-        	widget_lil.record_running=false;
-        	record_widget_big=false;
-        	terminated_rec=false;
-    		rw.setImageViewResource(R.id.rec_big, android.R.drawable.ic_btn_speak_now);
-        	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
+	        	widget_lil.record_running=false;
+	        	record_widget_big=false;
+	        	terminated_rec=false;
+	    		rw.setImageViewResource(R.id.rec_big, R.drawable.rec);
+	    		
+	    		Intent n=new Intent(context, widget_big.class);
+	    		n.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+	    		
+	        	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
         	}
         
         /*-- Handling the widget start_rec call --*/
@@ -166,7 +170,7 @@ public class widget_big extends AppWidgetProvider {
         				/*-- Widget Big is free to start the Recording Service --*/
         				
         				record_widget_big=true;
-        				rw.setImageViewResource(R.id.rec_big, android.R.drawable.stat_notify_call_mute);
+        				rw.setImageViewResource(R.id.rec_big, R.drawable.stop);
         				context.startService(i_record);
         			}
         			else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
@@ -190,7 +194,7 @@ public class widget_big extends AppWidgetProvider {
         		rw.setTextViewText(R.id.duration_big, "0,00 s");
         		rw.setTextViewText(R.id.modify_big, "Last Modified");
         		rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_launcher1);
-        		rw.setInt(R.id.image_big, "setBackgroundColor", Color.BLACK);
+        		rw.setInt(R.id.image_big, "setBackgroundColor", Color.WHITE);
         		/*-- First instance of the widget after deleting all records --*/
         		PRIMA_VOLTA=true;
         		

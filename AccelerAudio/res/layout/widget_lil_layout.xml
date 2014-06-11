@@ -12,7 +12,7 @@
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@android:drawable/ic_btn_speak_now" />
+        android:src="@drawable/rec" />
 
     <ImageButton
         android:id="@+id/pref_lil"

@@ -105,7 +105,7 @@ public class widget_lil extends AppWidgetProvider {
             	record_running=false;
             	record_widget_lil=false;
             	terminated=false;
-        		rw.setImageViewResource(R.id.rec_lil, android.R.drawable.ic_btn_speak_now);
+        		rw.setImageViewResource(R.id.rec_lil, R.drawable.rec);
             	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
             }
             
@@ -116,7 +116,7 @@ public class widget_lil extends AppWidgetProvider {
 	            	if(record_running==false) {
 		            	record_running=true;
 		            	record_widget_lil=true;
-		            	rw.setImageViewResource(R.id.rec_lil, android.R.drawable.stat_notify_call_mute);
+		            	rw.setImageViewResource(R.id.rec_lil, R.drawable.stop);
 		            	context.startService(i_record);
 	            	}
 	            	else Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
