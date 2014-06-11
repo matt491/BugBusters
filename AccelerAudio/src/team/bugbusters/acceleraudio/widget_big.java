@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -21,12 +20,12 @@ public class widget_big extends AppWidgetProvider {
 	private static Intent i_record,i_play, commandIntent;
 	private static boolean terminated_rec=false;
 	public static boolean service_running=false, pause=true;
-	public static  int currid = 1;
+	public static  int currid = 0;
 	private static Cursor c;
 	private static DbAdapter db;
-//	private static int lastposition=-1;
+	private static int precid;
 	private static boolean PRIMA_VOLTA=true;
-	public static boolean delete=false;
+	public static boolean delete_running_record=false;
 	private static long starttime=System.currentTimeMillis();
 	private SharedPreferences prefs;
 	
@@ -38,6 +37,7 @@ public class widget_big extends AppWidgetProvider {
 	public void onDeleted(Context context, int[] appWidgetIds)
 	{
 		super.onDeleted(context, appWidgetIds);
+		currid = 0;
 		PRIMA_VOLTA=true;
 		if(play_widget && service_running) {
 			commandIntent=new Intent();
@@ -51,10 +51,10 @@ public class widget_big extends AppWidgetProvider {
 	}
 	
 	@Override
-	public void onEnabled(Context context)
-	
-	{
+	public void onEnabled(Context context) {
 		super.onEnabled(context);
+		terminated_rec=false;
+		pause=true;
 		PRIMA_VOLTA=true;
 	}
 	@Override
@@ -184,9 +184,7 @@ public class widget_big extends AppWidgetProvider {
         	
         	db = new DbAdapter(context);
         	db.open();
-        	c = db.fetchAllRecord();
-        	if(c.getCount()==0)
-        	{
+        	if(db.fetchAllRecord().getCount()==0) {
         		Toast.makeText(context, "DataBase Empty from Receiver", Toast.LENGTH_SHORT).show();
         		rw.setTextViewText(R.id.title_w_big, "Title");
         		rw.setTextViewText(R.id.duration_big, "0,00 s");
@@ -202,16 +200,16 @@ public class widget_big extends AppWidgetProvider {
         		
         		switch(currentSorting(context)) {
         		case UI4.BY_NAME:
-        			c = db.fetchAllRecordSortedByName(); //lastposition=-1;
+        			c = db.fetchAllRecordSortedByName(); 
         			break;
         			case UI4.BY_DATE:
-        			c = db.fetchAllRecordSortedByDate();// lastposition=-1;
+        			c = db.fetchAllRecordSortedByDate();
         			break;
         			case UI4.BY_DURATION:
-        			c = db.fetchAllRecordSortedByDuration();// lastposition=-1;
+        			c = db.fetchAllRecordSortedByDuration();
         			break;
-        			case UI4.BY_INSERTION:  //case BY_INSERTION
-        			c = db.fetchAllRecord();// lastposition=-1;
+        			case UI4.BY_INSERTION:
+        			c = db.fetchAllRecord();
         			break;
         		}
         	
@@ -220,53 +218,11 @@ public class widget_big extends AppWidgetProvider {
         		if(PRIMA_VOLTA)
         		{	
         			PRIMA_VOLTA=false;
-        			Toast.makeText(context, "Porcodio!!!", Toast.LENGTH_SHORT).show();
         			c.moveToFirst();
         			currid=(int)c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
-        			rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-        			rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-        			float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
-        			rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
-        			String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
-        			int alpha = Integer.parseInt(thumb.substring(0, 3));
-        			int red = Integer.parseInt(thumb.substring(3, 6));
-        			int green = Integer.parseInt(thumb.substring(6, 9));
-        			int blue = Integer.parseInt(thumb.substring(9, 12));
-        			rw.setInt(R.id.image_big, "setBackgroundColor", Color.argb(alpha, red, green, blue));
-        			switch(Integer.parseInt(thumb.substring(11))) {
-	        			case 0:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_0);
-		    				break;
-		    			case 1:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_1);
-		    				break;
-		    			case 2:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_2);
-		    				break;
-		    			case 3:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_3);
-		    				break;
-		    			case 4:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_4);
-		    				break;
-		    			case 5: 
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_5);
-		    				break;
-		    			case 6:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_6);
-		    				break;
-		    			case 7:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_7);
-		    				break;
-		    			case 8:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_8);
-		    				break;
-		    			case 9:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_9);
-		    				break;
-	    			}
+        			setLayout(rw);
         		}
-    		
+        	
         /*-- Play code --*/
         
         if(action.equals("START_STOP_PLAY")) {
@@ -277,7 +233,7 @@ public class widget_big extends AppWidgetProvider {
 	    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
 	    		
 	    		if(!play_widget)
-	    			Toast.makeText(context, "Riproduzione gi� in corso!", Toast.LENGTH_SHORT).show();
+	    			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 	    		
 	        	if(!service_running && play_widget){
 	        		pause=false;
@@ -313,7 +269,7 @@ public class widget_big extends AppWidgetProvider {
         	if(System.currentTimeMillis()-starttime>300) {
         		starttime=System.currentTimeMillis();
 	        	if(!play_widget)
-	    			Toast.makeText(context, "Riproduzione gi� in corso!", Toast.LENGTH_SHORT).show();
+	    			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 	        	
 	        	if(play_widget)
 	        	{
@@ -328,62 +284,21 @@ public class widget_big extends AppWidgetProvider {
 	            	service_running=false;
 	            	pause=true;
 	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, currentSorting(context)/*intent.getIntExtra("WAY", -1)*/);
+	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, currentSorting(context));
 	        		c=db.fetchRecordById(currid);
-	        		c.moveToNext();
-	            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-	        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-	        		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
-	    			rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
-	        		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
-	    			int alpha = Integer.parseInt(thumb.substring(0, 3));
-	    	        int red = Integer.parseInt(thumb.substring(3, 6));
-	    	        int green = Integer.parseInt(thumb.substring(6, 9));
-	    	        int blue = Integer.parseInt(thumb.substring(9, 12));
-	    	        rw.setInt(R.id.image_big, "setBackgroundColor", Color.argb(alpha, red, green, blue));
-	    	        switch(Integer.parseInt(thumb.substring(11))) {
-		    			case 0:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_0);
-		    				break;
-		    			case 1:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_1);
-		    				break;
-		    			case 2:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_2);
-		    				break;
-		    			case 3:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_3);
-		    				break;
-		    			case 4:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_4);
-		    				break;
-		    			case 5: 
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_5);
-		    				break;
-		    			case 6:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_6);
-		    				break;
-		    			case 7:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_7);
-		    				break;
-		    			case 8:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_8);
-		    				break;
-		    			case 9:
-		    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_9);
-		    				break;
-		    		}
+	        		c.moveToFirst();
+	            	setLayout(rw);
 	        		}
         		}
         	}/*--  End Start Pre --*/
         	
-            if(action.equals("START_FOR")|| (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && delete)) {
-            	delete=false;
+            if(action.equals("START_FOR")|| delete_running_record) {
+            	
             	if(System.currentTimeMillis()-starttime>300) {
             		starttime=System.currentTimeMillis();
             	
 	            	if(!play_widget)
-	        			Toast.makeText(context, "Riproduzione gi� in corso!", Toast.LENGTH_SHORT).show();
+	        			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 	            	
 	            	if(play_widget){
 	            		i_play = new Intent(context, PlayRecord.class);
@@ -398,67 +313,39 @@ public class widget_big extends AppWidgetProvider {
 	                	service_running=false;
 	                	pause=true;
 	                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT,  currentSorting(context)/*intent.getIntExtra("WAY", -1)*/);
+	                	
+	                	precid=currid;
+	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT,  currentSorting(context));
 	                	c=db.fetchRecordById(currid);
-	            		
-	            		c.moveToNext();
-
-		            	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-		        		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
-		        		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
-		    			rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
-		        		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
-		    			int alpha = Integer.parseInt(thumb.substring(0, 3));
-		    	        int red = Integer.parseInt(thumb.substring(3, 6));
-		    	        int green = Integer.parseInt(thumb.substring(6, 9));
-		    	        int blue = Integer.parseInt(thumb.substring(9, 12));
-		    	        rw.setInt(R.id.image_big, "setBackgroundColor", Color.argb(alpha, red, green, blue));
-		    	        switch(Integer.parseInt(thumb.substring(11))) {
-			    			case 0:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_0);
-			    				break;
-			    			case 1:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_1);
-			    				break;
-			    			case 2:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_2);
-			    				break;
-			    			case 3:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_3);
-			    				break;
-			    			case 4:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_4);
-			    				break;
-			    			case 5: 
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_5);
-			    				break;
-			    			case 6:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_6);
-			    				break;
-			    			case 7:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_7);
-			    				break;
-			    			case 8:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_8);
-			    				break;
-			    			case 9:
-			    				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_9);
-			    				break;
-			    			}
-	            		}
+	                	c.moveToFirst();
+		            	setLayout(rw);
+		    	        
+		    	        if(delete_running_record) {
+		    	        	delete_running_record=false;
+		    	        	db.deleteRecord(precid);
+		    	        	if(db.fetchAllRecord().getCount()==0){
+		    	        		Intent notify=new Intent(context, widget_big.class);
+		    	        		notify.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		    	        		context.sendBroadcast(notify);
+		    	        	}
+		    	        }
+  
 	            	}
-            	}/*--  End Start For --*/
-           
-           db.close();
-    		}
+            	}
+            }/*--  End Start For --*/
+
     	}
+        	db.close(); 
+        }
+        
+        
         /*-- Updating --*/
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_big.class), rw);
 			 super.onReceive(context, intent);
 			 
 				
 			 
-	}
+	} /*-- onReceive End --*/
 
 	private int currentSorting(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -475,6 +362,53 @@ public class widget_big extends AppWidgetProvider {
 		}
 		
 		return currentSorting;
+	}
+	
+	
+	/*-- Method used to set Widget layout --*/
+	private void setLayout(RemoteViews rw){
+		rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+		rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
+		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+		int alpha = Integer.parseInt(thumb.substring(0, 3));
+		int red = Integer.parseInt(thumb.substring(3, 6));
+		int green = Integer.parseInt(thumb.substring(6, 9));
+		int blue = Integer.parseInt(thumb.substring(9, 12));
+		rw.setInt(R.id.image_big, "setBackgroundColor", Color.argb(alpha, red, green, blue));
+		switch(Integer.parseInt(thumb.substring(11))) {
+			case 0:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_0);
+				break;
+			case 1:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_1);
+				break;
+			case 2:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_2);
+				break;
+			case 3:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_3);
+				break;
+			case 4:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_4);
+				break;
+			case 5: 
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_5);
+				break;
+			case 6:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_6);
+				break;
+			case 7:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_7);
+				break;
+			case 8:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_8);
+				break;
+			case 9:
+				rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_music_9);
+				break;
+		}
 	}
 
 	

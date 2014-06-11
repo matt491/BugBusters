@@ -304,23 +304,25 @@ public class UI1 extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					
 					
-					if((id_to_delete==widget_big.currid)&&!widget_big.pause)
-					{
-						Toast.makeText(getApplicationContext(), R.string.cannoteDelete , Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
+					if((id_to_delete==widget_big.currid))
+						if(!widget_big.pause)
+							Toast.makeText(getApplicationContext(), R.string.cannoteDelete , Toast.LENGTH_SHORT).show();
+				
+						else {
+							nuovaLista.remove(dati);
+							Intent notifica = new Intent(UI1.this,widget_big.class);
+							notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+							widget_big.delete_running_record=true;
+							sendBroadcast(notifica);
+							runningCl.notifyDataSetChanged();
+						}
+					
+					else {
 						nuovaLista.remove(dati);
-						Intent notifica = new Intent(UI1.this,widget_big.class);
-						notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-						widget_big.delete=true;
-						sendBroadcast(notifica);
 						db.open();
 						db.deleteRecord(id_to_delete);
 						db.close();
-						
 						runningCl.notifyDataSetChanged();
-						
 					}
 				}
 			});

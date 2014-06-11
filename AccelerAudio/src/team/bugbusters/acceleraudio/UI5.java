@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -32,7 +31,7 @@ public class UI5 extends Activity {
 	private String freqdef;
 	private TextView scampdef;
 	private TextView dmax;
-	private boolean fromWidget;
+	private static boolean fromWidget=false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -168,14 +167,16 @@ public class UI5 extends Activity {
 	/*-- Back button pressed --*/
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
         	finish();	
 	return;
 	}
 	
 	public void onPause(){
 		super.onPause();
-		if(fromWidget) finish();
+		if(fromWidget) {
+			fromWidget=false;
+			finish();
+		}
 	}
 	
 	
