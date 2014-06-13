@@ -372,7 +372,7 @@ public class widget_big extends AppWidgetProvider {
 	/*-- Method used to set Widget layout --*/
 	private void setLayout(RemoteViews rw){
 		rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
-		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)));
+		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
 		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
 		rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
 		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
