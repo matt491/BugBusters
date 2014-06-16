@@ -216,20 +216,11 @@ public class PlayRecord extends IntentService {
 	        sendBroadcast(broadUI4);
         }
         
-        // 10 ore di Sleep
-        SystemClock.sleep(36000000);
-	
-        if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PLAYING) {
-	    	   at.pause();
-	    	   at.flush();
-	    	   at.release();
-        }
-	       else if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED) {
-				at.flush();
-				at.release();
-		}      
-				
-        stopSelf();
+        
+        /*-- Keep alive Play Record service, thus to continue to receive commands from UI 4 or widget --*/
+        while(true)
+        	SystemClock.sleep(36000000);
+
 	
 	
 	}

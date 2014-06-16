@@ -39,16 +39,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	    protected void onHandleIntent(Intent intent) {
 		 	prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		 	mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		 	db = new DbAdapter(this);
 		 	
-		 	//Intent usato per comunicare con il Broadcast Receiver della UI3
+		 	/*-- Broadcast intent used to send data and update UI --*/
 		 	broadcastIntent = new Intent();
 	        broadcastIntent.setAction(MyUI3Receiver.DATA_RESPONSE);
 	        
-        
-	        //Inizializzo il database
-	        db = new DbAdapter(this);
-	        
-	        //Ripristino parametri dopo una pausa
+      
+	        /*-- Restore parameters after a pause --*/
 	        if(intent.hasExtra("VecchioX")){
 	        	datoX=new StringBuilder().append(intent.getStringExtra("VecchioX"));
 	        	datoY=new StringBuilder().append(intent.getStringExtra("VecchioY"));
@@ -59,15 +57,13 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        		
 	        }
 	        
-	        //Parametri di una nuova registrazione
+	        /*-- Instantiate parameters for a new record --*/
 	        else {
 	        	datoX=new StringBuilder();
 	        	datoY=new StringBuilder();
 	        	datoZ=new StringBuilder();
 	        	freq=prefs.getString("Campion", "Normale");
-
 	        	durata_def=prefs.getInt("duratadef", 30);
-	        
 	        }
 
 	        	i=intent.getIntExtra("attCampX", 0);
@@ -79,45 +75,47 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	        	ric_LIL=intent.getBooleanExtra("fromLIL", false);
 	        	
 	        	acquisizione();
-       	
-	        	//Ogni 25 ms si controlla se il tempo trascorso supera la durata massima impostata
+	        	
+	        	/*-- Set record timeout --*/
 	        	SystemClock.sleep(1000*durata_def);
-
-	        
 	        			
 	 	}
 	 
 	 
+	 	/*-- Method unused --*/
 	 	public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 		
 		
-		//Ad ogni variazione dell'accelerometro
+		/*-- Sensor method that record new accelerometer data --*/
 		public void onSensorChanged(SensorEvent event) {
 				
-				//Aggiornamento campioni registrati
-				//i=i+3;
-				//Aggiornamento delle StringBuilder
+				/*-- Register accelerometer variations on every axis --*/
 			
 				if(event.values[0]-valprec[0]>NOISE){
 					datoX.append((converti(event.values[0]))+" ");
 					i++;
+					
+					/*-- Update intent extra with the value of X-axis progress bar on UI 3 --*/
 					broadcastIntent.putExtra("intPbX", Math.round(Math.abs(event.values[0])));
 				}
 				
 				if(event.values[1]-valprec[1]>NOISE){
 					datoY.append((converti(event.values[1]))+" ");
 					j++;
+					
+					/*-- Update intent extra with the value of Y-axis progress bar on UI 3 --*/
 					broadcastIntent.putExtra("intPbY", Math.round(Math.abs(event.values[1])));
 				}
 				if(event.values[2]-valprec[2]>NOISE){
 					datoZ.append((converti(event.values[2]))+" ");
 					k++;
+					
+					/*-- Update intent extra with the value of Z-axis progress bar on UI 3 --*/
 					broadcastIntent.putExtra("intPbZ", Math.round(Math.abs(event.values[2])));
 				}
 				
 				
-
-				//Aggiornamento delle barre dei 3 assi e dei campioni registrati che vengono visualizzati nella UI3
+				/*-- Every 100ms the Service notify only UI 3 with samples recorded on every axis  --*/
 				if(ric_UI3 && System.currentTimeMillis()-sendtime>100){
 					sendtime=System.currentTimeMillis();
 					broadcastIntent.putExtra("serCampX",i);
@@ -125,6 +123,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					broadcastIntent.putExtra("serCampZ",k);
 					sendBroadcast(broadcastIntent);
 				}
+				
 				
 				valprec[0]=event.values[0];
 				valprec[1]=event.values[1];
@@ -135,13 +134,16 @@ public class DataRecord extends IntentService implements SensorEventListener {
 
 	@Override
 	public void onDestroy(){
+		
+			/*-- Unregister sensor (accelerometer) listener --*/
 			mSensorManager.unregisterListener(this);
 					
 			datoX.trimToSize();
 			datoY.trimToSize();
 			datoZ.trimToSize();
 			
-			//Se si e' cominciata la registrazione dalla UI3
+			
+			/*-- If record started from UI 3 then send update values --*/
 			if(ric_UI3==true) {
 
 				broadcastIntent.putExtra("ValoreX", datoX.toString());
@@ -156,7 +158,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 			}
 			
-			//Invece se si proviene dal widget
+			/*-- Otherwise record started from a widget then finish and insert he record on DB --*/
 			else {
 				
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
@@ -175,7 +177,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 				/*-- Signal to widget that the REC is over due to time elapsed expired --*/
 				
-			    /*-- Intent used to comunicate with little or big widget --*/
+			    /*-- Intent used to communicate with little or big widget --*/
 				if(ric_LIL)  broadcastWidget = new Intent(this,widget_lil.class);
 				else  {
 					broadcastWidget = new Intent(this,widget_big.class);
@@ -192,11 +194,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		
 	}
 	
-	//Metodo che inizializza l'acquisizione dei dati da parte dell'accelerometro
+	
+	/*-- Method that start data capture from accelerometer --*/
 	protected void acquisizione(){
+		
+		/*-- Check accelerometer --*/
     	if(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null) {
     		
-    		 /*-- Intent used to comunicate with little or big widget --*/
+    		/*-- Intent used to communicate with little or big widget --*/
 			if(ric_LIL)  broadcastWidget = new Intent(this,widget_lil.class);
 			else  broadcastWidget = new Intent(this,widget_big.class);
 			
@@ -210,6 +215,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
     		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     		valprec[0]=valprec[1]=valprec[2]=0;
     		
+    		/*-- Register sensor (accelerometer) listener --*/
     		if(freq.equals("Lento")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     			NOISE=1.0F;
@@ -228,7 +234,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
     }
 	
         
-	//Metodo per la conversione in short che servira' all'AudioTrack
+	/*-- Method used to convert accelerometer values into short numbers used by Audiotrack for playbeck --*/
 	protected static short converti(float x){
 		if(x>32.767) return 3276;
 		if(x<-32.768) return -3276;
@@ -236,6 +242,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	}
 	
 	
+	/*-- Method used to calculate record playback time --*/
 	public static long calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
 		int somma=n_campX+n_campY+n_campZ;
 		int s=PlayRecord.calcoloSovra(sovra,somma);
@@ -253,7 +260,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 
 	
 	
-	//Metodo che genera la stringa di numeri che poi verra' elaborata x creare le immagini
+	/*-- Method used to create a string that will be processed to create the record image --*/
 	public static String codifica(String s, String p, String q, String time, long id) {
 		StringBuilder sb=new StringBuilder();
 		Random r=new Random();

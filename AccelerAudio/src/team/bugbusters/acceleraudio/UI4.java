@@ -427,7 +427,7 @@ public class UI4 extends Activity {
 
 		   public static final String NOTIFY_FRAME = "team.bugbusters.acceleraudio.intent.action.NOTIFY_FRAME";
 	        @Override
-	        	public void onReceive(Context context, Intent intent) {	
+	        	public void onReceive(Context context, Intent intent) {
 	        	
 	        		/*-- Current frame (sample) (received when playback is on pause) --*/
 	        		frame=intent.getIntExtra("CurrFrame", 0);
