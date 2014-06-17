@@ -241,6 +241,7 @@ public class PlayRecord extends IntentService {
         
   public void onDestroy(){
       widget_big.service_running=false;
+      MUSIC_ON=false;
 	  this.unregisterReceiver(receiver);
 	  super.onDestroy();  
   }
