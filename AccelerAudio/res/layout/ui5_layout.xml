@@ -109,7 +109,6 @@
         android:max="100"
         android:progress="1" />
 
-
     <Button
         android:id="@+id/salva_imp"
         android:layout_width="wrap_content"
@@ -117,6 +116,7 @@
         android:layout_below="@+id/sbcampdef"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
+        android:onClick="onClick"
         android:text="@string/save"
         android:textSize="15sp"
         android:textStyle="bold" />

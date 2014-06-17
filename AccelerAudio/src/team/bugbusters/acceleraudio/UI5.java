@@ -44,7 +44,7 @@ public class UI5 extends Activity {
 	        sbdurdef =(SeekBar)findViewById(R.id.durdef);
 	    	sbsovradef=(SeekBar)findViewById(R.id.sbcampdef);
 	    	scampdef=(TextView)findViewById(R.id.sovradef);
-	    	Button salva=(Button)findViewById(R.id.salva_imp);
+	   // 	Button salva=(Button)findViewById(R.id.salva_imp);
 	    	dmax=(TextView)findViewById(R.id.durmax);
 	    	
       
@@ -144,8 +144,9 @@ public class UI5 extends Activity {
 	        	
 	        	
 	        	
-	        	/*-- Salva button pressed --*/
-	        	salva.setOnClickListener(new View.OnClickListener() {
+	        	
+	        	
+	      /*  	salva.setOnClickListener(new View.OnClickListener() {
 	                public void onClick(View v) {
 
 	                	Editor prefsEditor = prefs.edit();
@@ -160,8 +161,29 @@ public class UI5 extends Activity {
 	                	Toast.makeText(getApplicationContext(),"Preferenze salvate",Toast.LENGTH_SHORT).show();
 	                	
 	                }});
-	        	
+	        	*/
 	
+	}
+	
+	
+	public void onClick(View view) {
+		switch(view.getId()) {
+			
+			/*-- Salva button pressed --*/
+			case R.id.salva_imp: {
+				Editor prefsEditor = prefs.edit();
+            	prefsEditor.putBoolean("Xselect",defX.isChecked());
+            	prefsEditor.putBoolean("Yselect",defY.isChecked());
+            	prefsEditor.putBoolean("Zselect",defZ.isChecked());
+            	prefsEditor.putString("Campion", freqdef);
+            	prefsEditor.putInt("duratadef", sbdurdef.getProgress());
+            	prefsEditor.putInt("sovrdef", sbsovradef.getProgress());
+            	prefsEditor.commit();
+            	
+            	Toast.makeText(getApplicationContext(),"Preferenze salvate",Toast.LENGTH_SHORT).show();
+			}
+		
+		}
 	}
 	
 	
