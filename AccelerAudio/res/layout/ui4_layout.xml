@@ -46,6 +46,7 @@
        	android:layout_toRightOf="@+id/textView2"
        	android:layout_marginLeft="5dp"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+    
  <!-- Qui compare il tempo corrente di riproduzione, il quale dovrà aggiornarsi quando l'utente trascina il cursore della seekbar (opzionale) -->   
      <TextView
         android:id="@+id/textView4"
@@ -81,7 +82,7 @@
         android:src="@android:drawable/ic_media_pause"
         android:contentDescription="@string/pauseButtonDesc" />
     
-<!-- Alla pressione di questo tasto parte la riproduzione della music session precedente, se c'è. (opzionale) -->
+<!-- Alla pressione di questo tasto parte la riproduzione della music session precedente, se c'è. (opzionale)
     <ImageButton
         android:id="@+id/imageButton2"
         android:layout_width="wrap_content"
@@ -92,7 +93,7 @@
         android:src="@android:drawable/ic_media_previous"
         android:contentDescription="@string/previusButtonDesc" />
     
-<!-- Alla pressione di questo tasto parte la riproduzione della music session successiva, se c'è. (opzionale) -->
+ Alla pressione di questo tasto parte la riproduzione della music session successiva, se c'è. (opzionale) 
     <ImageButton
         android:id="@+id/imageButton3"
         android:layout_width="wrap_content"
@@ -101,6 +102,6 @@
         android:layout_toRightOf="@+id/imageButton1"
         android:layout_marginLeft="20dp"
         android:src="@android:drawable/ic_media_next"
-        android:contentDescription="@string/nextButtonDesc" />
+        android:contentDescription="@string/nextButtonDesc" />  -->
    
 </RelativeLayout>

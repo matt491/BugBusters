@@ -43,7 +43,7 @@ public class UI1 extends Activity {
 	private static final int BY_DATE = 1;
 	private static final int BY_DURATION = 2;
 	
-	
+	/*-- Called when the activity is first created. --*/
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,9 +78,7 @@ public class UI1 extends Activity {
 		lv.setAdapter(cl);
 		
 		
-		/*
-		 * Alla pressione di un elemento della ListView si passa alla UI#2 dove sara' possibile visualizzarne (ed eventualmente modificarne) il dettaglio. 
-		 */
+		/*-- When an item of the list is pressed UI2 is launched. There user can visualize and/or modify details about the item pressed.  --*/
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			
 			@Override
@@ -98,6 +96,7 @@ public class UI1 extends Activity {
 		registerForContextMenu(lv);
 	}
 	
+	/*-- onResume method checks if new sessions have been recorded from the widgets and updates the ListView properly.  --*/
 	@Override
 	public void onResume() {
 		CustomList runningCl = (CustomList) lv.getAdapter();
@@ -122,11 +121,7 @@ public class UI1 extends Activity {
 		super.onResume();
 	}
 	
-	/*
-	 * Attraverso questo metodo vengono recuperati dal database ID, stringa di codifica dell'immagine, nome, data di ultima modifica e durata(?) di ciascuna music session presente nel database.
-	 * L'ID, che non viene visualizzato, sar� passato alla UI#2 tramite il relativo intent.
-	 * La durata (di riproduzione, non di registrazione) al momento non viene visualizzata. 
-	 */
+	/*-- This method retrieves from database music session's ID, name, last-modified date, duration and thumbnail's encoding so that the ListView can be fill properly. --*/
 	private List<String[]> dataToFill(int way) {
 		db.open();
 		Cursor c;
@@ -170,18 +165,14 @@ public class UI1 extends Activity {
 	}
 	
 	
-	/*
-	 * Alla pressione del tasto +, si passa alla UI#3 dove e' possibile registrare una nuova sessione
-	 */
+	/*-- Pressing the "plus button" UI3 is launched.  --*/
 	public void onClick(View view) {
 		Intent intent = new Intent(UI1.this , UI3.class);
 		startActivity(intent);
 		finish();
 	}
 	
-	/*
-	 * Creazione del context menu definito nell'apposito file XML
-	 */
+	/*-- Content menu  --*/
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		

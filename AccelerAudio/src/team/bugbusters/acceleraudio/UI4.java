@@ -43,7 +43,8 @@ public class UI4 extends Activity {
 	private TextView time;
 	private SeekBar sbtime;
 	private TimerCounter timer;
-	private long endtime,starttime,starttime1;
+	private long endtime;
+	private static long starttime;
 	private final long INTERVALLO=10;
 	private boolean on_play=true;
 	private MyUI4Receiver receiver;
@@ -62,8 +63,8 @@ public class UI4 extends Activity {
         
         setContentView(R.layout.ui4_layout);
         pause_resume=(ImageButton)findViewById(R.id.imageButton1);
-        next=(ImageButton)findViewById(R.id.imageButton3);
-        previous=(ImageButton)findViewById(R.id.imageButton2);
+//        next=(ImageButton)findViewById(R.id.imageButton3);
+//        previous=(ImageButton)findViewById(R.id.imageButton2);
         iv = (ImageView) findViewById(R.id.imageView1);
         name = (TextView) findViewById(R.id.title_widget_big);
         duration = (TextView) findViewById(R.id.textView3);
@@ -71,7 +72,7 @@ public class UI4 extends Activity {
         sbtime=(SeekBar)findViewById(R.id.seekBar1);
         sbtime.setEnabled(false);
         starttime=System.currentTimeMillis();
-        starttime1=starttime;
+       // starttime1=starttime;
         db = new DbAdapter(this);
         
         receiver = new MyUI4Receiver();
@@ -102,12 +103,12 @@ public class UI4 extends Activity {
 	    	startService(playIntentService);
         }
         
-        /*-- Previous button pressed --*/
+        /*-- Previous button pressed 
         previous.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
-            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations --*/
-            	if(System.currentTimeMillis()-starttime>500) {
+            	 Delay between all 3 button pressing which permit Play Record service to conclude pending operations 
+            	if(System.currentTimeMillis()-starttime>600) {
             		starttime=System.currentTimeMillis();
             		timer.cancel();
 	            	broadcastIntent.putExtra("Stop", true);
@@ -126,12 +127,12 @@ public class UI4 extends Activity {
             	
             }});
         
-        /*-- Next button pressed --*/
+         Next button pressed 
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
-            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations --*/
-            	if(System.currentTimeMillis()-starttime>500) {
+            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations 
+            	if(System.currentTimeMillis()-starttime>600) {
             		starttime=System.currentTimeMillis();
             		timer.cancel();
 	            	broadcastIntent.putExtra("Stop", true);
@@ -147,7 +148,7 @@ public class UI4 extends Activity {
 	            	sbtime.setMax((int) endtime);
 	            	startService(playIntentService);
             	}            	
-            }});
+            }}); --*/
         
         
         /*-- Pause/Resume button pressed --*/
