@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
@@ -63,8 +64,8 @@ public class UI4 extends Activity {
         
         setContentView(R.layout.ui4_layout);
         pause_resume=(ImageButton)findViewById(R.id.imageButton1);
-//        next=(ImageButton)findViewById(R.id.imageButton3);
-//        previous=(ImageButton)findViewById(R.id.imageButton2);
+//      next=(ImageButton)findViewById(R.id.imageButton3);
+//      previous=(ImageButton)findViewById(R.id.imageButton2);
         iv = (ImageView) findViewById(R.id.imageView1);
         name = (TextView) findViewById(R.id.title_widget_big);
         duration = (TextView) findViewById(R.id.textView3);
@@ -72,7 +73,7 @@ public class UI4 extends Activity {
         sbtime=(SeekBar)findViewById(R.id.seekBar1);
         sbtime.setEnabled(false);
         starttime=System.currentTimeMillis();
-       // starttime1=starttime;
+        
         db = new DbAdapter(this);
         
         receiver = new MyUI4Receiver();
@@ -256,7 +257,6 @@ public class UI4 extends Activity {
  		 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
  			 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
  				 
- 				 Log.i("CAZZO","ENTRATO");
  				 if(!cursor.isLast()) {
  					 cursor.moveToNext();
  					 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
@@ -434,10 +434,14 @@ public class UI4 extends Activity {
 	        		frame=intent.getIntExtra("CurrFrame", 0);
 	        		
 	        		/*-- Play Record service notifies that playback being started --*/
-	        		if(intent.getBooleanExtra("Inizia", false)){
+	        		if(intent.getBooleanExtra("Inizia", false) && PlayRecord.MUSIC_ON){
 	        			timer=new TimerCounter(endtime,INTERVALLO,0);
 	        	    	timer.start();
 	        		}
+	        		
+	        		if(!PlayRecord.MUSIC_ON)
+	        			Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+	        		
 	        			
 	        	}
 	        }

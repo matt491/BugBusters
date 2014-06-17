@@ -239,32 +239,36 @@ public class widget_big extends AppWidgetProvider {
 	    		if(!play_widget)
 	    			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 	    		
-	        	if(!service_running && play_widget){
-	        		pause=false;
-		    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
-		        	i_play.putExtra("fromUI4", false);
-		        	i_play.putExtra("ID", currid);
-		        	context.startService(i_play);
-		        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-	        		}
-	        	
-	        	else if(service_running && !pause && play_widget) {
-	        		pause=true;
-	        		commandIntent.putExtra("Pausa", true);
-	        		commandIntent.putExtra("Riprendi", false);
-	        		commandIntent.putExtra("Stop", false);
-	        		context.sendBroadcast(commandIntent);
-	        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-	        		}
-	        	
-	        	else if(service_running && pause && play_widget) {
-	        		pause=false;
-	        		commandIntent.putExtra("Pausa", false);
-	        		commandIntent.putExtra("Riprendi", true);
-	        		commandIntent.putExtra("Stop", false);
-	        		context.sendBroadcast(commandIntent);
-	        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-	        		}
+	    		if(!PlayRecord.MUSIC_ON)
+	        			Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+	    		else {	
+		        	if(!service_running && play_widget){
+		        		pause=false;
+			    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
+			        	i_play.putExtra("fromUI4", false);
+			        	i_play.putExtra("ID", currid);
+			        	context.startService(i_play);
+			        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+		        		}
+		        	
+		        	else if(service_running && !pause && play_widget) {
+		        		pause=true;
+		        		commandIntent.putExtra("Pausa", true);
+		        		commandIntent.putExtra("Riprendi", false);
+		        		commandIntent.putExtra("Stop", false);
+		        		context.sendBroadcast(commandIntent);
+		        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+		        		}
+		        	
+		        	else if(service_running && pause && play_widget) {
+		        		pause=false;
+		        		commandIntent.putExtra("Pausa", false);
+		        		commandIntent.putExtra("Riprendi", true);
+		        		commandIntent.putExtra("Stop", false);
+		        		context.sendBroadcast(commandIntent);
+		        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+		        		}
+	    		}
 	        	}
         	
         	}/*--Start Stop play end --*/

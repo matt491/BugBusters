@@ -31,7 +31,8 @@ public class PlayRecord extends IntentService {
 	private CommandReceiver receiver=new CommandReceiver();
 	public static final int minsize=7000;
 	public static final int AT_SAMPLE_RATE=24000;
-		 	
+	public static boolean MUSIC_ON=false;
+ 	
 	
 	/*-- Constructor --*/
 	public PlayRecord() {
@@ -43,6 +44,7 @@ public class PlayRecord extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 			
 	    widget_big.service_running=true;
+	    
 	    
 		/*-- Registering Broadcast receiver --*/
         registerReceiver(receiver,new IntentFilter(UI4.COMMAND_RESPONSE));
@@ -212,6 +214,13 @@ public class PlayRecord extends IntentService {
         /*-- Playback --*/
         at.play();
         
+        
+        
+        /*-- Check if the track is really on playback --*/ 
+        if(((AudioManager) getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) 
+        	MUSIC_ON=true;     
+        else MUSIC_ON=false;
+        	
         
         /*-- If Play Record service was launched from UI 4 then send a broadcast to notify playback start --*/
         if(from_UI4) {
