@@ -172,7 +172,7 @@ public class UI4 extends Activity {
 	                	broadcastIntent.putExtra("Pausa", false);
 	                	broadcastIntent.putExtra("Stop", false);
 	                	sendBroadcast(broadcastIntent);	
-	                	timer=new TimerCounter(endtime-(frame/24), INTERVALLO, frame/24);
+	                	timer=new TimerCounter(endtime-(frame/(PlayRecord.AT_SAMPLE_RATE/1000)), INTERVALLO, frame/(PlayRecord.AT_SAMPLE_RATE/1000));
 	                	timer.start();
 	                	sendBroadcast(broadcastIntent);	
 	                	pause_resume.setImageResource(android.R.drawable.ic_media_pause);

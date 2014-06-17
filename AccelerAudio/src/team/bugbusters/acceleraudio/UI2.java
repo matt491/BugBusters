@@ -76,7 +76,7 @@ public class UI2 extends Activity {
         iv = (ImageView) findViewById(R.id.thumbnail);
         
         
-        /*-- Checkboxes listener: used to have at least one checkbox checked --*/
+        /*-- Checkbox listener: used to keep at least one checkbox checked --*/
         OnCheckedChangeListener listener = new OnCheckedChangeListener() {
         	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
         		if(!isChecked){

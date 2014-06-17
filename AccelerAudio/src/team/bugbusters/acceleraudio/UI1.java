@@ -55,7 +55,7 @@ public class UI1 extends Activity {
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		//int way;
+
 		
 		if(prefs.getBoolean("sortedByName", false)) {
 			way = BY_NAME;
@@ -76,6 +76,7 @@ public class UI1 extends Activity {
 		
 		CustomList cl = new CustomList(UI1.this, data);
 		lv.setAdapter(cl);
+		
 		
 		/*
 		 * Alla pressione di un elemento della ListView si passa alla UI#2 dove sara' possibile visualizzarne (ed eventualmente modificarne) il dettaglio. 

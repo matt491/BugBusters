@@ -51,6 +51,7 @@ public class UI5 extends Activity {
 	    	Intent intent=getIntent();
 	    	fromWidget=intent.getBooleanExtra("prefFromWidget", false);
 	    	
+	    	/*-- Checkbox listener: used to keep at least one checkbox checked --*/
 	    	OnCheckedChangeListener listener = new OnCheckedChangeListener() {
 	        	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 	        		if(!isChecked){

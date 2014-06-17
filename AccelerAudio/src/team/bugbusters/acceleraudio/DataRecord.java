@@ -1,6 +1,7 @@
 package team.bugbusters.acceleraudio;
 
 import java.util.Random;
+
 import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
@@ -31,6 +32,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private float[] valprec;
 	
 	
+	/*-- Constructor --*/
 	public DataRecord() {
 		super("DataRecord");	
 	}
@@ -249,12 +251,12 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		int dimX=2*(PlayRecord.minsize+s*n_campX);
 		int dimY=2*(PlayRecord.minsize+s*n_campY);
 		int dimZ=2*(PlayRecord.minsize+s*n_campZ);
-		if(cX && cY && cZ) return (dimX+dimY+dimZ)/24;
-		else if(cX && cY) return (dimX+dimY)/24;
-		else if(cX && cZ) return (dimX+dimZ)/24;
-		else if(cY && cZ) return (dimY+dimZ)/24;
-		else if(cX) return dimX/24;
-		else if(cY) return dimY/24;
+		if(cX && cY && cZ) return (dimX+dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);
+		else if(cX && cY) return (dimX+dimY)/(PlayRecord.AT_SAMPLE_RATE/1000);
+		else if(cX && cZ) return (dimX+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);
+		else if(cY && cZ) return (dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);
+		else if(cX) return dimX/(PlayRecord.AT_SAMPLE_RATE/1000);
+		else if(cY) return dimY/(PlayRecord.AT_SAMPLE_RATE/1000);
 		else return dimZ/24;
 	}
 

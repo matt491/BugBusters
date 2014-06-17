@@ -25,14 +25,15 @@ public class PlayRecord extends IntentService {
 	private boolean  pausa,riprendi,stop,from_UI4;
 	private int g=0,i,j;
 	private AudioTrack at;
-	public static final int minsize=7000;
 	private int sc;
 	private Intent broadUI4;
 	private short[] finale;
 	private CommandReceiver receiver=new CommandReceiver();
+	public static final int minsize=7000;
+	public static final int AT_SAMPLE_RATE=24000;
 		 	
 	
-	//Costruttore
+	/*-- Constructor --*/
 	public PlayRecord() {
 		super("PlayRecord");
 	}
@@ -111,6 +112,7 @@ public class PlayRecord extends IntentService {
     		y[i]=Short.parseShort(p[i]);      
         for(i=0;i<q.length;i++)
     		z[i]=Short.parseShort(q[i]);
+        
 
         /*-- Calculate upsampling coefficient --*/
         sc=calcoloSovra(sovrac, x.length+y.length+z.length);
@@ -186,17 +188,17 @@ public class PlayRecord extends IntentService {
 			   
            	
        	/*-- Merging previous arrays into one --*/
-         finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
-         System.arraycopy(s1, 0, finale, 0, s1.length);	
-         System.arraycopy(s2, 0, finale, s1.length, s2.length);	
-         System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
-         System.arraycopy(s4, 0, finale, s1.length+s2.length+s3.length, s4.length);
-         System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
-         System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
+        finale=new short[s1.length+s2.length+s3.length+s4.length+s5.length+s6.length];
+        System.arraycopy(s1, 0, finale, 0, s1.length);	
+        System.arraycopy(s2, 0, finale, s1.length, s2.length);	
+        System.arraycopy(s3, 0, finale, s1.length+s2.length, s3.length);
+        System.arraycopy(s4, 0, finale, s1.length+s2.length+s3.length, s4.length);
+        System.arraycopy(s5, 0, finale, s1.length+s2.length+s3.length+s4.length, s5.length);
+        System.arraycopy(s6, 0, finale, s1.length+s2.length+s3.length+s4.length+s5.length, s6.length);
         
        
      	/*-- Creation and initialization of AudioTrack object in static mode --*/    
-        at = new AudioTrack(AudioManager.STREAM_MUSIC, 24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
+        at = new AudioTrack(AudioManager.STREAM_MUSIC, AT_SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, 2*finale.length,
         					AudioTrack.MODE_STATIC); 
         
         /*-- Writing finale array into AudioTrack internal buffer --*/
@@ -210,13 +212,15 @@ public class PlayRecord extends IntentService {
         /*-- Playback --*/
         at.play();
         
+        
+        /*-- If Play Record service was launched from UI 4 then send a broadcast to notify playback start --*/
         if(from_UI4) {
 	        broadUI4.putExtra("CurrFrame",0);
 	        broadUI4.putExtra("Inizia", true);
 	        sendBroadcast(broadUI4);
         }
         
-        
+
         /*-- Keep alive Play Record service, thus to continue to receive commands from UI 4 or widget --*/
         while(true)
         	SystemClock.sleep(36000000);
