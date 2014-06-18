@@ -22,12 +22,12 @@ public class widget_big extends AppWidgetProvider {
 	private static boolean terminated_rec=false;
 	private static Cursor c;
 	private static DbAdapter db;
-	private static int precid;
+	private static int old_id;
 	private static boolean PRIMA_VOLTA=true, stopped_first=false;
 	private static long starttime=System.currentTimeMillis();
 	private SharedPreferences prefs;
 	public static boolean delete_running_record=false;
-	public static boolean service_running=false, pause=true;
+	public static boolean pause=true;
 	public static  int currid = 0;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
@@ -41,7 +41,7 @@ public class widget_big extends AppWidgetProvider {
 		currid = 0;
 		PRIMA_VOLTA=true;
 		pause=true;
-		if(play_widget && service_running) {
+		if(play_widget && PlayRecord.running) {
 			commandIntent=new Intent();
     		commandIntent.setAction(UI4.COMMAND_RESPONSE);
 			commandIntent.putExtra("Pausa", false);
@@ -153,9 +153,6 @@ public class widget_big extends AppWidgetProvider {
 	        	terminated_rec=false;
 	    		rw.setImageViewResource(R.id.rec_big, R.drawable.rec);
 	    		
-	    		Intent n=new Intent(context, widget_big.class);
-	    		n.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-	    		
 	        	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
         	}
         
@@ -238,7 +235,7 @@ public class widget_big extends AppWidgetProvider {
 	
 	        			
 	    		else {	
-		        	if(!service_running && play_widget){
+		        	if(!PlayRecord.running && play_widget){
 		        		pause=false;
 			    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
 			        	i_play.putExtra("fromUI4", false);
@@ -257,7 +254,7 @@ public class widget_big extends AppWidgetProvider {
 			        	
 		        	}
 		        	
-		        	else if(service_running && !pause && play_widget) {
+		        	else if(PlayRecord.running && !pause && play_widget) {
 		        		pause=true;
 		        		commandIntent.putExtra("Pausa", true);
 		        		commandIntent.putExtra("Riprendi", false);
@@ -266,7 +263,7 @@ public class widget_big extends AppWidgetProvider {
 		        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
 		        		}
 		        	
-		        	else if(service_running && pause && play_widget) {
+		        	else if(PlayRecord.running && pause && play_widget) {
 		        		
 		        		/*-- Check if speakers is already in use --*/ 
 		        		if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
@@ -310,7 +307,6 @@ public class widget_big extends AppWidgetProvider {
 	        		commandIntent.putExtra("Riprendi", false);  
 	        		context.sendBroadcast(commandIntent);
 	            	context.stopService(i_play);
-	            	service_running=false;
 	            	pause=true;
 	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
 	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, currentSorting(context));
@@ -339,11 +335,10 @@ public class widget_big extends AppWidgetProvider {
 	            		commandIntent.putExtra("Riprendi", false);  
 	            		context.sendBroadcast(commandIntent);
 	                	context.stopService(i_play);
-	                	service_running=false;
 	                	pause=true;
 	                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
 	                	
-	                	precid=currid;
+	                	old_id=currid;
 	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT,  currentSorting(context));
 	                	c=db.fetchRecordById(currid);
 	                	c.moveToFirst();
@@ -351,7 +346,7 @@ public class widget_big extends AppWidgetProvider {
 		    	        
 		    	        if(delete_running_record) {
 		    	        	delete_running_record=false;
-		    	        	db.deleteRecord(precid);
+		    	        	db.deleteRecord(old_id);
 		    	        	if(db.fetchAllRecord().getCount()==0){
 		    	        		Intent notify=new Intent(context, widget_big.class);
 		    	        		notify.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);

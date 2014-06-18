@@ -2,7 +2,6 @@ package team.bugbusters.acceleraudio;
 
 import team.bugbusters.acceleraudio.UI4.MyUI4Receiver;
 import android.app.IntentService;
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,7 @@ public class PlayRecord extends IntentService {
 	private int id_to_process;
 	private String asseX,asseY,asseZ;
 	private boolean checkX,checkY,checkZ;
-	private int sovrac,campx,campy,campz;
+	private int sovrac;
 	private String[] s,p,q;
 	private boolean  pausa,riprendi,stop,from_UI4;
 	private int g=0,i,j;
@@ -29,9 +28,9 @@ public class PlayRecord extends IntentService {
 	private Intent broadUI4;
 	private short[] finale;
 	private CommandReceiver receiver=new CommandReceiver();
+	public static boolean running;
 	public static final int minsize=7000;
 	public static final int AT_SAMPLE_RATE=24000;
-	public static boolean MUSIC_ALREADY_ON=false;
  	
 	
 	/*-- Constructor --*/
@@ -43,9 +42,8 @@ public class PlayRecord extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 			
-	    widget_big.service_running=true;
-	    
-	    
+	    running=true;
+	        
 		/*-- Registering Broadcast receiver --*/
         registerReceiver(receiver,new IntentFilter(UI4.COMMAND_RESPONSE));
         
@@ -69,9 +67,6 @@ public class PlayRecord extends IntentService {
         asseX=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEX));
         asseY=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEY));
         asseZ=cr.getString(cr.getColumnIndex(DbAdapter.KEY_ASSEZ));
-        campx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
-        campy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
-        campz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
         checkX=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
         checkY=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
         checkZ=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
@@ -234,8 +229,7 @@ public class PlayRecord extends IntentService {
 	  
         
   public void onDestroy(){
-      widget_big.service_running=false;
-      MUSIC_ALREADY_ON=false;
+      running=false;
 	  this.unregisterReceiver(receiver);
 	  super.onDestroy();  
   }
