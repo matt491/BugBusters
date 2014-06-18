@@ -18,6 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/thubnail"
         android:layout_marginLeft="5dp"
+        android:paddingRight="3dp"
         android:text="NOME"
         android:singleLine="true"
         android:ellipsize="end"
