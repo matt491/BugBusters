@@ -8,16 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 
  
 public class DbAdapter {
-  @SuppressWarnings("unused")
-  private static final String LOG_TAG = DbAdapter.class.getSimpleName();
-         
+        
   private Context context;
   private SQLiteDatabase database;
   private DatabaseHelper dbHelper;
  
-  // Database fields
+  /*-- Database fields --*/
   private static final String DATABASE_TABLE = "musicsessions";
- 
   public static final String KEY_RECORDID = "_id";
   public static final String KEY_NAME = "name";
   public static final String KEY_DURATION = "dur";
@@ -35,22 +32,26 @@ public class DbAdapter {
   public static final String KEY_LAST = "dataulti";
   public static final String KEY_IMM = "datimm";
   
+  
   public DbAdapter(Context context) {
     this.context = context;
   }
  
+  /*-- Method which is used to open the Database (needed before insert/modify an entry) --*/
   public DbAdapter open() throws SQLException {
     dbHelper = new DatabaseHelper(context);
     database = dbHelper.getWritableDatabase();
     return this;
   }
  
+  /*-- Method which is used to open the Database --*/
   public void close() {
     dbHelper.close();
   }
  
+
   private ContentValues createContentValues(String name, String dur, String assex, String assey, String assez, String checkx,
-		  String checky , String checkz, int numcampx, int numcampy, int numcampz, String upsample, String datacreaz, String dataulti, String datimm ) {
+		  String checky , String checkz, int numcampx, int numcampy, int numcampz, String upsample, String datacreaz, String dataulti, String datimm) {
     ContentValues values = new ContentValues();
     values.put( KEY_NAME, name );
     values.put( KEY_DURATION, dur );
@@ -71,7 +72,8 @@ public class DbAdapter {
    return values;
   }
   
-  private ContentValues updateContentValues(String name,String dur,String checkx, String checky , String checkz, String upsample, String dataulti ) {
+ 
+  private ContentValues updateContentValues(String name,String dur,String checkx, String checky , String checkz, String upsample, String dataulti) {
     ContentValues values = new ContentValues();
     values.put( KEY_NAME, name );
     values.put( KEY_DURATION, dur );
@@ -84,6 +86,8 @@ public class DbAdapter {
    return values;
   }
       
+  
+
   private ContentValues updateContentValuesNameImage(String name, String imm) {
 	    ContentValues values = new ContentValues();
 	    values.put( KEY_NAME, name );
@@ -91,71 +95,82 @@ public class DbAdapter {
 	   return values;
 	  }
   
+  
+  /*-- Method which is used to update an existing entry
+   *-- Updates: image
+  --*/
   private ContentValues updateContentValuesImageCodeOnly(String imm) {
 	    ContentValues values = new ContentValues();
 	    values.put( KEY_IMM, imm ); 	    
 	   return values;
 	  }
   
+  
+  /*-- Method which is used to update an existing entry
+   *-- Updates: name
+  --*/
   private ContentValues updateContentValuesNameOnly(String name) {
 	    ContentValues values = new ContentValues();
 	    values.put( KEY_NAME, name );    
 	   return values;
   }
   
-  //crea una music session
+  /*-- Method which is used to create and insert a new entry into Database --*/
   public long createRecord(String name, String dur, String assex, String assey, String assez, String checkx,
 		  				   String checky , String checkz, int numcampx, int numcampy, int numcampz, String upsample, String datacreaz, String dataulti, String datimm ) {
 	  		ContentValues initialValues = createContentValues(name, dur, assex, assey, assez, checkx, checky , checkz, numcampx, numcampy, numcampz,
-	  										upsample, datacreaz, dataulti, datimm );
+	  										upsample, datacreaz, dataulti, datimm);
 	  		return database.insertOrThrow(DATABASE_TABLE, null, initialValues);
   }
  
-  //aggiorna un record
+  /*-- Method which is used to create an existing entry
+   *-- Updates: name, duration, axes checkboxes, upsampling, last modified date
+  --*/
   public boolean updateRecord(long recordID, String name, String dur, String checkx, String checky , String checkz, String upsample, String dataulti ) {
 	  			ContentValues updateValues = updateContentValues(name, dur, checkx, checky , checkz, upsample, dataulti);
 	  			return database.update(DATABASE_TABLE, updateValues, KEY_RECORDID + "==" + recordID, null) > 0;
   }
                  
-  //Elimina un record    
+  /*-- Method which is used to delete an entry --*/   
   public boolean deleteRecord(long recordID) {
 	  			return database.delete(DATABASE_TABLE, KEY_RECORDID + "==" + recordID, null) > 0;
   }
  
-  //Query che restituisce tutti i record (in ordine di inserimento)
+  /*-- Method which query Database and return all entries (ordered by insertion) --*/
   public Cursor fetchAllRecord() {
 	  			return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, null);
     }
   
-  //Query che restituisce tutti i record ordinati per nome
+  /*-- Method which query Database and return all entries ordered by name --*/
   public Cursor fetchAllRecordSortedByName() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_NAME + " ASC");
   }
  
-//Query che restituisce tutti i record ordinati per data
+  /*-- Method which query Database and return all entries ordered by date --*/
   public Cursor fetchAllRecordSortedByDate() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_LAST + " DESC");
   }
   
-//Query che restituisce tutti i record ordinati per durata
+  /*-- Method which query Database and return all entries ordered by duration --*/
   public Cursor fetchAllRecordSortedByDuration() {
 	  return database.query(DATABASE_TABLE, new String[] { KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     			KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM}, null, null, null, null, KEY_DURATION + " ASC");
   }
   
-  //Query che restituisce un record(cursor) dato un NOME
+  /*-- Method which query Database and return the entry that has the given name --*/
   public Cursor fetchRecordByFilter(String filter) {
 	  	Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
     		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
                                     KEY_NAME + " = '"+ filter + "'", null, null, null, null, null);
+	  	
 	  	return mCursor;
     
   }
      
-  //Query che restituisce un record(cursor) dato un ID
+  /*-- Method which query Database and return the entry which the given ID corresponding to --*/
    public Cursor fetchRecordById(long id) {
         Cursor mCursor = database.query(true, DATABASE_TABLE, new String[] {KEY_RECORDID, KEY_NAME, KEY_DURATION, KEY_ASSEX,KEY_ASSEY,KEY_ASSEZ,
         		KEY_CHECKX,KEY_CHECKY,KEY_CHECKZ,KEY_NUMCAMPX,KEY_NUMCAMPY,KEY_NUMCAMPZ,KEY_UPSAMPLE,KEY_DATE,KEY_LAST,KEY_IMM },
@@ -164,22 +179,31 @@ public class DbAdapter {
         return mCursor;
   }
    
+   
+   /*-- Method which is used to update an existing entry
+    *-- Updates: name, image
+   --*/
    public boolean updateRecordNameAndImage(long recordID, String name, String imm) {
 			ContentValues update = updateContentValuesNameImage(name, imm);
 			return database.update(DATABASE_TABLE, update, KEY_RECORDID + "==" + recordID, null) > 0;
 }
    
-   
+   /*-- Method which is used to update an existing entry
+    *-- Updates: image
+   --*/
    public boolean updateImageCode(long recordID, String name) {
 			ContentValues updateValuesImageCode = updateContentValuesImageCodeOnly(name);
 			return database.update(DATABASE_TABLE, updateValuesImageCode, KEY_RECORDID + "==" + recordID, null) > 0;
 }
    
+   /*-- Method which is used to update an existing entry
+    *-- Updates: name
+   --*/
    public boolean updateNameOnly(long recordID, String name) {
 			ContentValues updateName = updateContentValuesNameOnly(name);
 			return database.update(DATABASE_TABLE, updateName, KEY_RECORDID + "==" + recordID, null) > 0;
 }
-   //Qua ci va il metodo di Mattia
+
   
   
 }
