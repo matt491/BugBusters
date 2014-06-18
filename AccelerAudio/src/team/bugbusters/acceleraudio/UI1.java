@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,9 +15,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -100,65 +103,82 @@ public class UI1 extends Activity {
 	public void onResume() {
 		CustomList runningCl = (CustomList) lv.getAdapter();
 		List<String[]> toAdd = runningCl.getList();
-	    db.open();
-	    Cursor c = db.fetchAllRecord();
-	    if(toAdd.size() != c.getCount()) {
-	    	for(c.move(toAdd.size() + 1); !c.isAfterLast(); c.moveToNext()) {
-	    		String[] nuova = new String[5];
-	    		nuova[0] = c.getString(c.getColumnIndex(DbAdapter.KEY_RECORDID));
-	    		nuova[1] = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
-	    		nuova[2] = c.getString(c.getColumnIndexOrThrow(DbAdapter.KEY_NAME));
-	    		nuova[3] = c.getString(c.getColumnIndex(DbAdapter.KEY_LAST));
-	    		nuova[4] = c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
-	    		toAdd.add(nuova);
-	    	}
-	    	ordinaLista(toAdd);
-	    	runningCl.notifyDataSetChanged();
-	    }
-	    c.close();
-    	db.close();
+	    try {
+			db.open();
+			Cursor c = db.fetchAllRecord();
+			if(toAdd.size() != c.getCount()) {
+				for(c.move(toAdd.size() + 1); !c.isAfterLast(); c.moveToNext()) {
+					String[] nuova = new String[5];
+					nuova[0] = c.getString(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+					nuova[1] = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+					nuova[2] = c.getString(c.getColumnIndexOrThrow(DbAdapter.KEY_NAME));
+					nuova[3] = c.getString(c.getColumnIndex(DbAdapter.KEY_LAST));
+					nuova[4] = c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION));
+					toAdd.add(nuova);
+				}
+				ordinaLista(toAdd);
+				runningCl.notifyDataSetChanged();
+			}
+			c.close();
+			db.close();
+		} catch (SQLException e) {
+			Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
 		super.onResume();
 	}
 	
 	/*-- This method retrieves from database music session's ID, name, last-modified date, duration and thumbnail's encoding so that the ListView can be fill properly. --*/
-	private List<String[]> dataToFill(int way) {
-		db.open();
-		Cursor c;
-		
-		switch(way) {
-		case BY_NAME:
-			c = db.fetchAllRecordSortedByName();
-			break;
-		case BY_DATE:
-			c = db.fetchAllRecordSortedByDate();
-			break;
-		case BY_DURATION:
-			c = db.fetchAllRecordSortedByDuration();
-			break;
-		default:  //case BY_INSERTION
-			c = db.fetchAllRecord();
-			break;
-		}
+	private List<String[]> dataToFill(int way) {	
 		List<String[]> myList = new ArrayList<String[]>();
 		
-		int idIndex = c.getColumnIndex(DbAdapter.KEY_RECORDID);
-		int thumbnailIndex = c.getColumnIndex(DbAdapter.KEY_IMM);
-		int nameIndex = c.getColumnIndex(DbAdapter.KEY_NAME);
-		int lastIndex = c.getColumnIndex(DbAdapter.KEY_LAST);
-		int durationIndex = c.getColumnIndex(DbAdapter.KEY_DURATION);
-		
-		for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			String[] row = new String[5];
-			row[0] = c.getString(idIndex);
-			row[1] = c.getString(thumbnailIndex);
-			row[2] = c.getString(nameIndex);
-			row[3] = c.getString(lastIndex);
-			row[4] = c.getString(durationIndex);
-			myList.add(row);
+		try {
+			db.open();
+			Cursor c;
+			
+			switch(way) {
+			case BY_NAME:
+				c = db.fetchAllRecordSortedByName();
+				break;
+			case BY_DATE:
+				c = db.fetchAllRecordSortedByDate();
+				break;
+			case BY_DURATION:
+				c = db.fetchAllRecordSortedByDuration();
+				break;
+			default:  //case BY_INSERTION
+				c = db.fetchAllRecord();
+				break;
+			}
+			
+			
+			int idIndex = c.getColumnIndex(DbAdapter.KEY_RECORDID);
+			int thumbnailIndex = c.getColumnIndex(DbAdapter.KEY_IMM);
+			int nameIndex = c.getColumnIndex(DbAdapter.KEY_NAME);
+			int lastIndex = c.getColumnIndex(DbAdapter.KEY_LAST);
+			int durationIndex = c.getColumnIndex(DbAdapter.KEY_DURATION);
+			
+			for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+				String[] row = new String[5];
+				row[0] = c.getString(idIndex);
+				row[1] = c.getString(thumbnailIndex);
+				row[2] = c.getString(nameIndex);
+				row[3] = c.getString(lastIndex);
+				row[4] = c.getString(durationIndex);
+				myList.add(row);
+			}
+			
+			c.close();
+			db.close();
+			
+			
+		} catch (SQLException e) {
+			Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
 		}
-		
-		c.close();
-		db.close();
 		
 		return myList;
 	}
@@ -260,20 +280,21 @@ public class UI1 extends Activity {
 						toast.show();
 					}
 					else {
-						int dove = nuovaLista.indexOf(dati);
-						nuovaLista.get(dove)[2] = nuovoNome;
-						
-						ordinaLista(nuovaLista);
-						
-						int pos = nuovaLista.indexOf(dati);
-						
-						runningCl.notifyDataSetChanged();
-						
-						lv.setSelection(pos);
-						
-						db.open();
-						db.updateNameOnly(id_to_rename,nuovoNome);
-						db.close();
+						try {
+							int dove = nuovaLista.indexOf(dati);
+							nuovaLista.get(dove)[2] = nuovoNome;
+							ordinaLista(nuovaLista);
+							int pos = nuovaLista.indexOf(dati);
+							runningCl.notifyDataSetChanged();
+							lv.setSelection(pos);
+							
+							db.open();
+							db.updateNameOnly(id_to_rename,nuovoNome);
+							db.close();
+						} catch (SQLException e) {
+							Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+							e.printStackTrace();
+						}
 						
 						dialog.dismiss();
 					}
@@ -311,11 +332,16 @@ public class UI1 extends Activity {
 						}
 					
 					else {
-						nuovaLista.remove(dati);
-						db.open();
-						db.deleteRecord(id_to_delete);
-						db.close();
-						runningCl.notifyDataSetChanged();
+						try {
+							nuovaLista.remove(dati);
+							db.open();
+							db.deleteRecord(id_to_delete);
+							db.close();
+							runningCl.notifyDataSetChanged();
+						} catch (SQLException e) {
+							Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+							e.printStackTrace();
+						}
 					}
 				}
 			});
@@ -352,52 +378,67 @@ public class UI1 extends Activity {
 	
 	/*-- Method used to duplicate a music session --*/
 	private String[] duplica(long id){
-	   db.open();
-	   Cursor c=db.fetchRecordById(id);
-	   c.moveToNext();
-	   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-       String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
-       String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
-       String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
-       boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
-       boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
-       boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-       int ncampx=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
-       int ncampy=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
-       int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
-       int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
-       String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
-       String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
-	       int sovrac_new;
-	       boolean cX=checkX, cY=checkY, cZ=checkZ;
-	       
-	       Random r=new Random();
-	       while((cX==checkX && cY==checkY && cZ==checkZ) || (!cX && !cY && !cZ)){
-		       if(r.nextDouble()>=0.5) cX = !cX;
-		       if(r.nextDouble()>=0.5) cY = !cY;
-		       if(r.nextDouble()>=0.5) cZ = !cZ;
-	       }
-  
-	       sovrac_new = (int)(Math.random()*100);
-	       if(sovrac_new==sovrac && sovrac<=90) sovrac_new = sovrac+10;
-	       else if (sovrac_new==sovrac) sovrac_new = sovrac-80;
-	       
-	       long dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
-	       
-	       long id_new = db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+cX, ""+cY, ""+cZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
-	   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
-	   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
+		String[] ret = new String[5];
+		ret[0] = "";
+		ret[1] = "";
+		ret[2] = "";
+		ret[3] = "";
+		ret[4] = "";
 		
-	   c.close();
-	   db.close();
-	   
-	   String[] ret = new String[5];
-	   ret[0] = "" + id_new;
-	   ret[1] = code;
-	   ret[2] = n + "_" + id_new;
-	   ret[3] = dataul;
-	   ret[4] = ""+dur;
-	   
+	    try {
+		   db.open();
+		   Cursor c=db.fetchRecordById(id);
+		   c.moveToNext();
+		   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
+		   String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
+		   String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
+		   String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
+		   boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
+		   boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
+		   boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+		   int ncampx=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
+		   int ncampy=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
+		   int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
+		   int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
+		   String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
+		   String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
+		   int sovrac_new;
+		   boolean cX=checkX, cY=checkY, cZ=checkZ;
+		       
+		   Random r=new Random();
+		   while((cX==checkX && cY==checkY && cZ==checkZ) || (!cX && !cY && !cZ)){
+			   if(r.nextDouble()>=0.5) cX = !cX;
+			   if(r.nextDouble()>=0.5) cY = !cY;
+			   if(r.nextDouble()>=0.5) cZ = !cZ;
+		   }
+  
+		   sovrac_new = (int)(Math.random()*100);
+		   if(sovrac_new==sovrac && sovrac<=90) sovrac_new = sovrac+10;
+		   else if (sovrac_new==sovrac) sovrac_new = sovrac-80;
+		    
+		   long dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
+		       
+		   long id_new = db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+cX, ""+cY, ""+cZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
+		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
+		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
+			
+		   c.close();
+		   db.close();
+		    
+		   ret[0] = "" + id_new;
+		   ret[1] = code;
+		   ret[2] = n + "_" + id_new;
+		   ret[3] = dataul;
+		   ret[4] = ""+dur;
+		   
+		   
+	} catch (NumberFormatException e) {
+		Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+		e.printStackTrace();
+	} catch (SQLException e) {
+		Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+		e.printStackTrace();
+	}
 	   return ret;
    }
 	
@@ -405,18 +446,23 @@ public class UI1 extends Activity {
 	 * Metodo che controlla se e gia' presente un NOME di una music session nel DB
 	 */
 		public static boolean sameName(DbAdapter this_db,String s){
-				this_db.open();
-				Cursor cursor=this_db.fetchRecordByFilter(s);
-				while (cursor.moveToNext()) {
-					String rNAME = cursor.getString(cursor.getColumnIndex(DbAdapter.KEY_NAME) );
-					if(s.equals(rNAME)) {
-						cursor.close();
-						this_db.close();
-						return true;
-					}
-				} 
-				cursor.close();
-				this_db.close();
+				try {
+					this_db.open();
+					Cursor cursor=this_db.fetchRecordByFilter(s);
+					while (cursor.moveToNext()) {
+						String rNAME = cursor.getString(cursor.getColumnIndex(DbAdapter.KEY_NAME) );
+						if(s.equals(rNAME)) {
+							cursor.close();
+							this_db.close();
+							return true;
+						}
+					} 
+					cursor.close();
+					this_db.close();
+				} catch (SQLException e) {
+					Log.w("Exception", "Errore nel Database");
+					e.printStackTrace();
+				}
 				return false;
 		}
 		

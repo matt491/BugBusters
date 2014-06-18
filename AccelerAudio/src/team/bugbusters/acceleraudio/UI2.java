@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -158,10 +159,18 @@ public class UI2 extends Activity {
 	            				nome_ric=nomeNuovo;
 	            				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 	            				long dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());	
-	            				db.open();
-	            				db.updateRecord(id_ric, nome_ric, ""+dur, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
-	            						""+sb.getProgress(), dataulitmamodifica);
-	            				db.close();
+	            				
+	            				try {
+									db.open();
+									db.updateRecord(id_ric, nome_ric, ""+dur, ""+chX.isChecked(),""+chY.isChecked(),""+chZ.isChecked(),
+		            						""+sb.getProgress(), dataulitmamodifica);
+		            				db.close();
+		            				
+								} catch (SQLException e) {
+									Toast.makeText(UI2.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+									e.printStackTrace();
+								}
+	            				
 	            		
 	            				prosegui();
 	              			}
@@ -195,79 +204,84 @@ public class UI2 extends Activity {
 	
 	/*-- Method which reads updated data from DB and displays correct informations --*/
 	private void aggiornaDati(boolean first_time){
-		db.open();
-        cr=db.fetchRecordById(id_ric);
-        cr.moveToNext();
-        
-        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
-        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
-        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
-        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
-        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
-        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
-        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
-        
-        ultimavar.setText(dataulitmamodifica.substring(0, 16));
-        
-        if(first_time){
-            ncampx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
-            ncampy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
-            ncampz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
-            
-            int alpha = Integer.parseInt(codifica.substring(0, 3));
-            int red = Integer.parseInt(codifica.substring(3, 6));
-            int green = Integer.parseInt(codifica.substring(6, 9));
-            int blue = Integer.parseInt(codifica.substring(9, 12));
-            
-            iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
-            
-            switch(Integer.parseInt(codifica.substring(11))) {
-    			case 0:
-    				iv.setImageResource(R.drawable.ic_music_0);
-    				break;
-    			case 1:
-    				iv.setImageResource(R.drawable.ic_music_1);
-    				break;
-    			case 2:
-    				iv.setImageResource(R.drawable.ic_music_2);
-    				break;
-    			case 3:
-    				iv.setImageResource(R.drawable.ic_music_3);
-    				break;
-    			case 4:
-    				iv.setImageResource(R.drawable.ic_music_4);
-    				break;
-    			case 5: 
-    				iv.setImageResource(R.drawable.ic_music_5);
-    				break;
-    			case 6:
-    				iv.setImageResource(R.drawable.ic_music_6);
-    				break;
-    			case 7:
-    				iv.setImageResource(R.drawable.ic_music_7);
-    				break;
-    			case 8:
-    				iv.setImageResource(R.drawable.ic_music_8);
-    				break;
-    			case 9:
-    				iv.setImageResource(R.drawable.ic_music_9);
-    				break;
-    		}
-            
-            chX.setChecked(x_selected);
-            chY.setChecked(y_selected);
-            chZ.setChecked(z_selected);
-            nomevar.setText(nome_ric);
-            nomevar.setSelection(nomevar.getText().length());
-            timevar.setText(timestamp_ric.substring(0, 16));
-            result.setText(""+sovra_ric);
-            sb.setProgress(sovra_ric);
-        }
-        
-        cr.close();
-        db.close();
-        
+		try {
+			db.open();
+	        cr=db.fetchRecordById(id_ric);
+	        cr.moveToNext();
+	        
+	        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
+	        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
+	        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
+	        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
+	        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
+	        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+	        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
+	        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
+	        
+	        ultimavar.setText(dataulitmamodifica.substring(0, 16));
+	        
+	        if(first_time){
+	            ncampx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
+	            ncampy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
+	            ncampz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
+	            
+	            int alpha = Integer.parseInt(codifica.substring(0, 3));
+	            int red = Integer.parseInt(codifica.substring(3, 6));
+	            int green = Integer.parseInt(codifica.substring(6, 9));
+	            int blue = Integer.parseInt(codifica.substring(9, 12));
+	            
+	            iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
+	            
+	            switch(Integer.parseInt(codifica.substring(11))) {
+	    			case 0:
+	    				iv.setImageResource(R.drawable.ic_music_0);
+	    				break;
+	    			case 1:
+	    				iv.setImageResource(R.drawable.ic_music_1);
+	    				break;
+	    			case 2:
+	    				iv.setImageResource(R.drawable.ic_music_2);
+	    				break;
+	    			case 3:
+	    				iv.setImageResource(R.drawable.ic_music_3);
+	    				break;
+	    			case 4:
+	    				iv.setImageResource(R.drawable.ic_music_4);
+	    				break;
+	    			case 5: 
+	    				iv.setImageResource(R.drawable.ic_music_5);
+	    				break;
+	    			case 6:
+	    				iv.setImageResource(R.drawable.ic_music_6);
+	    				break;
+	    			case 7:
+	    				iv.setImageResource(R.drawable.ic_music_7);
+	    				break;
+	    			case 8:
+	    				iv.setImageResource(R.drawable.ic_music_8);
+	    				break;
+	    			case 9:
+	    				iv.setImageResource(R.drawable.ic_music_9);
+	    				break;
+	    		}
+	            
+	            chX.setChecked(x_selected);
+	            chY.setChecked(y_selected);
+	            chZ.setChecked(z_selected);
+	            nomevar.setText(nome_ric);
+	            nomevar.setSelection(nomevar.getText().length());
+	            timevar.setText(timestamp_ric.substring(0, 16));
+	            result.setText(""+sovra_ric);
+	            sb.setProgress(sovra_ric);
+	        }
+	        
+	        cr.close();
+	        db.close();
+	        
+		} catch (SQLException e) {
+			Toast.makeText(UI2.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
 	}
 	
 	/*-- On activity resume (e.g. come back from UI4) it displays updated informations --*/

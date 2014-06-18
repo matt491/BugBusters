@@ -7,7 +7,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.preference.PreferenceManager;
@@ -183,191 +185,198 @@ public class widget_big extends AppWidgetProvider {
         	/*-- DB Emptiness check --*/
         	
         	db = new DbAdapter(context);
-        	db.open();
-        	if(db.fetchAllRecord().getCount()==0) {
-        		Toast.makeText(context, "DataBase Empty from Receiver", Toast.LENGTH_SHORT).show();
-        		rw.setTextViewText(R.id.title_w_big, "Title");
-        		rw.setTextViewText(R.id.duration_big, "0,00 s");
-        		rw.setTextViewText(R.id.modify_big, "Last Modified");
-        		rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_launcher1);
-        		rw.setInt(R.id.image_big, "setBackgroundColor", Color.WHITE);
-        		
-        		/*-- First instance of the widget after deleting all records --*/
-        		PRIMA_VOLTA=true;		
-        	}
-        	else {	
-        		switch(currentSorting(context)) {
-        		case UI4.BY_NAME:
-        			c = db.fetchAllRecordSortedByName(); 
-        			break;
-        			case UI4.BY_DATE:
-        			c = db.fetchAllRecordSortedByDate();
-        			break;
-        			case UI4.BY_DURATION:
-        			c = db.fetchAllRecordSortedByDuration();
-        			break;
-        			case UI4.BY_INSERTION:
-        			c = db.fetchAllRecord();
-        			break;
-        		}
-        	
-    		/*-- First Call--*/
-        		
-        		if(PRIMA_VOLTA)
-        		{	
-        			PRIMA_VOLTA=false;
-        			c.moveToFirst();
-        			currid=(int)c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
-        			setLayout(rw);
-        		}
-        		
-        	
-        /*-- Play code --*/      
-        if(action.equals("START_STOP_PLAY")) {
-        	if(System.currentTimeMillis()-starttime>300) {
-        		starttime=System.currentTimeMillis();
-	        	i_play = new Intent(context, PlayRecord.class);
-	    		commandIntent=new Intent();
-	    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
-	    		
-	    		if(!play_widget)
-	    			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+        	try {
+				db.open();
+				if(db.fetchAllRecord().getCount()==0) {
+					Toast.makeText(context, "DataBase Empty from Receiver", Toast.LENGTH_SHORT).show();
+					rw.setTextViewText(R.id.title_w_big, "Title");
+					rw.setTextViewText(R.id.duration_big, "0,00 s");
+					rw.setTextViewText(R.id.modify_big, "Last Modified");
+					rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_launcher1);
+					rw.setInt(R.id.image_big, "setBackgroundColor", Color.WHITE);
+					
+					/*-- First instance of the widget after deleting all records --*/
+					PRIMA_VOLTA=true;		
+				}
+				else {	
+					switch(currentSorting(context)) {
+					case UI4.BY_NAME:
+						c = db.fetchAllRecordSortedByName(); 
+						break;
+						case UI4.BY_DATE:
+						c = db.fetchAllRecordSortedByDate();
+						break;
+						case UI4.BY_DURATION:
+						c = db.fetchAllRecordSortedByDuration();
+						break;
+						case UI4.BY_INSERTION:
+						c = db.fetchAllRecord();
+						break;
+					}
+				
+				/*-- First Call--*/
+					
+					if(PRIMA_VOLTA)
+					{	
+						PRIMA_VOLTA=false;
+						c.moveToFirst();
+						currid=(int)c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+						setLayout(rw);
+					}
+					
+				
+				    /*-- Play code --*/      
+				    if(action.equals("START_STOP_PLAY")) {
+				    	if(System.currentTimeMillis()-starttime>300) {
+							starttime=System.currentTimeMillis();
+							i_play = new Intent(context, PlayRecord.class);
+							commandIntent=new Intent();
+							commandIntent.setAction(UI4.COMMAND_RESPONSE);
+					
+						if(!play_widget)
+							Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 	
-	        			
-	    		else {	
-		        	if(!PlayRecord.running && play_widget){
-		        		pause=false;
-			    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
-			        	i_play.putExtra("fromUI4", false);
-			        	i_play.putExtra("ID", currid);
-			        	
-			        	/*-- Check if speakers is already in use --*/ 
-			        	if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
-			        		stopped_first=false;
-			        		context.startService(i_play);
-			        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-			        	}
-			        	else {
-			        		stopped_first=true;
-			        		Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
-			        	}
-			        	
-		        	}
-		        	
-		        	else if(PlayRecord.running && !pause && play_widget) {
-		        		pause=true;
-		        		commandIntent.putExtra("Pausa", true);
-		        		commandIntent.putExtra("Riprendi", false);
-		        		commandIntent.putExtra("Stop", false);
-		        		context.sendBroadcast(commandIntent);
-		        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-		        		}
-		        	
-		        	else if(PlayRecord.running && pause && play_widget) {
-		        		
-		        		/*-- Check if speakers is already in use --*/ 
-		        		if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
-		        			if(stopped_first){
-		        				stopped_first=false;
-		        				context.startService(i_play); 	
-		        				rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-		        			}
-		        				
+								
+						else {	
+					    	if(!PlayRecord.running && play_widget){
+					    		pause=false;
+					    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
+					        	i_play.putExtra("fromUI4", false);
+					        	i_play.putExtra("ID", currid);
+					        	
+					        	/*-- Check if speakers is already in use --*/ 
+					        	if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
+					        		stopped_first=false;
+					        		context.startService(i_play);
+					        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+					        	}
+					        	else {
+					        		stopped_first=true;
+					        		Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+					        	}
+					        	
+					    	}
+					    	
+					    	else if(PlayRecord.running && !pause && play_widget) {
+					    		pause=true;
+					    		commandIntent.putExtra("Pausa", true);
+					    		commandIntent.putExtra("Riprendi", false);
+					    		commandIntent.putExtra("Stop", false);
+					    		context.sendBroadcast(commandIntent);
+					    		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+					    		}
+					    	
+					    	else if(PlayRecord.running && pause && play_widget) {
+					    		
+					    		/*-- Check if speakers is already in use --*/ 
+					    		if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
+					    			if(stopped_first){
+					    				stopped_first=false;
+					    				context.startService(i_play); 	
+					    				rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+					    			}
+					    				
 	
-		        			else {
-				        		pause=false;
-				        		commandIntent.putExtra("Pausa", false);
-				        		commandIntent.putExtra("Riprendi", true);
-				        		commandIntent.putExtra("Stop", false);
-				        		context.sendBroadcast(commandIntent);
-				        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-		        			}
-		        			        			
-		        		}
-		        		else Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
-		        	}
-	    		}
-	        	}
-        	
-        	}/*--Start Stop play end --*/
-        
-        if(action.equals("START_PRE")) {
-        	if(System.currentTimeMillis()-starttime>300) {
-        		starttime=System.currentTimeMillis();
-	        	if(!play_widget)
-	    			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
-	        	
-	        	if(play_widget)
-	        	{
-	        		i_play = new Intent(context, PlayRecord.class);
-	        		commandIntent=new Intent();
-	        		commandIntent.setAction(UI4.COMMAND_RESPONSE);
-	        		commandIntent.putExtra("Stop", true);
-	        		commandIntent.putExtra("Pausa", false);
-	        		commandIntent.putExtra("Riprendi", false);  
-	        		context.sendBroadcast(commandIntent);
-	            	context.stopService(i_play);
-	            	pause=true;
-	            	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-	        		currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, currentSorting(context));
-	        		c=db.fetchRecordById(currid);
-	        		c.moveToFirst();
-	            	setLayout(rw);
-	        		}
-        		}
-        	}/*--  End Start Pre --*/
-        	
-            if(action.equals("START_FOR")|| delete_running_record) {
-            	
-            	if(System.currentTimeMillis()-starttime>300) {
-            		starttime=System.currentTimeMillis();
-            	
-	            	if(!play_widget)
-	        			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
-	            	
-	            	if(play_widget){
-	            		i_play = new Intent(context, PlayRecord.class);
-	            		
-	            		commandIntent=new Intent();
-	            		commandIntent.setAction(UI4.COMMAND_RESPONSE);
-	            		commandIntent.putExtra("Stop", true);
-	            		commandIntent.putExtra("Pausa", false);
-	            		commandIntent.putExtra("Riprendi", false);  
-	            		context.sendBroadcast(commandIntent);
-	                	context.stopService(i_play);
-	                	pause=true;
-	                	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-	                	
-	                	old_id=currid;
-	            		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT,  currentSorting(context));
-	                	c=db.fetchRecordById(currid);
-	                	c.moveToFirst();
-		            	setLayout(rw);
-		    	        
-		    	        if(delete_running_record) {
-		    	        	delete_running_record=false;
-		    	        	db.deleteRecord(old_id);
-		    	        	if(db.fetchAllRecord().getCount()==0){
-		    	        		Intent notify=new Intent(context, widget_big.class);
-		    	        		notify.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-		    	        		context.sendBroadcast(notify);
-		    	        	}
-		    	        }
-  
-	            	}
-            	}
-            }/*--  End Start For --*/
+					    			else {
+						        		pause=false;
+						        		commandIntent.putExtra("Pausa", false);
+						        		commandIntent.putExtra("Riprendi", true);
+						        		commandIntent.putExtra("Stop", false);
+						        		context.sendBroadcast(commandIntent);
+						        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+					    			}
+					    			        			
+					    		}
+					    		else Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+					    	}
+					}
+					}
+				
+				    }/*--Start Stop play end --*/
+      
+			      if(action.equals("START_PRE")) {
+							if(System.currentTimeMillis()-starttime>300) {
+								starttime=System.currentTimeMillis();
+								if(!play_widget)
+									Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+								
+								if(play_widget)
+								{
+									i_play = new Intent(context, PlayRecord.class);
+									commandIntent=new Intent();
+									commandIntent.setAction(UI4.COMMAND_RESPONSE);
+									commandIntent.putExtra("Stop", true);
+									commandIntent.putExtra("Pausa", false);
+									commandIntent.putExtra("Riprendi", false);  
+									context.sendBroadcast(commandIntent);
+							    	context.stopService(i_play);
+							    	pause=true;
+							    	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+									currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, currentSorting(context));
+									c=db.fetchRecordById(currid);
+									c.moveToFirst();
+							    	setLayout(rw);
+									}
+								}
+							}/*--  End Start Pre --*/
+				
+					if(action.equals("START_FOR")|| delete_running_record) {
+						
+						if(System.currentTimeMillis()-starttime>300) {
+							starttime=System.currentTimeMillis();
+						
+					    	if(!play_widget)
+								Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+					    	
+					    	if(play_widget){
+					    		i_play = new Intent(context, PlayRecord.class);
+					    		
+					    		commandIntent=new Intent();
+					    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+					    		commandIntent.putExtra("Stop", true);
+					    		commandIntent.putExtra("Pausa", false);
+					    		commandIntent.putExtra("Riprendi", false);  
+						    		context.sendBroadcast(commandIntent);
+						        	context.stopService(i_play);
+						        	pause=true;
+						        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+						        	
+						        	old_id=currid;
+						    		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, currentSorting(context));
+						        	c=db.fetchRecordById(currid);
+						        	c.moveToFirst();
+						        	setLayout(rw);
+							        
+							        if(delete_running_record) {
+							        	delete_running_record=false;
+							        	db.deleteRecord(old_id);
+							        	if(db.fetchAllRecord().getCount()==0){
+							        		Intent notify=new Intent(context, widget_big.class);
+							        		notify.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+							        		context.sendBroadcast(notify);
+							        	}
+							        }
+		  
+						    	}
+							}
+						}/*--  End Start For --*/
 
-    	}
-        	db.close(); 
+				}
+				db.close();
+			} catch (SQLException e) {
+				Toast.makeText(context, R.string.dbError, Toast.LENGTH_SHORT).show();
+				e.printStackTrace();
+			} catch (NotFoundException e) {
+				Toast.makeText(context, R.string.dbError, Toast.LENGTH_SHORT).show();
+				e.printStackTrace();
+			} 
         }
         
         
         /*-- Updating --*/
         AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_big.class), rw);
 			 super.onReceive(context, intent);
-			 
-				
+			
 			 
 	} /*-- onReceive End --*/
 

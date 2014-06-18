@@ -70,7 +70,6 @@ public class widget_lil extends AppWidgetProvider {
 	@Override
     public void onReceive(Context context, Intent intent)
     {
-		
 			String action = intent.getAction();
 		
             RemoteViews rw = new RemoteViews(context.getPackageName(), R.layout.widget_lil_layout); 
@@ -131,13 +130,10 @@ public class widget_lil extends AppWidgetProvider {
             
             /*-- Preferences check --*/
             
-            if(action.equals("PREF")) {
-           // 	if(UI5.running)
-            		context.startActivity(i_pref);
+            if(action.equals("PREF")) 
+            	context.startActivity(i_pref);
 
- 
-            }
-            
+     
             /*-- Update  --*/
             
             AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_lil.class), rw);

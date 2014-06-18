@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -234,132 +236,146 @@ public class UI4 extends Activity {
 	public static int searchId(DbAdapter this_db, int playingId, int nextOrPrevious, int currentSorting) {
 	int previousOrNextId;
 	Cursor cursor;
-	this_db.open();
-	
-	switch(currentSorting) {
-	 
-	 case BY_NAME:
-		 cursor = this_db.fetchAllRecordSortedByName();
-		 break;
+	try {
+		this_db.open();
+		
+		switch(currentSorting) {
 		 
-	 case BY_DATE:
-		 cursor = this_db.fetchAllRecordSortedByDate();
-		 break;
-		 
-	 case BY_DURATION:
-		 cursor = this_db.fetchAllRecordSortedByDuration();
-		 break;
-		 
-	 default:
-		 cursor = this_db.fetchAllRecord();
-		 break;
-	 }
-	
+		 case BY_NAME:
+			 cursor = this_db.fetchAllRecordSortedByName();
+			 break;
+			 
+		 case BY_DATE:
+			 cursor = this_db.fetchAllRecordSortedByDate();
+			 break;
+			 
+		 case BY_DURATION:
+			 cursor = this_db.fetchAllRecordSortedByDuration();
+			 break;
+			 
+		 default:
+			 cursor = this_db.fetchAllRecord();
+			 break;
+		 }
+		
 
- 	 switch(nextOrPrevious) {
- 	 case PREVIOUS:
- 		for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-			if(cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
-				if(!cursor.isFirst()) {
-					cursor.moveToPrevious();
-					previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-					cursor.close();
-					this_db.close();
-					return previousOrNextId;
+		 switch(nextOrPrevious) {
+		 case PREVIOUS:
+			for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+				if(cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+					if(!cursor.isFirst()) {
+						cursor.moveToPrevious();
+						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						cursor.close();
+						this_db.close();
+						return previousOrNextId;
+					}
+					else {
+						cursor.moveToLast();
+						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						cursor.close();
+						this_db.close();
+						return previousOrNextId;
+					}
+				 }
 				}
-				else {
-					cursor.moveToLast();
-					previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-					cursor.close();
-					this_db.close();
-					return previousOrNextId;
-				}
+			 
+		 case NEXT:
+			 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+				 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+					 
+					 if(!cursor.isLast()) {
+						 cursor.moveToNext();
+						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						 cursor.close();
+						 this_db.close();
+						 return previousOrNextId;
+					 }
+					 else {
+						 cursor.moveToFirst();
+						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						 cursor.close();
+						 this_db.close();
+						 return previousOrNextId;
+					 }
+				 }
 			 }
-			}
- 		 
- 	 case NEXT:
- 		 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
- 			 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
- 				 
- 				 if(!cursor.isLast()) {
- 					 cursor.moveToNext();
- 					 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
- 					 cursor.close();
- 					 this_db.close();
- 					 return previousOrNextId;
- 				 }
- 				 else {
- 					 cursor.moveToFirst();
- 					 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
- 					 cursor.close();
- 					 this_db.close();
- 					 return previousOrNextId;
- 				 }
- 			 }
- 		 }
- 		 default:
- 			 previousOrNextId = playingId;
- 			 return previousOrNextId;	 
- 	 }
+			 default:
+				 previousOrNextId = playingId;
+				 return previousOrNextId;	 
+		 }
+	} catch (SQLException e) {
+		Log.w("Exception", "Errore nel Database");
+		e.printStackTrace();
+		return playingId;
+	}
 
     }
 	
 	
 	/*-- Method used to set UI4's layout --*/
 	public void impostaUI4(long this_id){
-        db.open();
-        c = db.fetchRecordById(this_id);
-        c.moveToNext();
-        
-        thumbnail = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
-        nome = c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-        durata = Long.parseLong(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)));
-        
-        c.close();
-        db.close();
-        
-        int alpha = Integer.parseInt(thumbnail.substring(0, 3));
-        int red = Integer.parseInt(thumbnail.substring(3, 6));
-        int green = Integer.parseInt(thumbnail.substring(6, 9));
-        int blue = Integer.parseInt(thumbnail.substring(9, 12));
-        
-        iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
-        
-        switch(Integer.parseInt(thumbnail.substring(11))) {
-			case 0:
-				iv.setImageResource(R.drawable.ic_music_0);
-				break;
-			case 1:
-				iv.setImageResource(R.drawable.ic_music_1);
-				break;
-			case 2:
-				iv.setImageResource(R.drawable.ic_music_2);
-				break;
-			case 3:
-				iv.setImageResource(R.drawable.ic_music_3);
-				break;
-			case 4:
-				iv.setImageResource(R.drawable.ic_music_4);
-				break;
-			case 5: 
-				iv.setImageResource(R.drawable.ic_music_5);
-				break;
-			case 6:
-				iv.setImageResource(R.drawable.ic_music_6);
-				break;
-			case 7:
-				iv.setImageResource(R.drawable.ic_music_7);
-				break;
-			case 8:
-				iv.setImageResource(R.drawable.ic_music_8);
-				break;
-			case 9:
-				iv.setImageResource(R.drawable.ic_music_9);
-				break;
+        try {
+			db.open();
+			c = db.fetchRecordById(this_id);
+			c.moveToNext();
+			
+			thumbnail = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+			nome = c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
+			durata = Long.parseLong(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)));
+			
+			c.close();
+			db.close();
+			
+			int alpha = Integer.parseInt(thumbnail.substring(0, 3));
+			int red = Integer.parseInt(thumbnail.substring(3, 6));
+			int green = Integer.parseInt(thumbnail.substring(6, 9));
+			int blue = Integer.parseInt(thumbnail.substring(9, 12));
+			
+			iv.setBackgroundColor(Color.argb(alpha, red, green, blue));
+			
+			switch(Integer.parseInt(thumbnail.substring(11))) {
+				case 0:
+					iv.setImageResource(R.drawable.ic_music_0);
+					break;
+				case 1:
+					iv.setImageResource(R.drawable.ic_music_1);
+					break;
+				case 2:
+					iv.setImageResource(R.drawable.ic_music_2);
+					break;
+				case 3:
+					iv.setImageResource(R.drawable.ic_music_3);
+					break;
+				case 4:
+					iv.setImageResource(R.drawable.ic_music_4);
+					break;
+				case 5: 
+					iv.setImageResource(R.drawable.ic_music_5);
+					break;
+				case 6:
+					iv.setImageResource(R.drawable.ic_music_6);
+					break;
+				case 7:
+					iv.setImageResource(R.drawable.ic_music_7);
+					break;
+				case 8:
+					iv.setImageResource(R.drawable.ic_music_8);
+					break;
+				case 9:
+					iv.setImageResource(R.drawable.ic_music_9);
+					break;
+			}
+			
+			name.setText(nome);
+			duration.setText(String.format("%.2f secondi", (float) durata/1000));
+		} catch (NumberFormatException e) {
+			Toast.makeText(UI4.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		} catch (SQLException e) {
+			Toast.makeText(UI4.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
 		}
-        
-        name.setText(nome);
-        duration.setText(String.format("%.2f secondi", (float) durata/1000));
 	}
 	
 	public void onDestroy(){

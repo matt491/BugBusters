@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -170,7 +171,7 @@ public class UI3 extends Activity {
             			/*-- Check if another record is still running --*/
             			if(widget_lil.record_running==false) {
             				
-            				/*-- Lock the screen in the current position --*/
+            				/*-- Lock the screen at the current position --*/
             				WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 							Display disp = wm.getDefaultDisplay();
 							int orientation = disp.getRotation();
@@ -207,13 +208,14 @@ public class UI3 extends Activity {
             	pkg=getPackageName();
             	String nomeinserito=nome_music.getText().toString();
             	
-            	/*-- If name isn't valid or already exists do --*/
+            	/*-- If name isn't valid or already exists --*/
             	if(nomeinserito.contains("'") || nomeinserito.contains("_")) {
             		Toast.makeText(UI3.this, R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
             	}
             	else if((nomeinserito.equals("")) || UI1.sameName(db,nomeinserito)) {
             		Toast.makeText(UI3.this, R.string.validName, Toast.LENGTH_SHORT).show();
             	}
+            	
             	
             	/*-- Otherwise insert the new record into DB --*/
             	else {	
@@ -223,27 +225,31 @@ public class UI3 extends Activity {
             		long dur=DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 							prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
             		
-            		db.open();           	
-        				
-            		long id_to_ui2=db.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
-            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
-        					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
-            	    
+            		try {
+						db.open();		
+	            		long id_to_ui2=db.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
+	            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
+	        					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
+	            	    
+	            		
+	            		/*-- Calculate and update image code of new record --*/
+	            		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
+	            		db.updateImageCode(id_to_ui2, cod);
+	            		db.close();
+	            		
+	            		/*-- Release Lock for Record --*/
+	            		widget_lil.record_running=false;
+	            		
+	            		/*-- Start UI 2 --*/
+	            		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
+	            		startActivity(intent);
+	            		finish();
             		
-            		/*-- Calculate and update image code of new record --*/
-            		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
-        		
-            		db.updateImageCode(id_to_ui2, cod);
-            		
-            		db.close();
-        		
-            		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
-            		
-            		/*-- Release Lock for Record --*/
-            		widget_lil.record_running=false;
-            		
-            		startActivity(intent);
-            		finish();
+            		} catch (SQLException e) {
+						Toast.makeText(UI3.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+						e.printStackTrace();
+					}    
+	
             	}
             	
           }

@@ -8,6 +8,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.SQLException;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,6 +16,7 @@ import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.widget.Toast;
 
 public class DataRecord extends IntentService implements SensorEventListener {
 
@@ -167,15 +169,20 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
 				
-				db.open();
-				long id=db.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
-						""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
-						timestamp, timestamp, null);
+				try {
+					db.open();
+					long id=db.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
+							""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
+							timestamp, timestamp, null);
 
-				
-				String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
-				db.updateRecordNameAndImage(id, "Rec_"+id, code);
-				db.close();
+					
+					String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
+					db.updateRecordNameAndImage(id, "Rec_"+id, code);
+					db.close();
+				} catch (SQLException e) {
+					Toast.makeText(DataRecord.this, R.string.dbError, Toast.LENGTH_SHORT).show();
+					e.printStackTrace();
+				}
 				
 				/*-- Signal to widget that the REC is over due to time elapsed expired --*/
 				
