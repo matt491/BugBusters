@@ -52,7 +52,7 @@
         android:layout_marginRight="68dp"
         android:layout_marginTop="5dp"
         android:layout_toLeftOf="@+id/y_axis"
-        android:max="15" />
+        android:max="14" />
 
     <team.bugbusters.acceleraudio.VerticalProgressBar
         android:id="@+id/y_axis"
@@ -62,7 +62,7 @@
         android:layout_below="@id/textView2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:max="15" />
+        android:max="14" />
 
     <team.bugbusters.acceleraudio.VerticalProgressBar
         android:id="@+id/z_axis"
@@ -73,7 +73,7 @@
         android:layout_marginLeft="48dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/y_axis"
-        android:max="15" />
+        android:max="14" />
 
     <TextView
         android:id="@+id/textView3"

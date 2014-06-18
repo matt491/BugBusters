@@ -98,7 +98,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					i++;
 					
 					/*-- Update intent extra with the value of X-axis progress bar on UI 3 --*/
-					broadcastIntent.putExtra("intPbX", Math.round(Math.abs(event.values[0])));
+					broadcastIntent.putExtra("intPbX",(int) (Math.abs(event.values[0]-valprec[0])));
 				}
 				
 				if(event.values[1]-valprec[1]>NOISE){
@@ -106,14 +106,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					j++;
 					
 					/*-- Update intent extra with the value of Y-axis progress bar on UI 3 --*/
-					broadcastIntent.putExtra("intPbY", Math.round(Math.abs(event.values[1])));
+					broadcastIntent.putExtra("intPbY", (int) (Math.abs(event.values[1]-valprec[1])));
 				}
 				if(event.values[2]-valprec[2]>NOISE){
 					datoZ.append((converti(event.values[2]))+" ");
 					k++;
 					
 					/*-- Update intent extra with the value of Z-axis progress bar on UI 3 --*/
-					broadcastIntent.putExtra("intPbZ", Math.round(Math.abs(event.values[2])));
+					broadcastIntent.putExtra("intPbZ", (int) (Math.abs(event.values[2]-valprec[2])));
 				}
 				
 				
