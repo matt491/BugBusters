@@ -18,7 +18,6 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -193,11 +192,11 @@ public class UI3 extends Activity {
 		            		intentToSer.putExtra("fromUI3", true);
 		            		startService(intentToSer);
             			}
-	            		else Toast.makeText(getApplicationContext(), R.string.alreadyRecording, Toast.LENGTH_SHORT).show();
+	            		else Toast.makeText(UI3.this, R.string.alreadyRecording, Toast.LENGTH_SHORT).show();
             		}
-            		else Toast.makeText(getApplicationContext(), R.string.accelUnavailable, Toast.LENGTH_SHORT).show();
+            		else Toast.makeText(UI3.this, R.string.accelUnavailable, Toast.LENGTH_SHORT).show();
             	}
-            	else Toast.makeText(getApplicationContext(), R.string.spaceUnavailable, Toast.LENGTH_SHORT).show();
+            	else Toast.makeText(UI3.this, R.string.spaceUnavailable, Toast.LENGTH_SHORT).show();
             }
         });
         
@@ -210,10 +209,10 @@ public class UI3 extends Activity {
             	
             	/*-- If name isn't valid or already exists do --*/
             	if(nomeinserito.contains("'") || nomeinserito.contains("_")) {
-            		Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
+            		Toast.makeText(UI3.this, R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
             	}
             	else if((nomeinserito.equals("")) || UI1.sameName(db,nomeinserito)) {
-            		Toast.makeText(getApplicationContext(), R.string.validName, Toast.LENGTH_SHORT).show();
+            		Toast.makeText(UI3.this, R.string.validName, Toast.LENGTH_SHORT).show();
             	}
             	
             	/*-- Otherwise insert the new record into DB --*/

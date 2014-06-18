@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -251,10 +250,12 @@ public class UI1 extends Activity {
 					String nuovoNome = input.getText().toString();
 					if(!nuovoNome.equals(vecchioNome))
 					if(nuovoNome.contains("'") || nuovoNome.contains("_")) {
-						Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
+						Toast toast= Toast.makeText(UI1.this, R.string.apiceNonConsentito, Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
 					}
 					else if(sameName(db, nuovoNome) || nuovoNome.equals("")) {
-						Toast toast = Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_SHORT);
+						Toast toast = Toast.makeText(UI1.this, R.string.ToastAlertSameName, Toast.LENGTH_SHORT);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();
 					}
@@ -298,7 +299,7 @@ public class UI1 extends Activity {
 					
 					if((id_to_delete==widget_big.currid))
 						if(!widget_big.pause)
-							Toast.makeText(getApplicationContext(), R.string.cannoteDelete , Toast.LENGTH_SHORT).show();
+							Toast.makeText(UI1.this, R.string.cannoteDelete , Toast.LENGTH_SHORT).show();
 				
 						else {
 							nuovaLista.remove(dati);
@@ -340,7 +341,7 @@ public class UI1 extends Activity {
 				startActivity(toUi4);
 				return(true);
 			}
-			else Toast.makeText(getApplicationContext(), R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+			else Toast.makeText(UI1.this, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 				return(true);
 		}
 		
@@ -469,11 +470,11 @@ public class UI1 extends Activity {
 	            
 			case R.id.Ordina:
 				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(prefs.getBoolean("sortedByName", false)) {
-					Toast.makeText(getApplicationContext(), R.string.alreadySortedByName, Toast.LENGTH_SHORT).show();
+					Toast.makeText(UI1.this, R.string.alreadySortedByName, Toast.LENGTH_SHORT).show();
 					break;
 				}
 				prefsEditor.putBoolean("sortedByName", true).commit();
@@ -493,11 +494,11 @@ public class UI1 extends Activity {
 			
 			case R.id.Numera:
 				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false)) {
-					Toast.makeText(getApplicationContext(), R.string.alreadySortedByInsertion, Toast.LENGTH_SHORT).show();
+					Toast.makeText(UI1.this, R.string.alreadySortedByInsertion, Toast.LENGTH_SHORT).show();
 					break;
 				}
 				prefsEditor.putBoolean("sortedByName", false).commit();
@@ -516,11 +517,11 @@ public class UI1 extends Activity {
 				
 			case R.id.OrdinaData:
 				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(prefs.getBoolean("sortedByDate", false)) {
-					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDate, Toast.LENGTH_SHORT).show();
+					Toast.makeText(UI1.this, R.string.alreadySortedByDate, Toast.LENGTH_SHORT).show();
 					break;
 				}
 				prefsEditor.putBoolean("sortedByDate", true).commit();
@@ -539,11 +540,11 @@ public class UI1 extends Activity {
 				
 			case R.id.OrdinaDurata:
 				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(getApplicationContext(), R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
 					break;
 				}
 				if(prefs.getBoolean("sortedByDuration", false)){
-					Toast.makeText(getApplicationContext(), R.string.alreadySortedByDuration, Toast.LENGTH_SHORT).show();
+					Toast.makeText(UI1.this, R.string.alreadySortedByDuration, Toast.LENGTH_SHORT).show();
 					break;
 				}
 				prefsEditor.putBoolean("sortedByDuration", true).commit();

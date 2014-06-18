@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
@@ -145,14 +144,14 @@ public class UI2 extends Activity {
             	
             		/*-- Check name to prevent errors and if it is already on DB --*/
             		if(nomeNuovo.contains("'") || (nomeNuovo.contains("_") && !(nome_ric.equals(nomeNuovo))))
-            			Toast.makeText(getApplicationContext(), R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
+            			Toast.makeText(UI2.this, R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
             	
             		else if((!(nome_ric.equals(nomeNuovo)) && UI1.sameName(db, nomeNuovo)) || nomeNuovo.equals(""))
-            			Toast.makeText(getApplicationContext(), R.string.ToastAlertSameName, Toast.LENGTH_SHORT).show();
+            			Toast.makeText(UI2.this, R.string.ToastAlertSameName, Toast.LENGTH_SHORT).show();
             	
             			/*-- Check if the track to update is already on play --*/
             			else if (id_ric==widget_big.currid && !widget_big.pause)
-            				Toast.makeText(getApplicationContext(), R.string.cannotUpdate, Toast.LENGTH_SHORT).show();
+            				Toast.makeText(UI2.this, R.string.cannotUpdate, Toast.LENGTH_SHORT).show();
             				
             				/*-- Then update existing record with new informations --*/
 	            			else {

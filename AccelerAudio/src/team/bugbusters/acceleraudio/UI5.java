@@ -159,7 +159,7 @@ public class UI5 extends Activity {
             	prefsEditor.putInt("sovrdef", sbsovradef.getProgress());
             	prefsEditor.commit();
             	
-            	Toast.makeText(getApplicationContext(),"Preferenze salvate",Toast.LENGTH_SHORT).show();
+            	Toast.makeText(UI5.this, R.string.savedPref,Toast.LENGTH_SHORT).show();
 			}
 		
 		}

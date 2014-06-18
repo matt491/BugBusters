@@ -68,5 +68,6 @@
     <string name="cannoteDelete">Impossibile eliminare la traccia in esecuzione!</string>
     <string name="cannotUpdate">Impossibile aggiornare la traccia in esecuzione!</string>
     <string name="speakerUnavailable">Speaker occupati da un\'altra applicazione!</string>
+    <string name="savedPref">Preferenze salvate</string>
 
 </resources>
