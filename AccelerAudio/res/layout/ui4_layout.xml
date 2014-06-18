@@ -20,12 +20,14 @@
 <!-- Qui compare il nome della music session che è in riproduzione -->
     <TextView
         android:id="@+id/title_widget_big"
+        android:paddingRight="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imageView1"
         android:layout_toRightOf="@+id/imageView1"
         android:layout_marginLeft="15dp"
-        android:text="music_session_name"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <TextView
