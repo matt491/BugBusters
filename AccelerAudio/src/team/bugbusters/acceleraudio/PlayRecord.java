@@ -31,7 +31,7 @@ public class PlayRecord extends IntentService {
 	private CommandReceiver receiver=new CommandReceiver();
 	public static final int minsize=7000;
 	public static final int AT_SAMPLE_RATE=24000;
-	public static boolean MUSIC_ON=false;
+	public static boolean MUSIC_ALREADY_ON=false;
  	
 	
 	/*-- Constructor --*/
@@ -211,17 +211,11 @@ public class PlayRecord extends IntentService {
         at.setLoopPoints(0, finale.length-1, -1);
         
         
-        /*-- Playback --*/
-        at.play();
+       	
+    	/*-- Playback --*/
+    	at.play();
         
-        
-        
-        /*-- Check if the track is really on playback --*/ 
-        if(((AudioManager) getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) 
-        	MUSIC_ON=true;     
-        else MUSIC_ON=false;
-        	
-        
+   
         /*-- If Play Record service was launched from UI 4 then send a broadcast to notify playback start --*/
         if(from_UI4) {
 	        broadUI4.putExtra("CurrFrame",0);
@@ -241,7 +235,7 @@ public class PlayRecord extends IntentService {
         
   public void onDestroy(){
       widget_big.service_running=false;
-      MUSIC_ON=false;
+      MUSIC_ALREADY_ON=false;
 	  this.unregisterReceiver(receiver);
 	  super.onDestroy();  
   }
@@ -291,14 +285,15 @@ public class PlayRecord extends IntentService {
 			   		sendBroadcast(broadUI4);
 		   		}
 		   		at.pause();   
-			
+
 	       }
 				
 		    if(riprendi) {
 		       if(at.getState()==AudioTrack.STATE_INITIALIZED && at.getPlayState()==AudioTrack.PLAYSTATE_PAUSED)   
 		    	   at.setPlaybackHeadPosition(g%finale.length);
 		       	   //at.setLoopPoints(0, finale.length-1, -1);
-		    	   at.play();    
+		       	   at.play();
+		       		   
 		       }		
 		}
 		

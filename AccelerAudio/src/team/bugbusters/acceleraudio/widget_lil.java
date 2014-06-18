@@ -20,7 +20,7 @@ public class widget_lil extends AppWidgetProvider {
 	public void onEnabled(Context context)
 	{
 		super.onEnabled(context);
-		Toast.makeText(context,"Creato", Toast.LENGTH_SHORT).show();
+
 	}
 	/*-- Handles the destruction event --*/
 	@Override
@@ -29,7 +29,7 @@ public class widget_lil extends AppWidgetProvider {
 		super.onDeleted(context, appWidgetIds);
 		if(record_running && record_widget_lil)
 			context.stopService(new Intent(context, DataRecord.class));
-		Toast.makeText(context,"Distrutto", Toast.LENGTH_SHORT).show();
+
 	}
 	
 	@Override

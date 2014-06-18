@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -19,15 +20,15 @@ public class widget_big extends AppWidgetProvider {
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
 	private static Intent i_record,i_play, commandIntent;
 	private static boolean terminated_rec=false;
-	public static boolean service_running=false, pause=true;
-	public static  int currid = 0;
 	private static Cursor c;
 	private static DbAdapter db;
 	private static int precid;
-	private static boolean PRIMA_VOLTA=true;
-	public static boolean delete_running_record=false;
+	private static boolean PRIMA_VOLTA=true, stopped_first=false;
 	private static long starttime=System.currentTimeMillis();
 	private SharedPreferences prefs;
+	public static boolean delete_running_record=false;
+	public static boolean service_running=false, pause=true;
+	public static  int currid = 0;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
 	public static boolean record_widget_big=false,play_widget=true;
@@ -39,6 +40,7 @@ public class widget_big extends AppWidgetProvider {
 		super.onDeleted(context, appWidgetIds);
 		currid = 0;
 		PRIMA_VOLTA=true;
+		pause=true;
 		if(play_widget && service_running) {
 			commandIntent=new Intent();
     		commandIntent.setAction(UI4.COMMAND_RESPONSE);
@@ -47,7 +49,10 @@ public class widget_big extends AppWidgetProvider {
     		commandIntent.putExtra("Stop", true);
     		context.sendBroadcast(commandIntent);
 		}
-		Toast.makeText(context,"Distrutto", Toast.LENGTH_SHORT).show();
+		
+		if(widget_lil.record_running && record_widget_big) 
+			context.stopService(new Intent(context, DataRecord.class));
+
 	}
 	
 	@Override
@@ -96,14 +101,9 @@ public class widget_big extends AppWidgetProvider {
 		Intent start_for = new Intent (context,widget_big.class);
 		start_for.setAction("START_FOR");
 		
+	
 		
-
-		
-		
-		
-		/*--
-		 *  Performing the action 
-		 *  --*/
+		/*-- Performing the action --*/
 		
 		view.setOnClickPendingIntent(R.id.rec_big, PendingIntent.getBroadcast(context, 0, start_rec, 0));
 
@@ -112,9 +112,8 @@ public class widget_big extends AppWidgetProvider {
 		view.setOnClickPendingIntent(R.id.backward_big, PendingIntent.getBroadcast(context, 0, start_pre, 0));
 		
 		view.setOnClickPendingIntent(R.id.forward_big, PendingIntent.getBroadcast(context, 0, start_for, 0));
-		//db.close();
-		/*-- Updating the widget --*/
-		
+
+		/*-- Updating the widget --*/	
 		appWidgetManager.updateAppWidget(appWidgetIds[i], view);
 		}
 		
@@ -195,13 +194,11 @@ public class widget_big extends AppWidgetProvider {
         		rw.setTextViewText(R.id.modify_big, "Last Modified");
         		rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_launcher1);
         		rw.setInt(R.id.image_big, "setBackgroundColor", Color.WHITE);
+        		
         		/*-- First instance of the widget after deleting all records --*/
-        		PRIMA_VOLTA=true;
-        		
+        		PRIMA_VOLTA=true;		
         	}
-        	else
-        	{
-        		
+        	else {	
         		switch(currentSorting(context)) {
         		case UI4.BY_NAME:
         			c = db.fetchAllRecordSortedByName(); 
@@ -226,9 +223,9 @@ public class widget_big extends AppWidgetProvider {
         			currid=(int)c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
         			setLayout(rw);
         		}
+        		
         	
-        /*-- Play code --*/
-        
+        /*-- Play code --*/      
         if(action.equals("START_STOP_PLAY")) {
         	if(System.currentTimeMillis()-starttime>300) {
         		starttime=System.currentTimeMillis();
@@ -238,18 +235,27 @@ public class widget_big extends AppWidgetProvider {
 	    		
 	    		if(!play_widget)
 	    			Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
-	    		
-	    		if(!PlayRecord.MUSIC_ON)
-	        			Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+	
+	        			
 	    		else {	
 		        	if(!service_running && play_widget){
 		        		pause=false;
 			    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
 			        	i_play.putExtra("fromUI4", false);
 			        	i_play.putExtra("ID", currid);
-			        	context.startService(i_play);
-			        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-		        		}
+			        	
+			        	/*-- Check if speakers is already in use --*/ 
+			        	if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
+			        		stopped_first=false;
+			        		context.startService(i_play);
+			        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+			        	}
+			        	else {
+			        		stopped_first=true;
+			        		Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+			        	}
+			        	
+		        	}
 		        	
 		        	else if(service_running && !pause && play_widget) {
 		        		pause=true;
@@ -261,13 +267,28 @@ public class widget_big extends AppWidgetProvider {
 		        		}
 		        	
 		        	else if(service_running && pause && play_widget) {
-		        		pause=false;
-		        		commandIntent.putExtra("Pausa", false);
-		        		commandIntent.putExtra("Riprendi", true);
-		        		commandIntent.putExtra("Stop", false);
-		        		context.sendBroadcast(commandIntent);
-		        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+		        		
+		        		/*-- Check if speakers is already in use --*/ 
+		        		if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
+		        			if(stopped_first){
+		        				stopped_first=false;
+		        				context.startService(i_play); 	
+		        				rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+		        			}
+		        				
+	
+		        			else {
+				        		pause=false;
+				        		commandIntent.putExtra("Pausa", false);
+				        		commandIntent.putExtra("Riprendi", true);
+				        		commandIntent.putExtra("Stop", false);
+				        		context.sendBroadcast(commandIntent);
+				        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+		        			}
+		        			        			
 		        		}
+		        		else Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+		        	}
 	    		}
 	        	}
         	

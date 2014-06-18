@@ -79,7 +79,7 @@
         android:layout_below="@+id/seekBar1"
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
-        android:src="@android:drawable/ic_media_pause"
+        android:src="@android:drawable/ic_media_play"
         android:contentDescription="@string/pauseButtonDesc" />
     
 <!-- Alla pressione di questo tasto parte la riproduzione della music session precedente, se c'è. (opzionale)

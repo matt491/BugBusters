@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
@@ -178,6 +179,7 @@ public class UI2 extends Activity {
 	/*-- Method which check if playback isn't already running, in this case 
 	 *-- we send ID to UI4 to play it, otherwise a toast appears and current displayed data will be update --*/
 	private void prosegui(){
+
 		if(widget_big.pause){
 			stopService(new Intent(this, PlayRecord.class));
 			Intent intentToUI4=new Intent(UI2.this, UI4.class);
@@ -185,9 +187,10 @@ public class UI2 extends Activity {
 			startActivity(intentToUI4);
 		}
 		else {
-			Toast.makeText(getApplicationContext(), R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+			Toast.makeText(UI2.this, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 			aggiornaDati(!INIZIO);
 		}
+		
 	}
 	
 	

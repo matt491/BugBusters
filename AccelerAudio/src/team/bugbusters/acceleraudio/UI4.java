@@ -8,10 +8,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -47,7 +47,7 @@ public class UI4 extends Activity {
 	private long endtime;
 	private static long starttime;
 	private final long INTERVALLO=10;
-	private boolean on_play=true;
+	private boolean on_play, stopped_first;
 	private MyUI4Receiver receiver;
 	private int frame=0;
 	public static final int PREVIOUS = 0;
@@ -73,6 +73,7 @@ public class UI4 extends Activity {
         sbtime=(SeekBar)findViewById(R.id.seekBar1);
         sbtime.setEnabled(false);
         starttime=System.currentTimeMillis();
+        on_play=false;
         
         db = new DbAdapter(this);
         
@@ -101,7 +102,16 @@ public class UI4 extends Activity {
 	        playIntentService.putExtra("ID", id);
 	    	endtime=durata;
 	    	sbtime.setMax((int) endtime);
-	    	startService(playIntentService);
+	    	
+	        /*-- Check if speakers is already in use --*/ 
+	        if(!((AudioManager) getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) 
+	        	startService(playIntentService);
+ 
+	        else {
+	        	stopped_first=true;
+	        	Toast.makeText(UI4.this, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+	        }
+		    	
         }
         
         /*-- Previous button pressed 
@@ -169,15 +179,29 @@ public class UI4 extends Activity {
 		            	pause_resume.setImageResource(android.R.drawable.ic_media_play);
 	            	}
 	            	else{
-	            		on_play=true;
-	            		broadcastIntent.putExtra("Riprendi", true);
-	                	broadcastIntent.putExtra("Pausa", false);
-	                	broadcastIntent.putExtra("Stop", false);
-	                	sendBroadcast(broadcastIntent);	
-	                	timer=new TimerCounter(endtime-(frame/(PlayRecord.AT_SAMPLE_RATE/1000)), INTERVALLO, frame/(PlayRecord.AT_SAMPLE_RATE/1000));
-	                	timer.start();
-	                	sendBroadcast(broadcastIntent);	
-	                	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
+	            		/*-- Check if speakers is already in use --*/ 
+	        	        if(!((AudioManager)getSystemService(Context.AUDIO_SERVICE)).isMusicActive()){
+	        	        	
+	        	        	if(stopped_first){
+	        	        		stopped_first=false;
+	        	        		startService(playIntentService);
+	        	        	}
+	        	        	
+	        	        	else{
+			            		on_play=true;
+			            		broadcastIntent.putExtra("Riprendi", true);
+			                	broadcastIntent.putExtra("Pausa", false);
+			                	broadcastIntent.putExtra("Stop", false);
+			                	sendBroadcast(broadcastIntent);	
+			                	timer=new TimerCounter(endtime-(frame/(PlayRecord.AT_SAMPLE_RATE/1000)), INTERVALLO, frame/(PlayRecord.AT_SAMPLE_RATE/1000));
+			                	timer.start();
+			                	sendBroadcast(broadcastIntent);	
+			                	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
+	        	        	}
+	        	        	
+	        	        }
+	        	        else Toast.makeText(UI4.this, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+	            		
 	            	}
             	}
             }});
@@ -336,8 +360,6 @@ public class UI4 extends Activity {
         
         name.setText(nome);
         duration.setText(String.format("%.2f secondi", (float) durata/1000));
-        on_play=true;
-        pause_resume.setImageResource(android.R.drawable.ic_media_pause);
 	}
 	
 	public void onDestroy(){
@@ -434,15 +456,14 @@ public class UI4 extends Activity {
 	        		frame=intent.getIntExtra("CurrFrame", 0);
 	        		
 	        		/*-- Play Record service notifies that playback being started --*/
-	        		if(intent.getBooleanExtra("Inizia", false) && PlayRecord.MUSIC_ON){
+	        		if(intent.getBooleanExtra("Inizia", false)){
+	        			on_play=true;
+	        			pause_resume.setImageResource(android.R.drawable.ic_media_pause);
 	        			timer=new TimerCounter(endtime,INTERVALLO,0);
 	        	    	timer.start();
 	        		}
 	        		
-	        		if(!PlayRecord.MUSIC_ON)
-	        			Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
-	        		
-	        			
+        				
 	        	}
 	        }
 
