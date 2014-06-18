@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -44,7 +43,6 @@ public class UI5 extends Activity {
 	        sbdurdef =(SeekBar)findViewById(R.id.durdef);
 	    	sbsovradef=(SeekBar)findViewById(R.id.sbcampdef);
 	    	scampdef=(TextView)findViewById(R.id.sovradef);
-	   // 	Button salva=(Button)findViewById(R.id.salva_imp);
 	    	dmax=(TextView)findViewById(R.id.durmax);
 	    	
       
@@ -143,25 +141,6 @@ public class UI5 extends Activity {
 	    			}});
 	        	
 	        	
-	        	
-	        	
-	        	
-	      /*  	salva.setOnClickListener(new View.OnClickListener() {
-	                public void onClick(View v) {
-
-	                	Editor prefsEditor = prefs.edit();
-	                	prefsEditor.putBoolean("Xselect",defX.isChecked());
-	                	prefsEditor.putBoolean("Yselect",defY.isChecked());
-	                	prefsEditor.putBoolean("Zselect",defZ.isChecked());
-	                	prefsEditor.putString("Campion", freqdef);
-	                	prefsEditor.putInt("duratadef", sbdurdef.getProgress());
-	                	prefsEditor.putInt("sovrdef", sbsovradef.getProgress());
-	                	prefsEditor.commit();
-	                	
-	                	Toast.makeText(getApplicationContext(),"Preferenze salvate",Toast.LENGTH_SHORT).show();
-	                	
-	                }});
-	        	*/
 	
 	}
 	
@@ -193,6 +172,7 @@ public class UI5 extends Activity {
         	finish();	
 	return;
 	}
+	
 	
 	public void onPause(){
 		super.onPause();

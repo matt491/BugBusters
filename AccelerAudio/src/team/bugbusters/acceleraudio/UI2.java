@@ -321,6 +321,7 @@ public class UI2 extends Activity {
 		
 		case R.id.Preferenze:
 			Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
+			prefIntentUI5.putExtra("prefFromWidget", false);
             startActivity(prefIntentUI5);
             return(true);
 		}

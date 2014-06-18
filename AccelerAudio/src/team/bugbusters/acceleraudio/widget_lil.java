@@ -84,6 +84,7 @@ public class widget_lil extends AppWidgetProvider {
             
             i_pref = new Intent(context, UI5.class);
             i_pref.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i_pref.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i_pref.putExtra("prefFromWidget", true);
             
             /*-- catching the signal from DataRecord which notify  that the recording time is expired --*/
@@ -130,10 +131,13 @@ public class widget_lil extends AppWidgetProvider {
             
             /*-- Preferences check --*/
             
-            if(action.equals("PREF")) 
-            	context.startActivity(i_pref);
+            if(action.equals("PREF")) {
+           // 	if(UI5.running)
+            		context.startActivity(i_pref);
 
  
+            }
+            
             /*-- Update  --*/
             
             AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context,widget_lil.class), rw);

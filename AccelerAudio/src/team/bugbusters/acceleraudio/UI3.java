@@ -318,8 +318,9 @@ public class UI3 extends Activity {
  		
  		case R.id.Preferenze:
  			Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
-             startActivity(prefIntentUI5);
-             return(true);
+ 			prefIntentUI5.putExtra("prefFromWidget", false);
+            startActivity(prefIntentUI5);
+            return(true);
  		}
  		
  		return (super.onOptionsItemSelected(item));

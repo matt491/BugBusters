@@ -3,7 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="122dp"
     android:layout_height="74dp"
-    android:background="@android:drawable/alert_dark_frame"
+    android:background="@android:drawable/alert_light_frame"
     android:orientation="vertical" >
 
     <ImageButton
