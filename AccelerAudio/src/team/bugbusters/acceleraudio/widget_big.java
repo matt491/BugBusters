@@ -233,65 +233,64 @@ public class widget_big extends AppWidgetProvider {
 							commandIntent=new Intent();
 							commandIntent.setAction(UI4.COMMAND_RESPONSE);
 					
-						if(!play_widget)
-							Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
-	
-								
-						else {	
-					    	if(!PlayRecord.running && play_widget){
-					    		pause=false;
-					    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
-					        	i_play.putExtra("fromUI4", false);
-					        	i_play.putExtra("ID", currid);
-					        	
-					        	/*-- Check if speakers is already in use --*/ 
-					        	if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
-					        		stopped_first=false;
-					        		context.startService(i_play);
-					        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-					        	}
-					        	else {
-					        		stopped_first=true;
-					        		Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
-					        	}
-					        	
-					    	}
-					    	
-					    	else if(PlayRecord.running && !pause && play_widget) {
-					    		pause=true;
-					    		commandIntent.putExtra("Pausa", true);
-					    		commandIntent.putExtra("Riprendi", false);
-					    		commandIntent.putExtra("Stop", false);
-					    		context.sendBroadcast(commandIntent);
-					    		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-					    		}
-					    	
-					    	else if(PlayRecord.running && pause && play_widget) {
-					    		
-					    		/*-- Check if speakers is already in use --*/ 
-					    		if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
-					    			if(stopped_first){
-					    				stopped_first=false;
-					    				context.startService(i_play); 	
-					    				rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-					    			}
-					    				
-	
-					    			else {
-						        		pause=false;
-						        		commandIntent.putExtra("Pausa", false);
-						        		commandIntent.putExtra("Riprendi", true);
-						        		commandIntent.putExtra("Stop", false);
-						        		context.sendBroadcast(commandIntent);
+							if(!play_widget)
+								Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+		
+									
+							else {	
+						    	if(!PlayRecord.running && play_widget){
+						    		pause=false;
+						    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
+						        	i_play.putExtra("fromUI4", false);
+						        	i_play.putExtra("ID", currid);
+						        	
+						        	/*-- Check if speakers is already in use --*/ 
+						        	if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
+						        		stopped_first=false;
+						        		context.startService(i_play);
 						        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-					    			}
-					    			        			
-					    		}
-					    		else Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
-					    	}
-					}
-					}
-				
+						        	}
+						        	else {
+						        		stopped_first=true;
+						        		Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+						        	}
+						        	
+						    	}
+						    	
+						    	else if(PlayRecord.running && !pause && play_widget) {
+						    		pause=true;
+						    		commandIntent.putExtra("Pausa", true);
+						    		commandIntent.putExtra("Riprendi", false);
+						    		commandIntent.putExtra("Stop", false);
+						    		context.sendBroadcast(commandIntent);
+						    		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+						    		}
+						    	
+						    	else if(PlayRecord.running && pause && play_widget) {
+						    		
+						    		/*-- Check if speakers is already in use --*/ 
+						    		if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
+						    			if(stopped_first){
+						    				stopped_first=false;
+						    				context.startService(i_play); 	
+						    				rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+						    			}
+						    				
+		
+						    			else {
+							        		pause=false;
+							        		commandIntent.putExtra("Pausa", false);
+							        		commandIntent.putExtra("Riprendi", true);
+							        		commandIntent.putExtra("Stop", false);
+							        		context.sendBroadcast(commandIntent);
+							        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+						    			}
+						    			        			
+						    		}
+						    		else Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
+						    	}
+							}
+						}	
 				    }/*--Start Stop play end --*/
       
 			      if(action.equals("START_PRE")) {
@@ -316,9 +315,9 @@ public class widget_big extends AppWidgetProvider {
 									c=db.fetchRecordById(currid);
 									c.moveToFirst();
 							    	setLayout(rw);
-									}
 								}
-							}/*--  End Start Pre --*/
+							}
+					}/*--  End Start Pre --*/
 				
 					if(action.equals("START_FOR")|| delete_running_record) {
 						
@@ -336,30 +335,30 @@ public class widget_big extends AppWidgetProvider {
 					    		commandIntent.putExtra("Stop", true);
 					    		commandIntent.putExtra("Pausa", false);
 					    		commandIntent.putExtra("Riprendi", false);  
-						    		context.sendBroadcast(commandIntent);
-						        	context.stopService(i_play);
-						        	pause=true;
-						        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-						        	
-						        	old_id=currid;
-						    		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, currentSorting(context));
-						        	c=db.fetchRecordById(currid);
-						        	c.moveToFirst();
-						        	setLayout(rw);
-							        
-							        if(delete_running_record) {
-							        	delete_running_record=false;
-							        	db.deleteRecord(old_id);
-							        	if(db.fetchAllRecord().getCount()==0){
-							        		Intent notify=new Intent(context, widget_big.class);
-							        		notify.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-							        		context.sendBroadcast(notify);
-							        	}
-							        }
-		  
-						    	}
-							}
-						}/*--  End Start For --*/
+					    		context.sendBroadcast(commandIntent);
+					        	context.stopService(i_play);
+					        	pause=true;
+					        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+					        	
+					        	old_id=currid;
+					    		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, currentSorting(context));
+					        	c=db.fetchRecordById(currid);
+					        	c.moveToFirst();
+					        	setLayout(rw);
+						        
+						        if(delete_running_record) {
+						        	delete_running_record=false;
+						        	db.deleteRecord(old_id);
+						        	if(db.fetchAllRecord().getCount()==0){
+						        		Intent notify=new Intent(context, widget_big.class);
+						        		notify.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+						        		context.sendBroadcast(notify);
+						        	}
+						        }
+	  
+						    }
+						}
+					}/*--  End Start For --*/
 
 				}
 				db.close();
