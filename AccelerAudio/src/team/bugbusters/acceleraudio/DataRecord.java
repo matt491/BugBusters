@@ -93,6 +93,10 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		/*-- Sensor method that record new accelerometer data --*/
 		public void onSensorChanged(SensorEvent event) {
 				
+				broadcastIntent.putExtra("intPbX",0);
+				broadcastIntent.putExtra("intPbY",0);
+				broadcastIntent.putExtra("intPbZ",0);
+			
 				/*-- Register accelerometer variations on every axis --*/
 			
 				if(event.values[0]-valprec[0]>NOISE){
@@ -119,8 +123,8 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				}
 				
 				
-				/*-- Every 100ms the Service notify only UI 3 with samples recorded on every axis  --*/
-				if(ric_UI3 && System.currentTimeMillis()-sendtime>100){
+				/*-- Every 200ms the Service notify only UI 3 with samples recorded on every axis  --*/
+				if(ric_UI3 && System.currentTimeMillis()-sendtime>200){
 					sendtime=System.currentTimeMillis();
 					broadcastIntent.putExtra("serCampX",i);
 					broadcastIntent.putExtra("serCampY",j);
@@ -149,7 +153,6 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 			/*-- If record started from UI 3 then send update values --*/
 			if(ric_UI3==true) {
-
 				broadcastIntent.putExtra("ValoreX", datoX.toString());
 				broadcastIntent.putExtra("ValoreY", datoY.toString());
 				broadcastIntent.putExtra("ValoreZ", datoZ.toString());
@@ -158,8 +161,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				broadcastIntent.putExtra("serCampX",i);
 				broadcastIntent.putExtra("serCampY",j);
 				broadcastIntent.putExtra("serCampZ",k);
-				sendBroadcast(broadcastIntent);
-			
+				sendBroadcast(broadcastIntent);		
 			}
 			
 			/*-- Otherwise record started from a widget then finish and insert he record on DB --*/
@@ -258,7 +260,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
     }
 	
         
-	/*-- Method used to convert accelerometer values into short numbers used by Audiotrack for playbeck --*/
+	/*-- Method used to convert accelerometer values into short numbers used by AudioTrack for playback --*/
 	protected static short converti(float x){
 		if(x>32.767) return 3276;
 		if(x<-32.768) return -3276;
@@ -270,9 +272,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	public static long calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
 		int somma=n_campX+n_campY+n_campZ;
 		int s=PlayRecord.calcoloSovra(sovra,somma);
-		int dimX=2*(PlayRecord.minsize+s*n_campX);
-		int dimY=2*(PlayRecord.minsize+s*n_campY);
-		int dimZ=2*(PlayRecord.minsize+s*n_campZ);
+		int dimX=2*(PlayRecord.MINSIZE+s*n_campX);
+		int dimY=2*(PlayRecord.MINSIZE+s*n_campY);
+		int dimZ=2*(PlayRecord.MINSIZE+s*n_campZ);
 		if(cX && cY && cZ) return (dimX+dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);
 		else if(cX && cY) return (dimX+dimY)/(PlayRecord.AT_SAMPLE_RATE/1000);
 		else if(cX && cZ) return (dimX+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);

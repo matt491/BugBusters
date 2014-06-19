@@ -29,7 +29,7 @@ public class PlayRecord extends IntentService {
 	private short[] finale;
 	private CommandReceiver receiver=new CommandReceiver();
 	public static boolean running;
-	public static final int minsize=7000;
+	public static final int MINSIZE=7000;
 	public static final int AT_SAMPLE_RATE=24000;
  	
 	
@@ -118,7 +118,7 @@ public class PlayRecord extends IntentService {
         /*-- Creation and initialization of arrays which will be written in the AudioTrack internal buffer --*/
         	short[] s1 = new short[0];
 	        if(checkX){
-	        	s1 = new short[minsize+sc*x.length];
+	        	s1 = new short[MINSIZE+sc*x.length];
 	           	 j=0;
 	           	 for(i=0;i<s1.length;i++){
 	           		 s1[i]=x[j];
@@ -129,7 +129,7 @@ public class PlayRecord extends IntentService {
 	         
 	        short[] s2 =new short[0];
 			if(checkZ){
-				s2 =new short[minsize+sc*z.length];
+				s2 =new short[MINSIZE+sc*z.length];
 	           	 j=0;
 	           	 for(i=0;i<s2.length;i++){
 	           		s2[i]=z[j];
@@ -140,7 +140,7 @@ public class PlayRecord extends IntentService {
 	        
 	        short[] s3 =new short[0];	
 	        if(checkY)	{ 
-	        	s3 =new short[minsize+sc*y.length];
+	        	s3 =new short[MINSIZE+sc*y.length];
 	        	 j=0;
 	        	 for(i=0;i<s3.length;i++){
 	        		 s3[i]=y[j];
@@ -152,7 +152,7 @@ public class PlayRecord extends IntentService {
 	        
 	        short[] s4 =new short[0];	 
 	        if(checkZ){
-	        	s4 =new short[minsize+sc*z.length];
+	        	s4 =new short[MINSIZE+sc*z.length];
 	           	 j=0;
 	           	 for(i=0;i<s4.length;i++){
 	           		s4[i]=z[j];
@@ -163,7 +163,7 @@ public class PlayRecord extends IntentService {
 	        
 	        short[] s5 =new short[0];    
 	        if(checkX){
-	        	s5 =new short[minsize+sc*x.length];
+	        	s5 =new short[MINSIZE+sc*x.length];
 	        	j=0;
 	           	 for(i=0;i<s5.length;i++){
 	           		s5[i]=x[j];
@@ -174,7 +174,7 @@ public class PlayRecord extends IntentService {
 	            
             short[] s6 =new short[0];    
            	if(checkY)	{
-           		s6 =new short[minsize+sc*y.length];  
+           		s6 =new short[MINSIZE+sc*y.length];  
 		        j=0;
 		        for(i=0;i<s6.length;i++){
 		        	s6[i]=y[j];
@@ -205,8 +205,7 @@ public class PlayRecord extends IntentService {
         /*-- Setting music loop (infinte) --*/
         at.setLoopPoints(0, finale.length-1, -1);
         
-        
-       	
+            	
     	/*-- Playback --*/
     	at.play();
         
