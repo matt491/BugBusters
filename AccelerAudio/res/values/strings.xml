@@ -70,5 +70,6 @@
     <string name="speakerUnavailable">Speaker occupati da un\'altra applicazione!</string>
     <string name="savedPref">Preferenze salvate</string>
     <string name="dbError">Errore nel Database</string>
+    <string name="noData">Nessuna registrazione presente!</string>
 
 </resources>

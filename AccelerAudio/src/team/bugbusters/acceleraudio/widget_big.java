@@ -28,7 +28,7 @@ public class widget_big extends AppWidgetProvider {
 	private static boolean PRIMA_VOLTA=true, stopped_first=false;
 	private static long starttime=System.currentTimeMillis();
 	private SharedPreferences prefs;
-	public static boolean delete_running_record=false;
+	public static boolean delete_running_record=false, rename_running_record=false, update_running_record=false;
 	public static boolean pause=true;
 	public static  int currid = 0;
 	
@@ -188,7 +188,7 @@ public class widget_big extends AppWidgetProvider {
         	try {
 				db.open();
 				if(db.fetchAllRecord().getCount()==0) {
-					Toast.makeText(context, "DataBase Empty from Receiver", Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, R.string.noData, Toast.LENGTH_SHORT).show();
 					rw.setTextViewText(R.id.title_w_big, "Title");
 					rw.setTextViewText(R.id.duration_big, "0,00 s");
 					rw.setTextViewText(R.id.modify_big, "Last Modified");
@@ -240,7 +240,6 @@ public class widget_big extends AppWidgetProvider {
 							else {	
 						    	if(!PlayRecord.running && play_widget){
 						    		pause=false;
-						    		Toast.makeText(context, "ID" +currid, Toast.LENGTH_SHORT).show();
 						        	i_play.putExtra("fromUI4", false);
 						        	i_play.putExtra("ID", currid);
 						        	
@@ -359,7 +358,30 @@ public class widget_big extends AppWidgetProvider {
 						    }
 						}
 					}/*--  End Start For --*/
+					
+					
+					/*-- In case of update the running record  --*/
+					if(update_running_record && rename_running_record) {
+						update_running_record=false;
+						rename_running_record=false;
+						c=db.fetchRecordById(currid);
+			        	c.moveToFirst();
+			        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+			    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
+			    		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+			    		rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
+					}
+					
+					/*-- In case of rename the running record  --*/
+					if(rename_running_record) {
+						rename_running_record=false;
+						c=db.fetchRecordById(currid);
+			        	c.moveToFirst();
+			        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
+			        	rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
+					}
 
+					
 				}
 				db.close();
 			} catch (SQLException e) {

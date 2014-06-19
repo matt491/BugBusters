@@ -19,7 +19,7 @@
     
 <!-- Qui compare il nome della music session che è in riproduzione -->
     <TextView
-        android:id="@+id/title_widget_big"
+        android:id="@+id/title_big"
         android:paddingRight="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageView1"
-        android:layout_alignLeft="@+id/title_widget_big"
+        android:layout_alignLeft="@+id/title_big"
         android:text="@string/Duration"
         android:textAppearance="?android:attr/textAppearanceSmall" />
     

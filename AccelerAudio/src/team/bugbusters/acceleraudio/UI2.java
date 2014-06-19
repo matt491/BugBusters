@@ -1,6 +1,7 @@
 package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -171,6 +172,13 @@ public class UI2 extends Activity {
 									e.printStackTrace();
 								}
 	            				
+	            				if(id_ric==widget_big.currid) {
+	            					widget_big.update_running_record=true;
+	            					widget_big.rename_running_record=true;
+	            					Intent notifica = new Intent(UI2.this,widget_big.class);
+									notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+									sendBroadcast(notifica);	
+	            				}
 	            		
 	            				prosegui();
 	              			}

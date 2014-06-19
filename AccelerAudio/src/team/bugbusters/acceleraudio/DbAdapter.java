@@ -109,9 +109,10 @@ public class DbAdapter {
   /*-- Method which is used to update an existing entry
    *-- Updates: name
   --*/
-  private ContentValues updateContentValuesNameOnly(String name) {
-	    ContentValues values = new ContentValues();
-	    values.put( KEY_NAME, name );    
+  private ContentValues updateContentValuesNameandDate(String name, String dataulti) {
+	    ContentValues values = new ContentValues();  
+	    values.put( KEY_NAME, name );  
+	    values.put( KEY_LAST, dataulti );
 	   return values;
   }
   
@@ -199,9 +200,9 @@ public class DbAdapter {
    /*-- Method which is used to update an existing entry
     *-- Updates: name
    --*/
-   public boolean updateNameOnly(long recordID, String name) {
-			ContentValues updateName = updateContentValuesNameOnly(name);
-			return database.update(DATABASE_TABLE, updateName, KEY_RECORDID + "==" + recordID, null) > 0;
+   public boolean updateNameandDate(long recordID, String name, String dataulti) {
+			ContentValues updateNameandDate = updateContentValuesNameandDate(name, dataulti);
+			return database.update(DATABASE_TABLE, updateNameandDate, KEY_RECORDID + "==" + recordID, null) > 0;
 }
 
   

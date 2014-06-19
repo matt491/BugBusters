@@ -281,16 +281,26 @@ public class UI1 extends Activity {
 					}
 					else {
 						try {
+							String nuovaData=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 							int dove = nuovaLista.indexOf(dati);
 							nuovaLista.get(dove)[2] = nuovoNome;
+							nuovaLista.get(dove)[3] = nuovaData;
 							ordinaLista(nuovaLista);
 							int pos = nuovaLista.indexOf(dati);
 							runningCl.notifyDataSetChanged();
 							lv.setSelection(pos);
 							
 							db.open();
-							db.updateNameOnly(id_to_rename,nuovoNome);
+							db.updateNameandDate(id_to_rename,nuovoNome,nuovaData);
 							db.close();
+							
+							if(Long.parseLong(dati[0])==widget_big.currid) {
+								Intent notifica = new Intent(UI1.this,widget_big.class);
+								notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+								widget_big.rename_running_record=true;
+								sendBroadcast(notifica);							
+							}
+							
 						} catch (SQLException e) {
 							Toast.makeText(UI1.this, R.string.dbError, Toast.LENGTH_SHORT).show();
 							e.printStackTrace();
