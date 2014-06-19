@@ -4,34 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-     <CheckBox
-        android:id="@+id/checkXdef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="65dp"
-        android:layout_marginTop="25dp"
-        android:text="@string/AsseX" />
-
-    <CheckBox
-        android:id="@+id/checkYdef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/checkXdef"
-        android:layout_toRightOf="@+id/checkXdef"
-        android:layout_marginLeft="25dp"
-        android:text="@string/AsseY" />
-
-    <CheckBox
-        android:id="@+id/checkZdef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/checkYdef"
-        android:layout_toRightOf="@+id/checkYdef"
-        android:layout_marginLeft="25dp"
-        android:text="@string/AsseZ" />
-    
     <TextView
         android:id="@+id/tt1"
         android:layout_width="wrap_content"
@@ -130,5 +102,43 @@
         android:layout_marginTop="28dp"
         android:text="@string/MaxDur"
         android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tt1"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/Assi"
+        android:textSize="15sp" />
+
+    <CheckBox
+        android:id="@+id/checkXdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/TextView01"
+        android:layout_alignBottom="@+id/TextView01"
+        android:layout_toLeftOf="@+id/salva_imp"
+        android:text="@string/AsseX" />
+
+    <CheckBox
+        android:id="@+id/checkYdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkXdef"
+        android:layout_alignBottom="@+id/checkXdef"
+        android:layout_alignRight="@+id/salva_imp"
+        android:text="@string/AsseY" />
+
+    <CheckBox
+        android:id="@+id/checkZdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkYdef"
+        android:layout_alignBottom="@+id/checkYdef"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/sovradef"
+        android:text="@string/AsseZ" />
 
 </RelativeLayout>

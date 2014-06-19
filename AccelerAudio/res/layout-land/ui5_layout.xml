@@ -4,42 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <CheckBox
-        android:id="@+id/checkXdef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="2dp"
-        android:text="@string/AsseX" />
-    
-    <CheckBox
-        android:id="@+id/checkYdef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/checkXdef"
-        android:layout_below="@+id/checkXdef"
-        android:layout_marginTop="1dp"
-        android:text="@string/AsseY" />
-
-    <CheckBox
-        android:id="@+id/checkZdef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/checkYdef"
-        android:layout_below="@+id/checkYdef"
-        android:layout_marginTop="1dp"
-        android:text="@string/AsseZ" />
-
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tt1"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/tt1" />
-
     <SeekBar
         android:id="@+id/sbcampdef"
         android:layout_width="match_parent"
@@ -73,19 +37,7 @@
         android:max="60"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="2dp"
-        android:progress="1" />
-
-    <TextView
-        android:id="@+id/tt1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/checkXdef"
-        android:layout_marginLeft="65dp"
-        android:layout_toRightOf="@+id/checkXdef"
-        android:paddingTop="10dp"
-        android:text="@string/Sampling"
-        android:textSize="15sp" />
+        android:layout_marginTop="2dp" />
 
     <TextView
         android:id="@+id/durmax"
@@ -104,25 +56,82 @@
        	android:layout_toRightOf="@+id/title_widget_big"
        	android:layout_marginLeft="10dp" />
 
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="30dp"
+        android:layout_centerVertical="true"
+        android:text="@string/MaxDur"
+        android:textSize="15sp" />
+
     <Button
         android:id="@+id/salva_imp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner1"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_alignRight="@+id/durdef"
+        android:layout_alignTop="@+id/spinner1"
+        android:onClick="onClick"
         android:text="@string/save"
         android:textSize="15sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tt"
+        android:id="@+id/tt1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/checkZdef"
-        android:layout_centerVertical="true"
-        android:text="@string/MaxDur"
+        android:layout_alignBaseline="@+id/salva_imp"
+        android:layout_alignBottom="@+id/salva_imp"
+        android:layout_alignLeft="@+id/TextView01"
+        android:text="@string/Sampling"
         android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkXdef"
+        android:layout_alignBottom="@+id/checkXdef"
+        android:layout_alignLeft="@+id/tt"
+        android:text="@string/Assi"
+        android:textSize="15sp" />
+
+    <CheckBox
+        android:id="@+id/checkYdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkXdef"
+        android:layout_alignBottom="@+id/checkXdef"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/sovradef"
+        android:text="@string/AsseY" />
+
+    <CheckBox
+        android:id="@+id/checkZdef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkYdef"
+        android:layout_alignBottom="@+id/checkYdef"
+        android:layout_toRightOf="@+id/checkYdef"
+        android:text="@string/AsseZ" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/checkZdef"
+        android:layout_below="@+id/checkYdef"
+        android:layout_toRightOf="@+id/checkXdef" />
+
+    <CheckBox
+        android:id="@+id/checkXdef"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/sovradef"
+        android:text="@string/AsseX" />
 
 </RelativeLayout>
