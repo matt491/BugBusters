@@ -159,7 +159,7 @@ public class UI3 extends Activity {
         rec.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { 
             	
-            	/*-- Check free space (at least 100kb to record a session) --*/
+            	/*-- Check free space before starting data capture (at least 100kb to record a session) --*/
             	StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
 				@SuppressWarnings("deprecation")
 				long kilobytesAvailable = ((long)stat.getBlockSize() *(long)stat.getAvailableBlocks())/1024;
@@ -218,7 +218,7 @@ public class UI3 extends Activity {
             	}
             	
             	
-            	/*-- Otherwise insert the new record into DB --*/
+            	/*-- Otherwise insert the new record into Database --*/
             	else {	
             		nome = nome_music.getText().toString();
             		ts = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();

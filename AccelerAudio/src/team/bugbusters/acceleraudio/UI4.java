@@ -24,7 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
+
 public class UI4 extends Activity {
 
 	private long id;

@@ -51,14 +51,10 @@ public class UI1 extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ui1_layout);
 		
-		lv = (ListView) findViewById(R.id.listView1);
-		
-		db = new DbAdapter(UI1.this);
-		
+		lv = (ListView) findViewById(R.id.listView1);		
+		db = new DbAdapter(UI1.this);		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-
-		
+	
 		if(prefs.getBoolean("sortedByName", false)) {
 			way = BY_NAME;
 		}
@@ -452,177 +448,175 @@ public class UI1 extends Activity {
 	   return ret;
    }
 	
-	/*
-	 * Metodo che controlla se e gia' presente un NOME di una music session nel DB
-	 */
-		public static boolean sameName(DbAdapter this_db,String s){
-				try {
-					this_db.open();
-					Cursor cursor=this_db.fetchRecordByFilter(s);
-					while (cursor.moveToNext()) {
-						String rNAME = cursor.getString(cursor.getColumnIndex(DbAdapter.KEY_NAME) );
-						if(s.equals(rNAME)) {
-							cursor.close();
-							this_db.close();
-							return true;
-						}
-					} 
-					cursor.close();
-					this_db.close();
-				} catch (SQLException e) {
-					Log.w("Exception", "Errore nel Database");
-					e.printStackTrace();
-				}
-				return false;
-		}
-		
-		public void ordinaLista(List<String[]> nuovaLista) {
-			if(prefs.getBoolean("sortedByName", false)) {
-				Collections.sort(nuovaLista, new Comparator<String[]>() {
-					@Override
-					public int compare(String[] s1, String[] s2) {
-						return s1[2].compareToIgnoreCase(s2[2]);
+	/*-- Method which check if another record with same name is already on Database --*/
+	public static boolean sameName(DbAdapter this_db,String s){
+			try {
+				this_db.open();
+				Cursor cursor=this_db.fetchRecordByFilter(s);
+				while (cursor.moveToNext()) {
+					String rNAME = cursor.getString(cursor.getColumnIndex(DbAdapter.KEY_NAME) );
+					if(s.equals(rNAME)) {
+						cursor.close();
+						this_db.close();
+						return true;
 					}
-				});
-				}
-				else if(prefs.getBoolean("sortedByDate", false)) {
-					Collections.sort(nuovaLista, new Comparator<String[]>() {
-						@Override
-						public int compare(String[] s1, String[] s2) {
-							return s2[3].compareTo(s1[3]);
-						}
-					});
-				}
-				else if(prefs.getBoolean("sortedByDuration", false)) {
-					Collections.sort(nuovaLista, new Comparator<String[]>() {
-						@Override
-						public int compare(String[] s1, String[] s2) {
-							return s1[4].compareTo(s2[4]);
-						}
-					});
-				}
-		}
-	
-		
-		@Override
-		public boolean onCreateOptionsMenu(Menu menu) {
-			MenuInflater menuInflater = getMenuInflater();
-			menuInflater.inflate(R.menu.option_menu, menu);
-			return true;
+				} 
+				cursor.close();
+				this_db.close();
+			} catch (SQLException e) {
+				Log.w("Exception", "Errore nel Database");
+				e.printStackTrace();
 			}
-		
-		@Override
-		public boolean onOptionsItemSelected(MenuItem item) {
-			final Editor prefsEditor = prefs.edit();
-			final CustomList runningCl = (CustomList) lv.getAdapter();
-			final List<String[]> nuovaLista = runningCl.getList();
-			switch(item.getItemId()) {
-			
-			case R.id.Preferenze:
-				Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
-				prefIntentUI5.putExtra("prefFromWidget", false);
-	            startActivity(prefIntentUI5);
-	            return(true);
-	            
-			case R.id.Ordina:
-				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
-					break;
+			return false;
+	}
+	
+	public void ordinaLista(List<String[]> nuovaLista) {
+		if(prefs.getBoolean("sortedByName", false)) {
+			Collections.sort(nuovaLista, new Comparator<String[]>() {
+				@Override
+				public int compare(String[] s1, String[] s2) {
+					return s1[2].compareToIgnoreCase(s2[2]);
 				}
-				if(prefs.getBoolean("sortedByName", false)) {
-					Toast.makeText(UI1.this, R.string.alreadySortedByName, Toast.LENGTH_SHORT).show();
-					break;
-				}
-				prefsEditor.putBoolean("sortedByName", true).commit();
-				prefsEditor.putBoolean("sortedByDate", false).commit();
-				prefsEditor.putBoolean("sortedByDuration", false).commit();
-				
-				
-				Collections.sort(nuovaLista, new Comparator<String[]>() {
-					@Override
-					public int compare(String[] s1, String[] s2) {
-						return s1[2].compareToIgnoreCase(s2[2]);
-					}
-				});
-				
-				runningCl.notifyDataSetChanged();
-				return(true);
-			
-			case R.id.Numera:
-				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
-					break;
-				}
-				if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false)) {
-					Toast.makeText(UI1.this, R.string.alreadySortedByInsertion, Toast.LENGTH_SHORT).show();
-					break;
-				}
-				prefsEditor.putBoolean("sortedByName", false).commit();
-				prefsEditor.putBoolean("sortedByDate", false).commit();
-				prefsEditor.putBoolean("sortedByDuration", false).commit();
-				
-				Collections.sort(nuovaLista, new Comparator<String[]>() {
-					@Override
-					public int compare(String[] s1, String[] s2) {
-						return (Integer.valueOf(s1[0])).compareTo(Integer.valueOf(s2[0]));
-					}
-				});
-				
-				runningCl.notifyDataSetChanged();
-				return(true);
-				
-			case R.id.OrdinaData:
-				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
-					break;
-				}
-				if(prefs.getBoolean("sortedByDate", false)) {
-					Toast.makeText(UI1.this, R.string.alreadySortedByDate, Toast.LENGTH_SHORT).show();
-					break;
-				}
-				prefsEditor.putBoolean("sortedByDate", true).commit();
-				prefsEditor.putBoolean("sortedByName", false).commit();
-				prefsEditor.putBoolean("sortedByDuration", false).commit();
-				
+			});
+			}
+			else if(prefs.getBoolean("sortedByDate", false)) {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
 						return s2[3].compareTo(s1[3]);
 					}
 				});
-				
-				runningCl.notifyDataSetChanged();
-				return(true);
-				
-			case R.id.OrdinaDurata:
-				if(runningCl.isEmpty() || runningCl.getCount() == 1) {
-					Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
-					break;
-				}
-				if(prefs.getBoolean("sortedByDuration", false)){
-					Toast.makeText(UI1.this, R.string.alreadySortedByDuration, Toast.LENGTH_SHORT).show();
-					break;
-				}
-				prefsEditor.putBoolean("sortedByDuration", true).commit();
-				prefsEditor.putBoolean("sortedByName", false).commit();
-				prefsEditor.putBoolean("sortedByDate", false).commit();
-				
+			}
+			else if(prefs.getBoolean("sortedByDuration", false)) {
 				Collections.sort(nuovaLista, new Comparator<String[]>() {
 					@Override
 					public int compare(String[] s1, String[] s2) {
-						float a = Float.parseFloat(s1[4])/1000;
-						float b = Float.parseFloat(s2[4])/1000;
-						return Float.compare(a, b);
+						return s1[4].compareTo(s2[4]);
 					}
 				});
-				
-				runningCl.notifyDataSetChanged();
-				return(true);
 			}
-			
-			return (super.onOptionsItemSelected(item));
-		}	
+	}
+
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.option_menu, menu);
+		return true;
+		}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		final Editor prefsEditor = prefs.edit();
+		final CustomList runningCl = (CustomList) lv.getAdapter();
+		final List<String[]> nuovaLista = runningCl.getList();
+		switch(item.getItemId()) {
 		
+		case R.id.Preferenze:
+			Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
+			prefIntentUI5.putExtra("prefFromWidget", false);
+            startActivity(prefIntentUI5);
+            return(true);
+            
+		case R.id.Ordina:
+			if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+				Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+				break;
+			}
+			if(prefs.getBoolean("sortedByName", false)) {
+				Toast.makeText(UI1.this, R.string.alreadySortedByName, Toast.LENGTH_SHORT).show();
+				break;
+			}
+			prefsEditor.putBoolean("sortedByName", true).commit();
+			prefsEditor.putBoolean("sortedByDate", false).commit();
+			prefsEditor.putBoolean("sortedByDuration", false).commit();
+			
+			
+			Collections.sort(nuovaLista, new Comparator<String[]>() {
+				@Override
+				public int compare(String[] s1, String[] s2) {
+					return s1[2].compareToIgnoreCase(s2[2]);
+				}
+			});
+			
+			runningCl.notifyDataSetChanged();
+			return(true);
+		
+		case R.id.Numera:
+			if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+				Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+				break;
+			}
+			if(!prefs.getBoolean("sortedByName", false) && !prefs.getBoolean("sortedByDate", false) && !prefs.getBoolean("sortedByDuration", false)) {
+				Toast.makeText(UI1.this, R.string.alreadySortedByInsertion, Toast.LENGTH_SHORT).show();
+				break;
+			}
+			prefsEditor.putBoolean("sortedByName", false).commit();
+			prefsEditor.putBoolean("sortedByDate", false).commit();
+			prefsEditor.putBoolean("sortedByDuration", false).commit();
+			
+			Collections.sort(nuovaLista, new Comparator<String[]>() {
+				@Override
+				public int compare(String[] s1, String[] s2) {
+					return (Integer.valueOf(s1[0])).compareTo(Integer.valueOf(s2[0]));
+				}
+			});
+			
+			runningCl.notifyDataSetChanged();
+			return(true);
+			
+		case R.id.OrdinaData:
+			if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+				Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+				break;
+			}
+			if(prefs.getBoolean("sortedByDate", false)) {
+				Toast.makeText(UI1.this, R.string.alreadySortedByDate, Toast.LENGTH_SHORT).show();
+				break;
+			}
+			prefsEditor.putBoolean("sortedByDate", true).commit();
+			prefsEditor.putBoolean("sortedByName", false).commit();
+			prefsEditor.putBoolean("sortedByDuration", false).commit();
+			
+			Collections.sort(nuovaLista, new Comparator<String[]>() {
+				@Override
+				public int compare(String[] s1, String[] s2) {
+					return s2[3].compareTo(s1[3]);
+				}
+			});
+			
+			runningCl.notifyDataSetChanged();
+			return(true);
+			
+		case R.id.OrdinaDurata:
+			if(runningCl.isEmpty() || runningCl.getCount() == 1) {
+				Toast.makeText(UI1.this, R.string.addSessionPlease, Toast.LENGTH_LONG).show();
+				break;
+			}
+			if(prefs.getBoolean("sortedByDuration", false)){
+				Toast.makeText(UI1.this, R.string.alreadySortedByDuration, Toast.LENGTH_SHORT).show();
+				break;
+			}
+			prefsEditor.putBoolean("sortedByDuration", true).commit();
+			prefsEditor.putBoolean("sortedByName", false).commit();
+			prefsEditor.putBoolean("sortedByDate", false).commit();
+			
+			Collections.sort(nuovaLista, new Comparator<String[]>() {
+				@Override
+				public int compare(String[] s1, String[] s2) {
+					float a = Float.parseFloat(s1[4])/1000;
+					float b = Float.parseFloat(s2[4])/1000;
+					return Float.compare(a, b);
+				}
+			});
+			
+			runningCl.notifyDataSetChanged();
+			return(true);
+		}
+		
+		return (super.onOptionsItemSelected(item));
+	}	
+	
 		
 	/*
 	 * Alla pressione del tasto back viene notificato all'utente che l'applicazione sta per chiudersi.

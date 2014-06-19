@@ -86,11 +86,11 @@ public class widget_lil extends AppWidgetProvider {
             i_pref.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i_pref.putExtra("prefFromWidget", true);
             
-            /*-- catching the signal from DataRecord which notify  that the recording time is expired --*/
+            /*-- Catching the signal from DataRecord which notify that the recording time is expired --*/
             
             terminated = intent.getBooleanExtra("Terminata", false);
             
-            /*-- catching the signal from DataRecord which notify  that accelerometer is unavailable --*/
+            /*-- Catching the signal from DataRecord which notify that accelerometer is unavailable --*/
             
             noaccel = intent.getBooleanExtra("NoAccelerometro", false);
             
@@ -99,7 +99,7 @@ public class widget_lil extends AppWidgetProvider {
             if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && noaccel)
             	Toast.makeText(context, R.string.accelUnavailable , Toast.LENGTH_SHORT).show();
  
-            /*-- finish recording --*/
+            /*-- Finish recording --*/
             
             if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated)  {
             	record_running=false;

@@ -55,9 +55,10 @@ public class UI2 extends Activity {
         super.onCreate(savedInstanceState);
         if(savedInstanceState!=null){
 	        	
-	        /*-- Show Keyboard if was already visible before --*/
+	        /*-- Show Keyboard if it was already visible before --*/
 	      	if(savedInstanceState.getBoolean("KeyboardVisible",false))
 	      		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+	      	
         }        
         setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
@@ -144,7 +145,7 @@ public class UI2 extends Activity {
             	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
             		sb.getProgress()!=sovra_ric || !(nome_ric.equals(nomeNuovo)) ){
             	
-            		/*-- Check name to prevent errors and if it is already on DB --*/
+            		/*-- Check name to prevent errors and if it is already on Database --*/
             		if(nomeNuovo.contains("'") || (nomeNuovo.contains("_") && !(nome_ric.equals(nomeNuovo))))
             			Toast.makeText(UI2.this, R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
             	
