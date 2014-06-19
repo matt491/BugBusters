@@ -24,13 +24,13 @@ public class widget_big extends AppWidgetProvider {
 	private static boolean terminated_rec=false;
 	private static Cursor c;
 	private static DbAdapter db;
-	private static int old_id;
+	private static long old_id;
 	private static boolean PRIMA_VOLTA=true, stopped_first=false;
 	private static long starttime=System.currentTimeMillis();
 	private SharedPreferences prefs;
 	public static boolean delete_running_record=false, rename_running_record=false, update_running_record=false;
 	public static boolean pause=true;
-	public static  int currid = 0;
+	public static long currid = 0;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
 	public static boolean record_widget_big=false,play_widget=true;
@@ -220,7 +220,7 @@ public class widget_big extends AppWidgetProvider {
 					{	
 						PRIMA_VOLTA=false;
 						c.moveToFirst();
-						currid=(int)c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+						currid=c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
 						setLayout(rw);
 					}
 					

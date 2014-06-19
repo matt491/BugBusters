@@ -199,7 +199,7 @@ public class UI2 extends Activity {
 		if(widget_big.pause){
 			stopService(new Intent(this, PlayRecord.class));
 			Intent intentToUI4=new Intent(UI2.this, UI4.class);
-			intentToUI4.putExtra(pkg_r+".myServiceID", (int) id_ric);
+			intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
 			startActivity(intentToUI4);
 		}
 		else {

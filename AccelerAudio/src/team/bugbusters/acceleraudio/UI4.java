@@ -27,7 +27,7 @@ import android.widget.Toast;
 //Riceve l'ID del record nel DB, estrae tutti i dati necessari e riproduce un suono
 public class UI4 extends Activity {
 
-	private int id;
+	private long id;
 	private String pkg_r;
 	private Intent playIntentService;
 	private ImageButton pause_resume,next,previous;
@@ -83,7 +83,7 @@ public class UI4 extends Activity {
         registerReceiver(receiver,new IntentFilter(MyUI4Receiver.NOTIFY_FRAME));
         
         pkg_r=getPackageName();   
-        id=getIntent().getIntExtra(pkg_r+".myServiceID", -1);
+        id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
         playIntentService=new Intent(UI4.this, PlayRecord.class);
         
         /*-- Layout settings --*/
@@ -233,8 +233,8 @@ public class UI4 extends Activity {
 	
 	
 	/*-- Static method used to search a previously or next coming ID respect on saved current sorting --*/
-	public static int searchId(DbAdapter this_db, int playingId, int nextOrPrevious, int currentSorting) {
-	int previousOrNextId;
+	public static long searchId(DbAdapter this_db, long playingId, int nextOrPrevious, int currentSorting) {
+	long previousOrNextId;
 	Cursor cursor;
 	try {
 		this_db.open();
