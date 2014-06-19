@@ -198,7 +198,7 @@ public class DbAdapter {
 }
    
    /*-- Method which is used to update an existing entry
-    *-- Updates: name
+    *-- Updates: name, last modified date
    --*/
    public boolean updateNameandDate(long recordID, String name, String dataulti) {
 			ContentValues updateNameandDate = updateContentValuesNameandDate(name, dataulti);
