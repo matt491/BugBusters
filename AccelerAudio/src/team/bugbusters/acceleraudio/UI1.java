@@ -369,7 +369,7 @@ public class UI1 extends Activity {
 				String[] dati_sessione = (String[]) lv.getAdapter().getItem(info.position);
 				Intent toUi4 = new Intent(this, UI4.class);
 				pkg = getPackageName();
-				toUi4.putExtra(pkg + ".myServiceID", Integer.parseInt(dati_sessione[0]));
+				toUi4.putExtra(pkg + ".myServiceID", Long.parseLong(dati_sessione[0]));
 				startActivity(toUi4);
 				return(true);
 			}

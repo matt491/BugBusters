@@ -43,7 +43,7 @@
         <!-- 		SETTING UI1			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI1"
-            	  android:label="Overview (UI#1)"
+            	  android:label="@string/labelUI1"
             	  android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN"/>
@@ -54,26 +54,26 @@
         <!--			SETTING UI2			-->
         
         <activity android:name="team.bugbusters.acceleraudio.UI2"
-            android:label="Details (UI#2)">
+            android:label="@string/labelUI2">
 		</activity>
         
         <!-- 		SETTING UI3			-->
         
         <activity android:name="team.bugbusters.acceleraudio.UI3"
-            android:label="New Music Session (UI#3)">
+            android:label="@string/labelUI3">
         </activity>
         
         <!-- 		SETTING UI4			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI4"
-            android:label="Play (UI#4)"
+            android:label="@string/labelUI4"
             android:configChanges="orientation|screenSize|keyboardHidden">>
         </activity>
         
         <!-- 		SETTING UI5			 -->
         
         <activity android:name="team.bugbusters.acceleraudio.UI5"
-            android:label="Preferences (UI#5)">
+            android:label="@string/labelUI5">
         </activity>
         
     </application>

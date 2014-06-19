@@ -26,7 +26,7 @@
     <string name="Sampling">Campionamento:</string>
     <string name="MaxDur">Durata:</string>
     <string name="save">Salva</string>
-    <string name="ListViewHeader">Music Sessions</string>
+    <string name="ListViewHeader">Lista Sessioni:</string>
     <string name="NoMusicSession">Nessuna music session!\nPremi il tasto + e comincia a registrare!</string>
     <string name="Yes">Si</string>
     <string name="No">No</string>
@@ -71,5 +71,10 @@
     <string name="savedPref">Preferenze salvate</string>
     <string name="dbError">Errore nel Database</string>
     <string name="noData">Nessuna registrazione presente!</string>
+    <string name="labelUI1">AccelerAudio</string>
+    <string name="labelUI2">Dettagli</string>
+    <string name="labelUI3">Nuova Sessione</string>
+    <string name="labelUI4">Riproduzione</string>
+    <string name="labelUI5">Preferenze</string>
 
 </resources>
