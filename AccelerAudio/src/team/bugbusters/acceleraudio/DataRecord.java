@@ -29,7 +29,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	private int i,j,k,durata_def;
 	private String freq;
 	private DbAdapter db;
-	private boolean ric_UI3,ric_LIL;
+	private boolean ric_UI3,ric_LIL,was_empty=false;
 	private float NOISE;
 	private float[] valprec;
 	
@@ -171,6 +171,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 				try {
 					db.open();
+					
+					/*-- Check if Database is empty --*/
+					if(db.fetchAllRecord().getCount()==0)
+						was_empty=true;
+					
 					long id=db.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
 							""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
 							timestamp, timestamp, null);
@@ -179,6 +184,16 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					String code = codifica(datoX.toString(),datoY.toString(),datoZ.toString(),timestamp,id);
 					db.updateRecordNameAndImage(id, "Rec_"+id, code);
 					db.close();
+					
+					/*-- If Database was empty before then notify widget big --*/
+					if(was_empty) {
+						was_empty=false;
+						Intent notifica = new Intent(DataRecord.this,widget_big.class);
+						notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+						sendBroadcast(notifica);	
+					}
+					
+					
 				} catch (SQLException e) {
 					Toast.makeText(DataRecord.this, R.string.dbError, Toast.LENGTH_SHORT).show();
 					e.printStackTrace();

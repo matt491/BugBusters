@@ -2,6 +2,7 @@ package team.bugbusters.acceleraudio;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -54,7 +55,7 @@ public class UI3 extends Activity {
     private SharedPreferences prefs;
     private DbAdapter db;
     private MyUI3Receiver receiver;
-    private boolean in_pausa=false;
+    private boolean in_pausa=false, was_empty=false;
     private boolean isChecked;
     private RecordCounter timer;
     private final long INTERVALLO=100L;
@@ -227,6 +228,11 @@ public class UI3 extends Activity {
             		
             		try {
 						db.open();		
+						
+						/*-- Check if Database is empty --*/
+						if(db.fetchAllRecord().getCount()==0)
+							was_empty=true;
+						
 	            		long id_to_ui2=db.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
 	            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
 	        					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
@@ -236,6 +242,14 @@ public class UI3 extends Activity {
 	            		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
 	            		db.updateImageCode(id_to_ui2, cod);
 	            		db.close();
+	            		
+	            		/*-- If Database was empty before then notify widget big --*/
+	            		if(was_empty) {
+							was_empty=false;
+							Intent notifica = new Intent(UI3.this,widget_big.class);
+							notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+							sendBroadcast(notifica);	
+						}
 	            		
 	            		/*-- Release Lock for Record --*/
 	            		widget_lil.record_running=false;
