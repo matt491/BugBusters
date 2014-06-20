@@ -15,6 +15,7 @@ public class CustomList extends ArrayAdapter<String[]> {
 	private final Activity context;
 	private List<String[]> toFill;
 	
+	/*-- This static class is used to make getView method more efficient.  --*/
 	static class ViewHolder {
 		public ImageView thumbnail;
 		public TextView nameText;
@@ -22,16 +23,19 @@ public class CustomList extends ArrayAdapter<String[]> {
 		public TextView durationText;
 	}
 	
+	/*-- Constructor  --*/
 	public CustomList(Activity context, List<String[]> toFill) {
 		super(context, R.layout.row, toFill);
 		this.context = context;
 		this.toFill = toFill;
 	}
 	
+	/*-- This method returns the List which is currently used and displayed.  --*/
 	public List<String[]> getList(){
 		return this.toFill;
 	}
 	
+	/*-- This is the key method of the adapter: it sets properly each row of the ListView. --*/
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View rowView = convertView;
