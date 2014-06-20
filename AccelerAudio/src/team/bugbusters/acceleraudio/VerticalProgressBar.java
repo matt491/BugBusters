@@ -5,14 +5,8 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
+/*-- This class is used to rotate default progress bar in order to display vertical progress bar in the portrait layout of UI3. (See ui3_layout.xml). --*/
 public class VerticalProgressBar extends ProgressBar {
-	
-	//private int x, y, z, w;
-	
-	/*@Override
-	protected void drawableStateChanged() {
-		super.drawableStateChanged();
-	}*/
 
 	public VerticalProgressBar(Context context) {
 		super(context);
@@ -28,16 +22,11 @@ public class VerticalProgressBar extends ProgressBar {
 	
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		/*this.x = w;
-		this.y = h;
-		this.z = oldw;
-		this.w = oldh;*/
 	}
 	
 	@Override
 	protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		//setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
 	}
 	
 	protected void onDraw(Canvas c) {
@@ -45,41 +34,4 @@ public class VerticalProgressBar extends ProgressBar {
 		c.translate(-getHeight(), 0);
 		super.onDraw(c);
 	}
-	
-	/*@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if(!isEnabled()) {
-			return false;
-		}
-		
-		switch(event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			setSelected(true);
-			setPressed(true);
-			break;
-			
-		case MotionEvent.ACTION_MOVE:
-			setProgress(getMax() - (int) (getMax() * event.getY() / getHeight()));
-			onSizeChanged(getWidth(), getHeight(), 0, 0);
-			break;
-			
-		case MotionEvent.ACTION_UP:
-			setSelected(false);
-			setPressed(false);
-			break;
-		}
-		return true;
-	}
-	
-	@Override
-	public synchronized void setProgress(int progress) {
-		if(progress >= 0) {
-			super.setProgress(progress);
-		}
-		else {
-			super.setProgress(0);
-		}
-		onSizeChanged(x, y, z, w);
-	}*/
-
 }

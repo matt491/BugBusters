@@ -54,7 +54,8 @@ public class UI1 extends Activity {
 		lv = (ListView) findViewById(R.id.listView1);		
 		db = new DbAdapter(UI1.this);		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-	
+		
+		/*-- Here it's checked which is the current ListView's sorting in order to populate it properly. --*/
 		if(prefs.getBoolean("sortedByName", false)) {
 			way = BY_NAME;
 		}
@@ -70,6 +71,7 @@ public class UI1 extends Activity {
 		
 		List<String[]> data = dataToFill(way);
 		
+		/*-- If the ListView is empty an empty View is set as a temporary layout. --*/
 		lv.setEmptyView(findViewById(R.id.empty));
 		
 		CustomList cl = new CustomList(UI1.this, data);
@@ -182,12 +184,17 @@ public class UI1 extends Activity {
 	
 	/*-- Pressing the "plus button" UI3 is launched.  --*/
 	public void onClick(View view) {
-		Intent intent = new Intent(UI1.this , UI3.class);
-		startActivity(intent);
-		finish();
+		
+		switch(view.getId()) {
+		
+		case R.id.addNew:
+			Intent intent = new Intent(UI1.this , UI3.class);
+			startActivity(intent);
+			finish();
+		}
 	}
 	
-	/*-- Content menu  --*/
+	/*-- This method sets the contextual menu which is displayed after a long click on a ListView's item.  --*/
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		
@@ -200,9 +207,7 @@ public class UI1 extends Activity {
 		inflater.inflate(R.menu.context_menu_ui1, menu);
 	}
 	
-	/*
-	 * 
-	 */
+	/*-- This code performs different actions depending on which contextual menu item has been selected.  --*/
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		
@@ -470,6 +475,7 @@ public class UI1 extends Activity {
 			return false;
 	}
 	
+	/*-- This method sorts the ListView.  --*/
 	public void ordinaLista(List<String[]> nuovaLista) {
 		if(prefs.getBoolean("sortedByName", false)) {
 			Collections.sort(nuovaLista, new Comparator<String[]>() {
@@ -497,7 +503,7 @@ public class UI1 extends Activity {
 			}
 	}
 
-	
+	/*-- This method creates and sets option's menu.  --*/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
@@ -618,12 +624,7 @@ public class UI1 extends Activity {
 	}	
 	
 		
-	/*
-	 * Alla pressione del tasto back viene notificato all'utente che l'applicazione sta per chiudersi.
-	 * Se la risposta alla domanda "Sei sicuro di voler terminare l'app?" e' "Si", l'activity viene terminata;
-	 * altrimenti, se la risposta e' "No", l'activity rimane in vita.
-	 * 
-	 */
+	/*-- This method warns the user that the application is going to close itself.  --*/
 	@Override
 	public void onBackPressed() {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UI1.this);
@@ -650,5 +651,3 @@ public class UI1 extends Activity {
 	}
 	
 }
-
-

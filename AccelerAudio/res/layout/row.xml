@@ -9,7 +9,8 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="3dp"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/ImageDesc" />
 
     <TextView
         android:id="@+id/name"
@@ -19,7 +20,6 @@
         android:layout_toRightOf="@+id/thubnail"
         android:layout_marginLeft="5dp"
         android:paddingRight="3dp"
-        android:text="NOME"
         android:singleLine="true"
         android:ellipsize="end"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/thubnail"
         android:layout_alignLeft="@+id/name"
-        android:text="DATA"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -41,7 +40,6 @@
         android:layout_alignBottom="@+id/dateLastModified"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
-        android:text="DURATA"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
