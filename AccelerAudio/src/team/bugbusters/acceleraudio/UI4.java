@@ -30,7 +30,8 @@ public class UI4 extends Activity {
 	private long id;
 	private String pkg_r;
 	private Intent playIntentService;
-	private ImageButton pause_resume,next,previous;
+	private ImageButton pause_resume;
+//	private ImageButton next,previous; 
 	private ImageView iv;
 	private TextView name;
 	private TextView duration;
