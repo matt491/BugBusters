@@ -138,7 +138,7 @@
         android:layout_alignBaseline="@+id/checkYdef"
         android:layout_alignBottom="@+id/checkYdef"
         android:layout_marginLeft="25dp"
-        android:layout_toRightOf="@+id/sovradef"
+        android:layout_toRightOf="@+id/checkYdef"
         android:text="@string/AsseZ" />
 
 </RelativeLayout>
