@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/rec_big"
         android:src="@android:drawable/ic_media_play"
-        />
+        android:contentDescription="@string/playButtonDesc"/>
     
    <ImageButton
         android:id="@+id/rec_big" 
@@ -19,7 +19,8 @@
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/rec"  />
+        android:src="@drawable/rec"
+        android:contentDescription="@string/recButtonDesc"  />
 
     <ImageButton
         android:id="@+id/backward_big"
@@ -27,7 +28,8 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/play_big"
-        android:src="@android:drawable/ic_media_previous" />
+        android:src="@android:drawable/ic_media_previous"
+        android:contentDescription="@string/prevButtonDesc" />
 
     <ImageButton
         android:id="@+id/forward_big"
@@ -35,7 +37,8 @@
         android:layout_height="48dp"
         android:layout_above="@+id/image_big"
         android:layout_alignParentRight="true"
-        android:src="@android:drawable/ic_media_next" />
+        android:src="@android:drawable/ic_media_next"
+        android:contentDescription="@string/nextButtonDesc" />
 
     <TextView
         android:id="@+id/title_w_big"
@@ -49,7 +52,7 @@
         android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
         android:textColor="#000000"
-        android:text="Title" />
+        android:text="@string/defaultTitle" />
 
     <TextView
         android:id="@+id/modify_big"
@@ -58,7 +61,7 @@
         android:layout_alignBottom="@+id/image_big"
         android:layout_alignLeft="@+id/play_big"
         android:textColor="#000000"
-        android:text="Last modified"
+        android:text="@string/defaultLastModified"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ImageView
@@ -68,7 +71,8 @@
         android:layout_alignLeft="@+id/rec_big"
         android:layout_alignRight="@+id/rec_big"
         android:layout_below="@+id/rec_big"
-        android:src="@drawable/ic_launcher1" />
+        android:src="@drawable/ic_launcher1"
+        android:contentDescription="@string/ImageDesc" />
 
     <TextView
         android:id="@+id/duration_big"
@@ -77,6 +81,6 @@
         android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
         android:textColor="#000000"
-        android:text="0,00 s" />
+        android:text="@string/defaultDuration" />
 
 </RelativeLayout>
