@@ -1,5 +1,6 @@
 package team.bugbusters.acceleraudio;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
@@ -14,6 +15,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -157,7 +159,8 @@ public class UI3 extends Activity {
          
         /*-- Record button pressed --*/
         rec.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) { 
+            @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+			public void onClick(View v) { 
             	
             	/*-- Check free space before starting data capture (at least 100kb to record a session) --*/
             	StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
@@ -170,6 +173,7 @@ public class UI3 extends Activity {
             		if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
             			
             			/*-- Check if another record is still running --*/
+            			
             			if(widget_lil.record_running==false) {
             				
             				/*-- Lock the screen at the current position --*/
