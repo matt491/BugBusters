@@ -271,6 +271,7 @@ public class UI3 extends Activity {
                
     } /*-- OnCreate End --*/
     
+    /*-- This method warns the user that the screen orientation will be locked when record button is pressed.  --*/
     @Override
     public void onResume() {
     	AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -315,7 +316,7 @@ public class UI3 extends Activity {
      }
 
 	 
-	/*-- Option menu --*/
+	/*-- Options menu is created and displayed. --*/
      @Override
  	public boolean onCreateOptionsMenu(Menu menu) {
  		MenuInflater menuInflater = getMenuInflater();
@@ -323,6 +324,7 @@ public class UI3 extends Activity {
  		return true;
  		}
      
+     /*-- onPrepareOptionsMenu hides the sorting options because they're useless here.  --*/
      @Override
  	public boolean onPrepareOptionsMenu(Menu menu) {
  		MenuItem ordina = menu.findItem(R.id.Or);
