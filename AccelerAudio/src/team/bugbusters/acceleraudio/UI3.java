@@ -227,7 +227,7 @@ public class UI3 extends Activity {
             		nome = nome_music.getText().toString();
             		ts = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
             	
-            		long dur=DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
+            		String dur=DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 							prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
             		
             		try {
@@ -237,7 +237,7 @@ public class UI3 extends Activity {
 						if(db.fetchAllRecord().getCount()==0)
 							was_empty=true;
 						
-	            		long id_to_ui2=db.createRecord(nome, ""+dur , datoX.toString(), datoY.toString(), datoZ.toString(),
+	            		long id_to_ui2=db.createRecord(nome, dur , datoX.toString(), datoY.toString(), datoZ.toString(),
 	            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
 	        					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
 	            	    

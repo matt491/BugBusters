@@ -1,5 +1,6 @@
 package team.bugbusters.acceleraudio;
 
+import java.util.Locale;
 import java.util.Random;
 
 import team.bugbusters.acceleraudio.UI3.MyUI3Receiver;
@@ -168,7 +169,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			else {
 				
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
-				long dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
+				String dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
 				
 				try {
@@ -178,7 +179,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					if(db.fetchAllRecord().getCount()==0)
 						was_empty=true;
 					
-					long id=db.createRecord("Rec_", ""+dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
+					long id=db.createRecord("Rec_", dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
 							""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
 							timestamp, timestamp, null);
 
@@ -269,19 +270,20 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	
 	/*-- Method used to calculate record playback time --*/
-	public static long calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
+	public static String calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
 		int somma=n_campX+n_campY+n_campZ;
 		int s=PlayRecord.calcoloSovra(sovra,somma);
 		int dimX=2*(PlayRecord.MINSIZE+s*n_campX);
 		int dimY=2*(PlayRecord.MINSIZE+s*n_campY);
 		int dimZ=2*(PlayRecord.MINSIZE+s*n_campZ);
-		if(cX && cY && cZ) return (dimX+dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);
-		else if(cX && cY) return (dimX+dimY)/(PlayRecord.AT_SAMPLE_RATE/1000);
-		else if(cX && cZ) return (dimX+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);
-		else if(cY && cZ) return (dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000);
-		else if(cX) return dimX/(PlayRecord.AT_SAMPLE_RATE/1000);
-		else if(cY) return dimY/(PlayRecord.AT_SAMPLE_RATE/1000);
-		else return dimZ/24;
+		
+		if(cX && cY && cZ) return String.format(Locale.US,"%04d",(dimX+dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cX && cY) return String.format(Locale.US,"%04d",(dimX+dimY)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cX && cZ) return String.format(Locale.US,"%04d",(dimX+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cY && cZ) return String.format(Locale.US,"%04d",(dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cX) return String.format(Locale.US,"%04d",dimX/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cY) return String.format(Locale.US,"%04d",dimY/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else return String.format(Locale.US,"%04d",dimZ/24);
 	}
 
 	

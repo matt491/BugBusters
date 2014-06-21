@@ -168,8 +168,8 @@ public class UI1 extends Activity {
 				row[4] = c.getString(durationIndex);
 				myList.add(row);
 			}
-			if(way == BY_DURATION)
-				ordinaLista(myList);
+			/*if(way == BY_DURATION)
+				ordinaLista(myList);*/
 			c.close();
 			db.close();
 			
@@ -428,9 +428,9 @@ public class UI1 extends Activity {
 		   if(sovrac_new==sovrac && sovrac<=90) sovrac_new = sovrac+10;
 		   else if (sovrac_new==sovrac) sovrac_new = sovrac-80;
 		    
-		   long dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
+		   String dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
 		       
-		   long id_new = db.createRecord(n+"_", ""+dur, asseX, asseY, asseZ, ""+cX, ""+cY, ""+cZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
+		   long id_new = db.createRecord(n+"_", dur, asseX, asseY, asseZ, ""+cX, ""+cY, ""+cZ, ncampx,ncampy,ncampz, ""+sovrac_new, datar, dataul, null);
 		   String code = DataRecord.codifica(asseX, asseY, asseZ, dataul, id_new);
 		   db.updateRecordNameAndImage(id_new, n+"_"+id_new, code);
 			

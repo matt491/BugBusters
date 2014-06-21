@@ -75,7 +75,7 @@ public class PlayRecord extends IntentService {
     	/*-- Closing DB --*/
         dbHelper.close();
         
-        
+              
     	/*-- Tokenization and conversion of samples to short arrays --*/       
         if(asseX.length()!=0)
         	s=asseX.split(" "); 
@@ -244,6 +244,19 @@ public class PlayRecord extends IntentService {
 	  else return (200*s/100);
 	  
   }
+  
+  private String[] toke(String s){
+  	String[] ret;
+	 if(s.length()!=0)
+    	ret=s.split(" "); 
+    else {
+    	ret=new String[1];
+    	ret[0]="0";
+    }
+	 
+	 return ret;
+	
+}
   
   		
  
