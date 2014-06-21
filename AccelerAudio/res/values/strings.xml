@@ -39,7 +39,7 @@
     <string name="ToastAlertSameName">Nome non valido!</string>
     <string name="Cancel">Cancella</string>
     <string name="DeleteMessage">Sei sicuro di voler eliminare questa sessione?</string>
-    <string name="apiceNonConsentito">Il carattere \' non è consentito!</string>
+    <string name="characterForbidden">Il carattere " \' " e il " _ " non sono consentiti!</string>
     <string name="lockScreen">Devi bloccare lo schermo!</string>
     <string name="validName">Immettere un nome valido!</string>
     <string name="registrationEnd">Registrazione terminata</string>
@@ -58,7 +58,7 @@
     <string name="alreadySortedByDuration">La lista è già ordinata per durata</string>
     <string name="alreadyRecording">Registrazione già in corso!</string>
     <string name="accelUnavailable">Accelerometro non disponibile!</string>
-    <string name="AvvisoBloccoRotazioneSchermo">Per non perdere i dati registrati, l\'orientazione dello schermo verrà bloccata nella posizione in cui è alla pressione del tasto Registra.</string>
+    <string name="screenLockWarning">Per non perdere i dati registrati, l\'orientazione dello schermo verrà bloccata nella posizione in cui è alla pressione del tasto Registra.</string>
     <string name="DontShowAgain">Non mostrare più!</string>
     <string name="addSessionPlease">Registra almeno un paio di sessioni prima di riordinare la lista!</string>
     <string name="spaceUnavailable">Spazio non disponibile!</string>

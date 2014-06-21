@@ -147,7 +147,7 @@ public class UI2 extends Activity {
             	
             		/*-- Check name to prevent errors and if it is already on Database --*/
             		if(nomeNuovo.contains("'") || (nomeNuovo.contains("_") && !(nome_ric.equals(nomeNuovo))))
-            			Toast.makeText(UI2.this, R.string.apiceNonConsentito, Toast.LENGTH_SHORT).show();
+            			Toast.makeText(UI2.this, R.string.characterForbidden, Toast.LENGTH_SHORT).show();
             	
             		else if((!(nome_ric.equals(nomeNuovo)) && UI1.sameName(db, nomeNuovo)) || nomeNuovo.equals(""))
             			Toast.makeText(UI2.this, R.string.ToastAlertSameName, Toast.LENGTH_SHORT).show();

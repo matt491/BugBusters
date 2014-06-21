@@ -270,7 +270,7 @@ public class UI1 extends Activity {
 					String nuovoNome = input.getText().toString();
 					if(!nuovoNome.equals(vecchioNome))
 					if(nuovoNome.contains("'") || nuovoNome.contains("_")) {
-						Toast toast= Toast.makeText(UI1.this, R.string.apiceNonConsentito, Toast.LENGTH_SHORT);
+						Toast toast= Toast.makeText(UI1.this, R.string.characterForbidden, Toast.LENGTH_SHORT);
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();
 					}

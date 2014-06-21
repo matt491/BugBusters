@@ -215,7 +215,7 @@ public class UI3 extends Activity {
             	
             	/*-- If name isn't valid or already exists --*/
             	if(nomeinserito.contains("'") || nomeinserito.contains("_")) {
-            		Toast.makeText(UI3.this, R.string.apiceNonConsentito, Toast.LENGTH_LONG).show();;
+            		Toast.makeText(UI3.this, R.string.characterForbidden, Toast.LENGTH_LONG).show();;
             	}
             	else if((nomeinserito.equals("")) || UI1.sameName(db,nomeinserito)) {
             		Toast.makeText(UI3.this, R.string.validName, Toast.LENGTH_SHORT).show();
