@@ -58,8 +58,11 @@
 
     <ImageView
         android:id="@+id/image_big"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
         android:layout_alignLeft="@+id/rec_big"
         android:layout_alignRight="@+id/rec_big"
         android:layout_below="@+id/rec_big"
@@ -72,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
-        android:paddingRight="8dp"
+        android:paddingRight="6dp"
         android:text="@string/defaultDuration"
         android:textColor="#000000" />
 
