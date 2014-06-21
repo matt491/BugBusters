@@ -35,17 +35,16 @@
         android:id="@+id/title_w_big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="40dp"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@+id/modify_big"
         android:layout_alignLeft="@+id/modify_big"
-        android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
+        android:layout_toLeftOf="@+id/duration_big"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/defaultTitle"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000000"
-        android:text="@string/defaultTitle" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/modify_big"
@@ -73,10 +72,12 @@
         android:id="@+id/duration_big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/modify_big"
         android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
         android:paddingRight="6dp"
         android:text="@string/defaultDuration"
+        android:gravity="center"
         android:textColor="#000000" />
 
     <ImageButton
