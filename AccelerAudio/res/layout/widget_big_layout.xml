@@ -39,6 +39,7 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_above="@+id/modify_big"
         android:layout_alignLeft="@+id/modify_big"
         android:layout_alignRight="@+id/forward_big"
@@ -53,8 +54,7 @@
         android:layout_alignBottom="@+id/image_big"
         android:layout_alignLeft="@+id/play_big"
         android:textColor="#000000"
-        android:text="@string/defaultLastModified"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:text="@string/defaultLastModified" />
 
     <ImageView
         android:id="@+id/image_big"
