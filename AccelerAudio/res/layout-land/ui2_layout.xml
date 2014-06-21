@@ -83,7 +83,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/selezionaAssi"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="@string/Upsampling"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
