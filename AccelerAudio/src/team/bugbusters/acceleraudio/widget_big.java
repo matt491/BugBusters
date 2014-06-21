@@ -8,7 +8,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -421,7 +420,8 @@ public class widget_big extends AppWidgetProvider {
 			} catch (NotFoundException e) {
 				Toast.makeText(context, R.string.dbError, Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
-			} 
+			}
+
         }
         
         

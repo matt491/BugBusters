@@ -2,8 +2,10 @@ package team.bugbusters.acceleraudio;
 
 import java.util.List;
 import java.util.Locale;
+
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +98,7 @@ public class CustomList extends ArrayAdapter<String[]> {
 		
 		holder.nameText.setText(s[2]);
 		holder.lastText.setText(s[3].substring(0, 16));
-		holder.durationText.setText(String.format(Locale.ITALY, "%.2f s", Float.parseFloat(s[4])/1000));
+		holder.durationText.setText(String.format(Locale.ITALY, "%.2f s", Float.parseFloat(s[4])/1000));	
 		
 		return rowView;
 	}

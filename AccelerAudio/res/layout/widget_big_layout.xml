@@ -90,7 +90,7 @@
         android:layout_height="48dp"
         android:layout_above="@+id/title_w_big"
         android:layout_toLeftOf="@+id/backward_big"
-       
+        android:contentDescription="@string/stopButtonDesc"
         android:src="@drawable/ic_action_stop" />
 
 </RelativeLayout>
