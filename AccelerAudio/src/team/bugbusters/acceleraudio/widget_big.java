@@ -13,6 +13,7 @@ import android.database.SQLException;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -31,6 +32,12 @@ public class widget_big extends AppWidgetProvider {
 	public static boolean delete_running_record=false, rename_running_record=false, update_running_record=false;
 	public static boolean pause=true;
 	public static long currid = 0;
+	public static final int PREVIOUS = 0;
+	public static final int NEXT = 1;
+	public static final int BY_INSERTION = -1;
+	public static final int BY_NAME = 0;
+	public static final int BY_DATE = 1;
+	public static final int BY_DURATION = 2;
 	
 	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
 	public static boolean record_widget_big=false,play_widget=true;
@@ -200,16 +207,16 @@ public class widget_big extends AppWidgetProvider {
 				}
 				else {	
 					switch(currentSorting(context)) {
-					case UI4.BY_NAME:
+					case BY_NAME:
 						c = db.fetchAllRecordSortedByName(); 
 						break;
-						case UI4.BY_DATE:
+						case BY_DATE:
 						c = db.fetchAllRecordSortedByDate();
 						break;
-						case UI4.BY_DURATION:
+						case BY_DURATION:
 						c = db.fetchAllRecordSortedByDuration();
 						break;
-						case UI4.BY_INSERTION:
+						case BY_INSERTION:
 						c = db.fetchAllRecord();
 						break;
 					}
@@ -310,7 +317,7 @@ public class widget_big extends AppWidgetProvider {
 							    	context.stopService(i_play);
 							    	pause=true;
 							    	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
-									currid=UI4.searchId(new DbAdapter(context), currid, UI4.PREVIOUS, currentSorting(context));
+									currid=searchId(new DbAdapter(context), currid, PREVIOUS, currentSorting(context));
 									c=db.fetchRecordById(currid);
 									c.moveToFirst();
 							    	setLayout(rw);
@@ -340,7 +347,7 @@ public class widget_big extends AppWidgetProvider {
 					        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
 					        	
 					        	old_id=currid;
-					    		currid=UI4.searchId(new DbAdapter(context), currid, UI4.NEXT, currentSorting(context));
+					    		currid=searchId(new DbAdapter(context), currid, NEXT, currentSorting(context));
 					        	c=db.fetchRecordById(currid);
 					        	c.moveToFirst();
 					        	setLayout(rw);
@@ -368,7 +375,7 @@ public class widget_big extends AppWidgetProvider {
 			        	c.moveToFirst();
 			        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 			    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
-			    		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+			    		float dur=Float.parseFloat(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
 			    		rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
 					}
 					
@@ -403,27 +410,109 @@ public class widget_big extends AppWidgetProvider {
 
 	private int currentSorting(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		int currentSorting = UI4.BY_INSERTION; //Default
+		int currentSorting = BY_INSERTION; //Default
 		
 		if(prefs.getBoolean("sortedByName", false)) {
-			currentSorting = UI4.BY_NAME;
+			currentSorting = BY_NAME;
 		}
 		else if(prefs.getBoolean("sortedByDate", false)) {
-			currentSorting = UI4.BY_DATE;
+			currentSorting = BY_DATE;
 		}
 		else if(prefs.getBoolean("sortedByDuration", false)) {
-			currentSorting = UI4.BY_DURATION;
+			currentSorting = BY_DURATION;
 		}
 		
 		return currentSorting;
 	}
+	
+
+	
+	/*-- Static method used to search a previously or next coming ID respect on saved current sorting --*/
+	public static long searchId(DbAdapter this_db, long playingId, int nextOrPrevious, int currentSorting) {
+	long previousOrNextId;
+	Cursor cursor;
+	try {
+		this_db.open();
+		
+		switch(currentSorting) {
+		 
+		 case BY_NAME:
+			 cursor = this_db.fetchAllRecordSortedByName();
+			 break;
+			 
+		 case BY_DATE:
+			 cursor = this_db.fetchAllRecordSortedByDate();
+			 break;
+			 
+		 case BY_DURATION:
+			 cursor = this_db.fetchAllRecordSortedByDuration();
+			 break;
+			 
+		 default:
+			 cursor = this_db.fetchAllRecord();
+			 break;
+		 }
+		
+
+		 switch(nextOrPrevious) {
+		 case PREVIOUS:
+			for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+				if(cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+					if(!cursor.isFirst()) {
+						cursor.moveToPrevious();
+						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						cursor.close();
+						this_db.close();
+						return previousOrNextId;
+					}
+					else {
+						cursor.moveToLast();
+						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						cursor.close();
+						this_db.close();
+						return previousOrNextId;
+					}
+				 }
+				}
+			 
+		 case NEXT:
+			 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+				 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+					 
+					 if(!cursor.isLast()) {
+						 cursor.moveToNext();
+						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						 cursor.close();
+						 this_db.close();
+						 return previousOrNextId;
+					 }
+					 else {
+						 cursor.moveToFirst();
+						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+						 cursor.close();
+						 this_db.close();
+						 return previousOrNextId;
+					 }
+				 }
+			 }
+			 default:
+				 previousOrNextId = playingId;
+				 return previousOrNextId;	 
+		 }
+	} catch (SQLException e) {
+		Log.w("Exception", "Errore nel Database");
+		e.printStackTrace();
+		return playingId;
+	}
+
+    }
 	
 	
 	/*-- Method used to set Widget layout --*/
 	private void setLayout(RemoteViews rw){
 		rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
-		float dur=(float) (c.getInt(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+		float dur=Float.parseFloat(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
 		rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
 		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
 		int alpha = Integer.parseInt(thumb.substring(0, 3));

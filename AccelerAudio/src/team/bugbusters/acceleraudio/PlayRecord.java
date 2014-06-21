@@ -76,27 +76,10 @@ public class PlayRecord extends IntentService {
         dbHelper.close();
         
               
-    	/*-- Tokenization and conversion of samples to short arrays --*/       
-        if(asseX.length()!=0)
-        	s=asseX.split(" "); 
-        else {
-        	s=new String[1];
-        	s[0]="0";
-        }
-        
-        if(asseY.length()!=0)
-        	p=asseY.split(" "); 
-        else {
-        	p=new String[1];
-        	p[0]="0";
-        }
-        
-        if(asseZ.length()!=0)
-        	q=asseZ.split(" ");
-        else {
-        	q=new String[1];
-        	q[0]="0";
-        }
+    	/*-- Tokenization and conversion of samples to short arrays --*/
+        s=myTokenizer(asseX);
+        p=myTokenizer(asseY);
+        q=myTokenizer(asseZ);
         
         short[] x=new short[s.length];
         short[] y=new short[p.length];
@@ -245,7 +228,9 @@ public class PlayRecord extends IntentService {
 	  
   }
   
-  private String[] toke(String s){
+  
+  /*-- Method used to tokenizer a string into an array string --*/
+  private String[] myTokenizer(String s){
   	String[] ret;
 	 if(s.length()!=0)
     	ret=s.split(" "); 
@@ -253,10 +238,8 @@ public class PlayRecord extends IntentService {
     	ret=new String[1];
     	ret[0]="0";
     }
-	 
 	 return ret;
-	
-}
+  }
   
   		
  
@@ -306,11 +289,7 @@ public class PlayRecord extends IntentService {
 	}
 	
 }
-	
-
-	
-                 
-            
+      
 
 
         

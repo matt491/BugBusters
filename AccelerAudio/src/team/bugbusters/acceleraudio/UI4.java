@@ -5,15 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,7 +38,6 @@ public class UI4 extends Activity {
 	private String nome;
 	private String thumbnail;
 	private long durata;
-	private SharedPreferences prefs;
 	private static boolean primavolta=true;
 	public static final String COMMAND_RESPONSE = "team.bugbusters.acceleraudio.intent.action.COMMAND_RESPONSE";
 	private TextView time;
@@ -53,12 +49,6 @@ public class UI4 extends Activity {
 	private boolean on_play, stopped_first;
 	private MyUI4Receiver receiver;
 	private int frame=0;
-	public static final int PREVIOUS = 0;
-	public static final int NEXT = 1;
-	public static final int BY_INSERTION = -1;
-	public static final int BY_NAME = 0;
-	public static final int BY_DATE = 1;
-	public static final int BY_DURATION = 2;
 	
 	
 	@Override
@@ -67,8 +57,6 @@ public class UI4 extends Activity {
         
         setContentView(R.layout.ui4_layout);
         pause_resume=(ImageButton)findViewById(R.id.imageButton1);
-//      next=(ImageButton)findViewById(R.id.imageButton3);
-//      previous=(ImageButton)findViewById(R.id.imageButton2);
         iv = (ImageView) findViewById(R.id.imageView1);
         name = (TextView) findViewById(R.id.title_big);
         duration = (TextView) findViewById(R.id.textView3);
@@ -117,53 +105,7 @@ public class UI4 extends Activity {
 		    	
         }
         
-        /*-- Previous button pressed 
-        previous.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	
-            	 Delay between all 3 button pressing which permit Play Record service to conclude pending operations 
-            	if(System.currentTimeMillis()-starttime>600) {
-            		starttime=System.currentTimeMillis();
-            		timer.cancel();
-	            	broadcastIntent.putExtra("Stop", true);
-	            	broadcastIntent.putExtra("Pausa", false);
-	            	broadcastIntent.putExtra("Riprendi", false);  
-	            	sendBroadcast(broadcastIntent);
-	            	stopService(playIntentService);
-	            	id = searchId(db, id, PREVIOUS, currentSorting());
-	            	impostaUI4(id);
-	            	playIntentService.putExtra("fromUI4", true);
-	            	playIntentService.putExtra("ID", id);
-	            	endtime=durata;
-	            	sbtime.setMax((int) endtime);
-	            	startService(playIntentService);
-            	}
-            	
-            }});
-        
-         Next button pressed 
-        next.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	
-            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations 
-            	if(System.currentTimeMillis()-starttime>600) {
-            		starttime=System.currentTimeMillis();
-            		timer.cancel();
-	            	broadcastIntent.putExtra("Stop", true);
-	            	broadcastIntent.putExtra("Pausa", false);
-	            	broadcastIntent.putExtra("Riprendi", false);  	
-	            	sendBroadcast(broadcastIntent);
-	            	stopService(playIntentService);
-	            	id = searchId(db, id, NEXT, currentSorting()); 
-	            	impostaUI4(id);
-	            	playIntentService.putExtra("fromUI4", true);
-	            	playIntentService.putExtra("ID", id);
-	            	endtime=durata;
-	            	sbtime.setMax((int) endtime);
-	            	startService(playIntentService);
-            	}            	
-            }}); --*/
-        
+
         
         /*-- Pause/Resume button pressed --*/
         pause_resume.setOnClickListener(new View.OnClickListener() {
@@ -213,106 +155,7 @@ public class UI4 extends Activity {
         
 	} /*-- onCreate End --*/
 	
-	
-	/*-- Method that read and return current sorting from Shared Preferences --*/
-	public int currentSorting() {
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		int currentSorting = BY_INSERTION; //Default
-		
-		if(prefs.getBoolean("sortedByName", false)) {
-			currentSorting = BY_NAME;
-		}
-		else if(prefs.getBoolean("sortedByDate", false)) {
-			currentSorting = BY_DATE;
-		}
-		else if(prefs.getBoolean("sortedByDuration", false)) {
-			currentSorting = BY_DURATION;
-		}
-		
-		return currentSorting;
-	}
-	
-	
-	/*-- Static method used to search a previously or next coming ID respect on saved current sorting --*/
-	public static long searchId(DbAdapter this_db, long playingId, int nextOrPrevious, int currentSorting) {
-	long previousOrNextId;
-	Cursor cursor;
-	try {
-		this_db.open();
-		
-		switch(currentSorting) {
-		 
-		 case BY_NAME:
-			 cursor = this_db.fetchAllRecordSortedByName();
-			 break;
-			 
-		 case BY_DATE:
-			 cursor = this_db.fetchAllRecordSortedByDate();
-			 break;
-			 
-		 case BY_DURATION:
-			 cursor = this_db.fetchAllRecordSortedByDuration();
-			 break;
-			 
-		 default:
-			 cursor = this_db.fetchAllRecord();
-			 break;
-		 }
-		
 
-		 switch(nextOrPrevious) {
-		 case PREVIOUS:
-			for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-				if(cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
-					if(!cursor.isFirst()) {
-						cursor.moveToPrevious();
-						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						cursor.close();
-						this_db.close();
-						return previousOrNextId;
-					}
-					else {
-						cursor.moveToLast();
-						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						cursor.close();
-						this_db.close();
-						return previousOrNextId;
-					}
-				 }
-				}
-			 
-		 case NEXT:
-			 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-				 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
-					 
-					 if(!cursor.isLast()) {
-						 cursor.moveToNext();
-						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						 cursor.close();
-						 this_db.close();
-						 return previousOrNextId;
-					 }
-					 else {
-						 cursor.moveToFirst();
-						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						 cursor.close();
-						 this_db.close();
-						 return previousOrNextId;
-					 }
-				 }
-			 }
-			 default:
-				 previousOrNextId = playingId;
-				 return previousOrNextId;	 
-		 }
-	} catch (SQLException e) {
-		Log.w("Exception", "Errore nel Database");
-		e.printStackTrace();
-		return playingId;
-	}
-
-    }
-	
 	
 	/*-- Method used to set UI4's layout --*/
 	public void impostaUI4(long this_id){
