@@ -42,6 +42,7 @@ public class PlayRecord extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 			
+		/*-- Service status knowledgement --*/
 	    running=true;
 	        
 		/*-- Registering Broadcast receiver --*/

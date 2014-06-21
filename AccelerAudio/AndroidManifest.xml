@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
-        <!-- SETTING THE BIG ONE WIDGET  -->
+        <!-- SETTING BIG WIDGET  -->
         
         <receiver android:name="widget_big" >	<!-- Linking the .class which have the core of the actions we want our widget to perform -->
     		<intent-filter>	<!-- Declaring that we are setting ad UPDATE widget type -->
@@ -27,7 +27,7 @@
 		</receiver>
        
         
-        <!-- SETTING THE LIL ONE WIDGET -->
+        <!-- SETTING LITTLE WIDGET -->
         
          <receiver android:name="widget_lil" >
     		<intent-filter>
@@ -37,7 +37,14 @@
         		       android:resource="@xml/widget_descriptor_lil" />
 		</receiver>
 		        
+         
+        <!-- 	SETTING DATA RECORD		 -->
+        
         <service android:name="DataRecord"/>
+        
+        
+        <!-- 	SETTING PLAY RECORD		 -->
+        
         <service android:name="PlayRecord"/>
         
         <!-- 		SETTING UI1			 -->
