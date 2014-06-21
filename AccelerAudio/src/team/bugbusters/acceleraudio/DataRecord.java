@@ -277,13 +277,13 @@ public class DataRecord extends IntentService implements SensorEventListener {
 		int dimY=2*(PlayRecord.MINSIZE+s*n_campY);
 		int dimZ=2*(PlayRecord.MINSIZE+s*n_campZ);
 		
-		if(cX && cY && cZ) return String.format(Locale.US,"%04d",(dimX+dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
-		else if(cX && cY) return String.format(Locale.US,"%04d",(dimX+dimY)/(PlayRecord.AT_SAMPLE_RATE/1000));
-		else if(cX && cZ) return String.format(Locale.US,"%04d",(dimX+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
-		else if(cY && cZ) return String.format(Locale.US,"%04d",(dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
-		else if(cX) return String.format(Locale.US,"%04d",dimX/(PlayRecord.AT_SAMPLE_RATE/1000));
-		else if(cY) return String.format(Locale.US,"%04d",dimY/(PlayRecord.AT_SAMPLE_RATE/1000));
-		else return String.format(Locale.US,"%04d",dimZ/24);
+		if(cX && cY && cZ) return String.format(Locale.ITALY,"%04d",(dimX+dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cX && cY) return String.format(Locale.ITALY,"%04d",(dimX+dimY)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cX && cZ) return String.format(Locale.ITALY,"%04d",(dimX+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cY && cZ) return String.format(Locale.ITALY,"%04d",(dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cX) return String.format(Locale.ITALY,"%04d",dimX/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else if(cY) return String.format(Locale.ITALY,"%04d",dimY/(PlayRecord.AT_SAMPLE_RATE/1000));
+		else return String.format(Locale.ITALY,"%04d",dimZ/24);
 	}
 
 	

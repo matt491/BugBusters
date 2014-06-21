@@ -27,8 +27,7 @@ public class UI4 extends Activity {
 	private long id;
 	private String pkg_r;
 	private Intent playIntentService;
-	private ImageButton pause_resume;
-//	private ImageButton next,previous; 
+	private ImageButton pause_resume; 
 	private ImageView iv;
 	private TextView name;
 	private TextView duration;
@@ -237,7 +236,6 @@ public class UI4 extends Activity {
 		super.onBackPressed();
 		broadcastIntent.putExtra("Stop", true);
     	broadcastIntent.putExtra("Pausa", false);
-    	broadcastIntent.putExtra("Play", false);
     	broadcastIntent.putExtra("Riprendi", false);
     	sendBroadcast(broadcastIntent);
     	primavolta=true;
