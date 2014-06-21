@@ -1,5 +1,6 @@
 package team.bugbusters.acceleraudio;
 
+import java.util.Locale;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -7,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -110,6 +112,10 @@ public class widget_big extends AppWidgetProvider {
 		Intent start_for = new Intent (context,widget_big.class);
 		start_for.setAction("START_FOR");
 		
+		/*-- Stop Intent --*/
+		Intent start_stop = new Intent (context,widget_big.class);
+		start_stop.setAction("START_STOP");
+		
 	
 		
 		/*-- Performing the action --*/
@@ -121,6 +127,8 @@ public class widget_big extends AppWidgetProvider {
 		view.setOnClickPendingIntent(R.id.backward_big, PendingIntent.getBroadcast(context, 0, start_pre, 0));
 		
 		view.setOnClickPendingIntent(R.id.forward_big, PendingIntent.getBroadcast(context, 0, start_for, 0));
+		
+		view.setOnClickPendingIntent(R.id.stop_big, PendingIntent.getBroadcast(context, 0, start_stop, 0));
 
 		/*-- Updating the widget --*/	
 		appWidgetManager.updateAppWidget(appWidgetIds[i], view);
@@ -196,9 +204,9 @@ public class widget_big extends AppWidgetProvider {
 				db.open();
 				if(db.fetchAllRecord().getCount()==0) {
 					Toast.makeText(context, R.string.noData, Toast.LENGTH_SHORT).show();
-					rw.setTextViewText(R.id.title_w_big, "Title");
+					rw.setTextViewText(R.id.title_w_big, "Titolo");
 					rw.setTextViewText(R.id.duration_big, "0,00 s");
-					rw.setTextViewText(R.id.modify_big, "Last Modified");
+					rw.setTextViewText(R.id.modify_big, "Ultima Modifica");
 					rw.setInt(R.id.image_big, "setImageResource", R.drawable.ic_launcher1);
 					rw.setInt(R.id.image_big, "setBackgroundColor", Color.WHITE);
 					
@@ -254,7 +262,7 @@ public class widget_big extends AppWidgetProvider {
 						        	if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
 						        		stopped_first=false;
 						        		context.startService(i_play);
-						        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+						        		rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_pause);
 						        	}
 						        	else {
 						        		stopped_first=true;
@@ -269,7 +277,7 @@ public class widget_big extends AppWidgetProvider {
 						    		commandIntent.putExtra("Riprendi", false);
 						    		commandIntent.putExtra("Stop", false);
 						    		context.sendBroadcast(commandIntent);
-						    		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+						    		rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
 						    		}
 						    	
 						    	else if(PlayRecord.running && pause && play_widget) {
@@ -279,17 +287,15 @@ public class widget_big extends AppWidgetProvider {
 						    			if(stopped_first){
 						    				stopped_first=false;
 						    				context.startService(i_play); 	
-						    				rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
-						    			}
-						    				
-		
+						    				rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_pause);
+						    			}						    				
 						    			else {
 							        		pause=false;
 							        		commandIntent.putExtra("Pausa", false);
 							        		commandIntent.putExtra("Riprendi", true);
 							        		commandIntent.putExtra("Stop", false);
 							        		context.sendBroadcast(commandIntent);
-							        		rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_pause);
+							        		rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_pause);
 						    			}
 						    			        			
 						    		}
@@ -314,9 +320,8 @@ public class widget_big extends AppWidgetProvider {
 									commandIntent.putExtra("Pausa", false);
 									commandIntent.putExtra("Riprendi", false);  
 									context.sendBroadcast(commandIntent);
-							    	context.stopService(i_play);
 							    	pause=true;
-							    	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+							    	rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
 									currid=searchId(new DbAdapter(context), currid, PREVIOUS, currentSorting(context));
 									c=db.fetchRecordById(currid);
 									c.moveToFirst();
@@ -342,9 +347,8 @@ public class widget_big extends AppWidgetProvider {
 					    		commandIntent.putExtra("Pausa", false);
 					    		commandIntent.putExtra("Riprendi", false);  
 					    		context.sendBroadcast(commandIntent);
-					        	context.stopService(i_play);
 					        	pause=true;
-					        	rw.setImageViewResource(R.id.play_big, android.R.drawable.ic_media_play);
+					        	rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
 					        	
 					        	old_id=currid;
 					    		currid=searchId(new DbAdapter(context), currid, NEXT, currentSorting(context));
@@ -367,6 +371,26 @@ public class widget_big extends AppWidgetProvider {
 					}/*--  End Start For --*/
 					
 					
+					if(action.equals("START_STOP")) {
+						if(!play_widget)
+							Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+						else {
+							Intent stop_playback=new Intent();
+							stop_playback.setAction(UI4.COMMAND_RESPONSE);
+							stop_playback.putExtra("Stop", true);
+							stop_playback.putExtra("Pausa", false);
+							stop_playback.putExtra("Riprendi", false);
+					    	context.sendBroadcast(stop_playback);
+					    	if(!pause) {
+					    		pause=true;
+					    		rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
+					    	}
+						}
+							
+					}
+						
+					
+					
 					/*-- In case of update the running record  --*/
 					if(update_running_record && rename_running_record) {
 						update_running_record=false;
@@ -376,7 +400,7 @@ public class widget_big extends AppWidgetProvider {
 			        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 			    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
 			    		float dur=Float.parseFloat(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
-			    		rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
+			    		rw.setTextViewText(R.id.duration_big, String.format(Locale.ITALY, "%.2f s", dur));
 					}
 					
 					/*-- In case of rename the running record  --*/
@@ -513,7 +537,7 @@ public class widget_big extends AppWidgetProvider {
 		rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
 		float dur=Float.parseFloat(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
-		rw.setTextViewText(R.id.duration_big, String.format("%.2f s", dur));
+		rw.setTextViewText(R.id.duration_big, String.format(Locale.ITALY, "%.2f s", dur));
 		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
 		int alpha = Integer.parseInt(thumb.substring(0, 3));
 		int red = Integer.parseInt(thumb.substring(3, 6));

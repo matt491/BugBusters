@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="30dp"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/ic_launcher1"
         android:contentDescription="@string/ImageDesc" />
     
 <!-- Qui compare il nome della music session che è in riproduzione -->
@@ -80,7 +80,7 @@
         android:layout_below="@+id/seekBar1"
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
-        android:src="@android:drawable/ic_media_play"
+        android:src="@drawable/ic_action_play"
         android:contentDescription="@string/pauseButtonDesc" />
 
    

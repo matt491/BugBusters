@@ -285,7 +285,7 @@ public class UI3 extends Activity {
     	cb.setChecked(isChecked);
     	alert.setView(dialogView);
     	alert.setTitle(R.string.alertTitle);
-    	alert.setIcon(android.R.drawable.ic_lock_lock);
+    	alert.setIcon(R.drawable.ic_action_screen_locked_to_landscape);
     	alert.setCancelable(false);
     	alert.setPositiveButton(R.string.okAlert, new OnClickListener() {
 			

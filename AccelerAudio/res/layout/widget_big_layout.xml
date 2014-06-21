@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
+    android:layout_width="305dp"
     android:layout_height="110dp"
     android:background="@android:drawable/alert_light_frame" >
 
@@ -10,7 +10,7 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/rec_big"
-        android:src="@android:drawable/ic_media_play"
+        android:src="@drawable/ic_action_play"
         android:contentDescription="@string/playButtonDesc"/>
     
    <ImageButton
@@ -23,21 +23,12 @@
         android:contentDescription="@string/recButtonDesc"  />
 
     <ImageButton
-        android:id="@+id/backward_big"
-        android:layout_width="56dp"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/play_big"
-        android:src="@android:drawable/ic_media_previous"
-        android:contentDescription="@string/prevButtonDesc" />
-
-    <ImageButton
         android:id="@+id/forward_big"
         android:layout_width="56dp"
         android:layout_height="48dp"
         android:layout_above="@+id/image_big"
         android:layout_alignParentRight="true"
-        android:src="@android:drawable/ic_media_next"
+        android:src="@drawable/ic_action_next"
         android:contentDescription="@string/nextButtonDesc" />
 
     <TextView
@@ -80,7 +71,26 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/forward_big"
         android:layout_below="@+id/forward_big"
-        android:textColor="#000000"
-        android:text="@string/defaultDuration" />
+        android:paddingRight="8dp"
+        android:text="@string/defaultDuration"
+        android:textColor="#000000" />
+
+    <ImageButton
+        android:id="@+id/backward_big"
+        android:layout_width="56dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/title_w_big"
+        android:layout_toLeftOf="@+id/forward_big"
+        android:contentDescription="@string/prevButtonDesc"
+        android:src="@drawable/ic_action_previous" />
+
+    <ImageButton
+        android:id="@+id/stop_big"
+        android:layout_width="56dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/title_w_big"
+        android:layout_toLeftOf="@+id/backward_big"
+       
+        android:src="@drawable/ic_action_stop" />
 
 </RelativeLayout>

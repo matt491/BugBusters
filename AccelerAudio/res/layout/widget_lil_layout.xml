@@ -20,6 +20,6 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/rec_lil"
-        android:src="@android:drawable/ic_menu_manage" />
+        android:src="@drawable/ic_action_settings" />
 
 </RelativeLayout>

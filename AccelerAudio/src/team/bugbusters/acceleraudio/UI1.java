@@ -168,8 +168,7 @@ public class UI1 extends Activity {
 				row[4] = c.getString(durationIndex);
 				myList.add(row);
 			}
-			/*if(way == BY_DURATION)
-				ordinaLista(myList);*/
+
 			c.close();
 			db.close();
 			
@@ -203,7 +202,7 @@ public class UI1 extends Activity {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 		String[] dati = (String[]) lv.getAdapter().getItem(info.position);
 		menu.setHeaderTitle(dati[2]);
-		menu.setHeaderIcon(android.R.drawable.ic_menu_more);
+		menu.setHeaderIcon(R.drawable.ic_action_expand);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.context_menu_ui1, menu);
 	}
@@ -237,7 +236,7 @@ public class UI1 extends Activity {
 			
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle(R.string.Rename);
-			alert.setIcon(android.R.drawable.ic_menu_edit);
+			alert.setIcon(R.drawable.ic_action_edit);
 			alert.setMessage(R.string.renameAlertMessage);
 			final long id_to_rename=Long.parseLong(dati[0]);
 			final String vecchioNome=dati[2];
@@ -320,7 +319,7 @@ public class UI1 extends Activity {
 			
 			AlertDialog.Builder alert2 = new AlertDialog.Builder(this);
 			alert2.setTitle(R.string.Delete);
-			alert2.setIcon(android.R.drawable.ic_menu_delete);
+			alert2.setIcon(R.drawable.ic_action_discard);
 			alert2.setMessage(R.string.DeleteMessage);
 			final long id_to_delete=Long.parseLong(dati[0]);
 			
@@ -634,7 +633,7 @@ public class UI1 extends Activity {
 		
 		
 		alertDialogBuilder.setTitle(R.string.alertTitle);
-		alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
+		alertDialogBuilder.setIcon(R.drawable.ic_action_warning);
 		alertDialogBuilder.setMessage(R.string.alertMessage);
 		
 		alertDialogBuilder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {

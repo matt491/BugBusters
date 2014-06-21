@@ -120,7 +120,7 @@ public class UI4 extends Activity {
 		            	broadcastIntent.putExtra("Riprendi", false);
 		            	broadcastIntent.putExtra("Stop", false);
 		            	sendBroadcast(broadcastIntent);
-		            	pause_resume.setImageResource(android.R.drawable.ic_media_play);
+		            	pause_resume.setImageResource(R.drawable.ic_action_play);
 	            	}
 	            	else{
 	            		/*-- Check if speakers is already in use --*/ 
@@ -140,7 +140,7 @@ public class UI4 extends Activity {
 			                	timer=new TimerCounter(endtime-(frame/(PlayRecord.AT_SAMPLE_RATE/1000)), INTERVALLO, frame/(PlayRecord.AT_SAMPLE_RATE/1000));
 			                	timer.start();
 			                	sendBroadcast(broadcastIntent);	
-			                	pause_resume.setImageResource(android.R.drawable.ic_media_pause);
+			                	pause_resume.setImageResource(R.drawable.ic_action_pause);
 	        	        	}
 	        	        	
 	        	        }
@@ -317,7 +317,7 @@ public class UI4 extends Activity {
 	        		/*-- Play Record service notifies that playback being started --*/
 	        		if(intent.getBooleanExtra("Inizia", false)){
 	        			on_play=true;
-	        			pause_resume.setImageResource(android.R.drawable.ic_media_pause);
+	        			pause_resume.setImageResource(R.drawable.ic_action_pause);
 	        			timer=new TimerCounter(endtime,INTERVALLO,0);
 	        	    	timer.start();
 	        		}
