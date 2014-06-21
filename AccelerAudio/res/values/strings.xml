@@ -26,7 +26,7 @@
     <string name="Sampling">Campionamento:</string>
     <string name="MaxDur">Durata:</string>
     <string name="save">Salva</string>
-    <string name="ListViewHeader">Lista Sessioni:</string>
+    <string name="ListViewHeader">LISTA SESSIONI</string>
     <string name="NoMusicSession">Nessuna music session!\nPremi il tasto + e comincia a registrare!</string>
     <string name="Yes">Si</string>
     <string name="No">No</string>

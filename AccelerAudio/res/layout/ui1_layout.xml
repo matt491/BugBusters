@@ -19,7 +19,7 @@
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_widget_big"
+        android:layout_below="@+id/musicSessionTitle"
         android:divider="#FFFFFF"
         android:dividerHeight="1px"
         android:layout_marginTop="5dp" >
@@ -36,13 +36,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/title_widget_big"
+        android:id="@+id/musicSessionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/addNew"
         android:layout_alignLeft="@+id/empty"
         android:layout_marginLeft="36dp"
-        android:paddingBottom="12dp"
+        android:textStyle="bold"
+        android:paddingBottom="15dp"
         android:text="@string/ListViewHeader"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

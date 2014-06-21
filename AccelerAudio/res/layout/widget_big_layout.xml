@@ -38,6 +38,7 @@
         android:layout_marginRight="40dp"
         android:singleLine="true"
         android:ellipsize="end"
+        android:textStyle="bold"
         android:layout_above="@+id/modify_big"
         android:layout_alignLeft="@+id/modify_big"
         android:layout_alignRight="@+id/forward_big"
