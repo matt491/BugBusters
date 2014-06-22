@@ -116,7 +116,7 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	
             	/*-- Delay to pressing button which permits Play Record service to conclude pending operations --*/
-            	if(System.currentTimeMillis()-starttime > 100) {
+            	if(System.currentTimeMillis()-starttime > 150) {
             		starttime = System.currentTimeMillis();
 	            	if(on_play){
 	            		on_play = false;
