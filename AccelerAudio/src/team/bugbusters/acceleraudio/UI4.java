@@ -25,7 +25,6 @@ import android.widget.Toast;
 public class UI4 extends Activity {
 
 	private long id;
-	private String pkg_r;
 	private Intent playIntentService;
 	private ImageButton pause_resume; 
 	private ImageView iv;
@@ -73,10 +72,9 @@ public class UI4 extends Activity {
         receiver = new MyUI4Receiver();
         registerReceiver(receiver,new IntentFilter(MyUI4Receiver.NOTIFY_FRAME));
         
-        pkg_r=getPackageName();  
         
         /*-- Receive record ID from UI1/UI2 --*/
-        id = getIntent().getLongExtra(pkg_r+".myServiceID", -1);
+        id = getIntent().getLongExtra("myServiceID", -1);
         playIntentService = new Intent(UI4.this, PlayRecord.class);
         
         /*-- Layout settings --*/

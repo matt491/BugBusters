@@ -46,7 +46,6 @@ public class UI3 extends Activity {
     private String freq_curr;						
     private String nome; 								
     private String ts;
-    private String pkg;
     private Button pause_resume,stop,rec,avan;								
     private EditText nome_music;
     private TextView timeView,varcamp;
@@ -211,7 +210,7 @@ public class UI3 extends Activity {
         /*-- Avanti button pressed --*/
         avan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	pkg=getPackageName();
+
             	String nomeinserito = nome_music.getText().toString();
             	
             	/*-- If name isn't valid or already exists --*/
@@ -260,7 +259,7 @@ public class UI3 extends Activity {
 	            		widget_lil.record_running = false;
 	            		
 	            		/*-- Start UI 2 --*/
-	            		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
+	            		intent.putExtra("myIdToUi2", id_to_ui2);
 	            		startActivity(intent);
 	            		finish();
             		
@@ -361,8 +360,8 @@ public class UI3 extends Activity {
 		 
 	     public RecordCounter(long millisInFuture, long countDownInterval, long prev) {
 	          super(millisInFuture, countDownInterval);
-	          previous=prev;
-	          end=millisInFuture;	
+	          previous = prev;
+	          end = millisInFuture;	
 	      }
 	 
 	        @Override

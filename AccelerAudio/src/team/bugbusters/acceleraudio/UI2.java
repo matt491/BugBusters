@@ -45,7 +45,6 @@ public class UI2 extends Activity {
     private boolean x_selected, y_selected, z_selected;
     private final boolean INIZIO=true;
 	private long id_ric;
-	private String pkg_r;
 	private DbAdapter db;
 	private Cursor cr;
 
@@ -62,7 +61,6 @@ public class UI2 extends Activity {
         }        
         setContentView(R.layout.ui2_layout);
         Intent intent_r=getIntent();
-        pkg_r=getPackageName();
         
         db = new DbAdapter(this);
      
@@ -109,7 +107,7 @@ public class UI2 extends Activity {
         	chZ.setOnCheckedChangeListener(listener);
         
 
-        id_ric = intent_r.getLongExtra(pkg_r+".myIdToUi2", -1);
+        id_ric = intent_r.getLongExtra("myIdToUi2", -1);
         
         aggiornaDati(INIZIO);
         
@@ -200,7 +198,7 @@ public class UI2 extends Activity {
 		if(widget_big.pause){
 			stopService(new Intent(this, PlayRecord.class));
 			Intent intentToUI4 = new Intent(UI2.this, UI4.class);
-			intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
+			intentToUI4.putExtra("myServiceID", id_ric);
 			startActivity(intentToUI4);
 		}
 		else {

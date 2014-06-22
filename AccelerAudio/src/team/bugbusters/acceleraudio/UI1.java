@@ -37,7 +37,6 @@ public class UI1 extends Activity {
 	public static int way;
 	private ListView lv;
 	private DbAdapter db;
-	private String pkg;
 	private SharedPreferences prefs;
 	private static final int BY_INSERTION = -1; //Default
 	private static final int BY_NAME = 0;
@@ -85,8 +84,7 @@ public class UI1 extends Activity {
 			String[] s = (String[])adapter.getItemAtPosition(position);
 			long musicSessionsId = Long.parseLong(s[0]);
 			Intent intent = new Intent(getApplicationContext(), UI2.class);
-			pkg = getPackageName();
-			intent.putExtra(pkg + ".myIdToUi2", musicSessionsId);
+			intent.putExtra("myIdToUi2", musicSessionsId);
 			startActivity(intent);
 			finish();
 		}
@@ -237,8 +235,8 @@ public class UI1 extends Activity {
 			alert.setTitle(R.string.Rename);
 			alert.setIcon(R.drawable.ic_action_edit);
 			alert.setMessage(R.string.renameAlertMessage);
-			final long id_to_rename=Long.parseLong(dati[0]);
-			final String vecchioNome=dati[2];
+			final long id_to_rename = Long.parseLong(dati[0]);
+			final String vecchioNome = dati[2];
 			final EditText input = new EditText(this);
 			input.setImeOptions(EditorInfo.IME_ACTION_SEND);
 			input.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -294,10 +292,10 @@ public class UI1 extends Activity {
 							db.updateNameandDate(id_to_rename,nuovoNome,nuovaData);
 							db.close();
 							
-							if(Long.parseLong(dati[0])==widget_big.currid) {
+							if(Long.parseLong(dati[0]) == widget_big.currid) {
 								Intent notifica = new Intent(UI1.this,widget_big.class);
 								notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-								widget_big.rename_running_record=true;
+								widget_big.rename_running_record = true;
 								sendBroadcast(notifica);							
 							}
 							
@@ -320,7 +318,7 @@ public class UI1 extends Activity {
 			alert2.setTitle(R.string.Delete);
 			alert2.setIcon(R.drawable.ic_action_discard);
 			alert2.setMessage(R.string.DeleteMessage);
-			final long id_to_delete=Long.parseLong(dati[0]);
+			final long id_to_delete = Long.parseLong(dati[0]);
 			
 			alert2.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 				
@@ -328,7 +326,7 @@ public class UI1 extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					
 					
-					if((id_to_delete==widget_big.currid))
+					if((id_to_delete == widget_big.currid))
 						if(!widget_big.pause)
 							Toast.makeText(UI1.this, R.string.cannoteDelete , Toast.LENGTH_SHORT).show();
 				
@@ -372,8 +370,7 @@ public class UI1 extends Activity {
 				stopService(new Intent(this, PlayRecord.class));
 				String[] dati_sessione = (String[]) lv.getAdapter().getItem(info.position);
 				Intent toUi4 = new Intent(this, UI4.class);
-				pkg = getPackageName();
-				toUi4.putExtra(pkg + ".myServiceID", Long.parseLong(dati_sessione[0]));
+				toUi4.putExtra("myServiceID", Long.parseLong(dati_sessione[0]));
 				startActivity(toUi4);
 				return(true);
 			}
@@ -397,34 +394,34 @@ public class UI1 extends Activity {
 		
 	    try {
 		   db.open();
-		   Cursor c=db.fetchRecordById(id);
+		   Cursor c = db.fetchRecordById(id);
 		   c.moveToNext();
-		   String n=c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
-		   String asseX=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
-		   String asseY=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
-		   String asseZ=c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
-		   boolean checkX=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
-		   boolean checkY=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
-		   boolean checkZ=Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-		   int ncampx=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
-		   int ncampy=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
-		   int ncampz=c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
-		   int sovrac=Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
-		   String datar=c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
-		   String dataul=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
+		   String n = c.getString(c.getColumnIndex(DbAdapter.KEY_NAME));
+		   String asseX = c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEX));
+		   String asseY = c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEY));
+		   String asseZ = c.getString(c.getColumnIndex(DbAdapter.KEY_ASSEZ));
+		   boolean checkX = Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKX)));
+		   boolean checkY = Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKY)));
+		   boolean checkZ = Boolean.parseBoolean(c.getString(c.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+		   int ncampx = c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPX));
+		   int ncampy = c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPY));
+		   int ncampz = c.getInt(c.getColumnIndex(DbAdapter.KEY_NUMCAMPZ));
+		   int sovrac = Integer.parseInt(c.getString(c.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
+		   String datar = c.getString(c.getColumnIndex(DbAdapter.KEY_DATE));
+		   String dataul = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
 		   int sovrac_new;
-		   boolean cX=checkX, cY=checkY, cZ=checkZ;
+		   boolean cX = checkX, cY = checkY, cZ = checkZ;
 		       
-		   Random r=new Random();
-		   while((cX==checkX && cY==checkY && cZ==checkZ) || (!cX && !cY && !cZ)){
-			   if(r.nextDouble()>=0.5) cX = !cX;
-			   if(r.nextDouble()>=0.5) cY = !cY;
-			   if(r.nextDouble()>=0.5) cZ = !cZ;
+		   Random r = new Random();
+		   while((cX == checkX && cY == checkY && cZ == checkZ) || (!cX && !cY && !cZ)){
+			   if(r.nextDouble() >= 0.5) cX = !cX;
+			   if(r.nextDouble() >= 0.5) cY = !cY;
+			   if(r.nextDouble() >= 0.5) cZ = !cZ;
 		   }
   
 		   sovrac_new = (int)(Math.random()*100);
-		   if(sovrac_new==sovrac && sovrac<=90) sovrac_new = sovrac+10;
-		   else if (sovrac_new==sovrac) sovrac_new = sovrac-80;
+		   if(sovrac_new == sovrac && sovrac <= 90) sovrac_new = sovrac+10;
+		   else if (sovrac_new == sovrac) sovrac_new = sovrac-80;
 		    
 		   String dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,cX,cY,cZ,sovrac_new);
 		       
