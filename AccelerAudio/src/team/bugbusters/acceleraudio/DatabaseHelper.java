@@ -29,11 +29,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
      /*-- Method which upgrade Database --*/
      @Override
-     public void onUpgrade( SQLiteDatabase database, int oldVersion, int newVersion ) {
-              
+     public void onUpgrade( SQLiteDatabase database, int oldVersion, int newVersion ) {    
              database.execSQL("DROP TABLE IF EXISTS musicsessions");
-             onCreate(database);
-              
+             onCreate(database);           
      }
 
 }

@@ -184,9 +184,9 @@ public class UI3 extends Activity {
             				WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 							Display disp = wm.getDefaultDisplay();
 							int orientation = disp.getRotation();
-							if(orientation==Surface.ROTATION_0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
-							if(orientation==Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-							if(orientation==Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+							if(orientation == Surface.ROTATION_0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
+							if(orientation == Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+							if(orientation == Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 							
 							/*-- Set Lock for Record (no one can record a new session now) --*/
 	            			widget_lil.record_running = true;

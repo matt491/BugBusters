@@ -115,7 +115,7 @@ public class UI4 extends Activity {
         pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
-            	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations --*/
+            	/*-- Delay to pressing button which permits Play Record service to conclude pending operations --*/
             	if(System.currentTimeMillis()-starttime > 100) {
             		starttime = System.currentTimeMillis();
 	            	if(on_play){

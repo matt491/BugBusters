@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 public class widget_lil extends AppWidgetProvider {
 	private static Intent i_record, i_pref;
-	private static boolean terminated=false;
-	public static boolean record_running=false, record_widget_lil=false, noaccel=false;
+	private static boolean terminated = false;
+	public static boolean record_running, record_widget_lil, noaccel;
 	
 	
 	@Override
@@ -102,9 +102,9 @@ public class widget_lil extends AppWidgetProvider {
             /*-- Finish recording --*/
             
             if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated)  {
-            	record_running=false;
-            	record_widget_lil=false;
-            	terminated=false;
+            	record_running = false;
+            	record_widget_lil = false;
+            	terminated = false;
         		rw.setImageViewResource(R.id.rec_lil, R.drawable.rec);
             	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
             }
@@ -113,9 +113,9 @@ public class widget_lil extends AppWidgetProvider {
             
             if(action.equals("START_STOP_REC")){
             	if(!record_widget_lil && !widget_big.record_widget_big) {  	
-	            	if(record_running==false) {
-		            	record_running=true;
-		            	record_widget_lil=true;
+	            	if(record_running == false) {
+		            	record_running = true;
+		            	record_widget_lil = true;
 		            	rw.setImageViewResource(R.id.rec_lil, R.drawable.stop);
 		            	context.startService(i_record);
 	            	}

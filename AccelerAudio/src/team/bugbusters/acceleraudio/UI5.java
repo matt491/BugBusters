@@ -30,24 +30,24 @@ public class UI5 extends Activity {
 	private String freqdef;
 	private TextView scampdef;
 	private TextView dmax;
-	private static boolean fromWidget=false;
+	private boolean fromWidget;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.ui5_layout);
 	        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-	        defX=(CheckBox)findViewById(R.id.checkXdef);  
-	        defY=(CheckBox)findViewById(R.id.checkYdef);
-	        defZ=(CheckBox)findViewById(R.id.checkZdef);
-	        sbdurdef =(SeekBar)findViewById(R.id.durdef);
-	    	sbsovradef=(SeekBar)findViewById(R.id.sbcampdef);
-	    	scampdef=(TextView)findViewById(R.id.sovradef);
-	    	dmax=(TextView)findViewById(R.id.durmax);
+	        defX = (CheckBox) findViewById(R.id.checkXdef);  
+	        defY = (CheckBox) findViewById(R.id.checkYdef);
+	        defZ = (CheckBox) findViewById(R.id.checkZdef);
+	        sbdurdef = (SeekBar) findViewById(R.id.durdef);
+	    	sbsovradef = (SeekBar) findViewById(R.id.sbcampdef);
+	    	scampdef = (TextView) findViewById(R.id.sovradef);
+	    	dmax = (TextView) findViewById(R.id.durmax);
 	    	
       
-	    	Intent intent=getIntent();
-	    	fromWidget=intent.getBooleanExtra("prefFromWidget", false);
+	    	Intent intent = getIntent();
+	    	fromWidget = intent.getBooleanExtra("prefFromWidget", false);
 	    	
 	    	/*-- Checkbox listener: used to keep at least one checkbox checked --*/
 	    	OnCheckedChangeListener listener = new OnCheckedChangeListener() {
@@ -80,15 +80,16 @@ public class UI5 extends Activity {
 	        	
 	        	
 	        	/*-- Spinner menu to select recording deafult sampling --*/
-	        	spinner = (Spinner)findViewById(R.id.spinner1);
+	        	spinner = (Spinner) findViewById(R.id.spinner1);
 	        	ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,
 	        			new String[]{"Lento","Normale","Veloce"});
 	        	spinner.setAdapter(adapter);
    
+	        	/*-- Spinner listener: used to set accelerometer default samplerate --*/
 	        	spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 	        	public void onItemSelected(AdapterView<?> adapter, View view,int pos, long id) {
-	        		String selected = (String)adapter.getItemAtPosition(pos);
-	        		freqdef=selected;
+	        		String selected = (String) adapter.getItemAtPosition(pos);
+	        		freqdef = selected;
 	        	}
 	        	public void onNothingSelected(AdapterView<?> arg0) {}
 	        	});
@@ -105,21 +106,23 @@ public class UI5 extends Activity {
 	        	scampdef.setText(""+sbsovradef.getProgress());
 	
 	         
-	        	/*-- Methods override of seekbar which set default duration --*/
+	        	/*-- Methods override of seekbar which set default recording duration --*/
 	        	sbdurdef.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
-	            @Override
-	            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-	            	sbdurdef.setProgress(seekBar.getProgress());
-	            	dmax.setText(seekBar.getProgress()+" secondi");
-	            }
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {}
-
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					sbdurdef.setProgress(seekBar.getProgress());
-	                dmax.setText(seekBar.getProgress()+" secondi");
-				}});
+	        		
+		            @Override
+		            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		            	sbdurdef.setProgress(seekBar.getProgress());
+		            	dmax.setText(seekBar.getProgress()+" secondi");
+		            }
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar) {}
+	
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						sbdurdef.setProgress(seekBar.getProgress());
+		                dmax.setText(seekBar.getProgress()+" secondi");
+		            }
+	        	});
 
 	        
 	        	/*-- Methods override of seekbar which set default upsampling --*/
@@ -138,8 +141,9 @@ public class UI5 extends Activity {
 	    			public void onStopTrackingTouch(SeekBar seekBar) {
 	    				sbsovradef.setProgress(seekBar.getProgress());
 	    				scampdef.setText(""+sbsovradef.getProgress());
-	    			}});
-	        	
+		            }
+	        	});
+	
 	        	
 	
 	}
@@ -151,9 +155,9 @@ public class UI5 extends Activity {
 			/*-- Salva button pressed --*/
 			case R.id.salva_imp: {
 				Editor prefsEditor = prefs.edit();
-            	prefsEditor.putBoolean("Xselect",defX.isChecked());
-            	prefsEditor.putBoolean("Yselect",defY.isChecked());
-            	prefsEditor.putBoolean("Zselect",defZ.isChecked());
+            	prefsEditor.putBoolean("Xselect", defX.isChecked());
+            	prefsEditor.putBoolean("Yselect", defY.isChecked());
+            	prefsEditor.putBoolean("Zselect", defZ.isChecked());
             	prefsEditor.putString("Campion", freqdef);
             	prefsEditor.putInt("duratadef", sbdurdef.getProgress());
             	prefsEditor.putInt("sovrdef", sbsovradef.getProgress());
@@ -176,10 +180,8 @@ public class UI5 extends Activity {
 	
 	public void onPause(){
 		super.onPause();
-		if(fromWidget) {
-			fromWidget=false;
+		if(fromWidget) 
 			finish();
-		}
 	}
 	
 	

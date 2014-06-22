@@ -23,15 +23,15 @@ public class widget_big extends AppWidgetProvider {
 	
 	/*-- terminated_rec/play are meant to be the control type variables which receives the extras from the services --*/
 	private static Intent i_record,i_play, commandIntent;
-	private static boolean terminated_rec=false;
+	private static boolean terminated_rec;
 	private static Cursor c;
 	private static DbAdapter db;
 	private static long old_id;
-	private static boolean PRIMA_VOLTA=true, stopped_first=false;
+	private static boolean PRIMA_VOLTA = true, stopped_first;
 	private static long starttime=System.currentTimeMillis();
 	private SharedPreferences prefs;
-	public static boolean delete_running_record=false, rename_running_record=false, update_running_record=false;
-	public static boolean pause=true;
+	public static boolean delete_running_record, rename_running_record, update_running_record;
+	public static boolean pause = true;
 	public static long currid = 0;
 	public static final int PREVIOUS = 0;
 	public static final int NEXT = 1;
@@ -40,8 +40,8 @@ public class widget_big extends AppWidgetProvider {
 	public static final int BY_DATE = 1;
 	public static final int BY_DURATION = 2;
 	
-	/*-- record_widget_big and play_widget are global variables for services status knowledge --*/ 
-	public static boolean record_widget_big=false,play_widget=true;
+	/*-- Record_widget_big and play_widget are global variables for services status knowledge --*/ 
+	public static boolean record_widget_big, play_widget = true;
 	
 	/*-- Handles the destruction event --*/
 	@Override
@@ -49,10 +49,12 @@ public class widget_big extends AppWidgetProvider {
 	{
 		super.onDeleted(context, appWidgetIds);
 		currid = 0;
-		PRIMA_VOLTA=true;
-		pause=true;
+		PRIMA_VOLTA = true;
+		pause = true;
+		
+		/*-- If playback is running then stop the Play Record service --*/
 		if(play_widget && PlayRecord.running) {
-			commandIntent=new Intent();
+			commandIntent = new Intent();
     		commandIntent.setAction(UI4.COMMAND_RESPONSE);
 			commandIntent.putExtra("Pausa", false);
     		commandIntent.putExtra("Riprendi", false);
@@ -60,18 +62,21 @@ public class widget_big extends AppWidgetProvider {
     		context.sendBroadcast(commandIntent);
 		}
 		
+		/*-- If recording is running then stop the Data Record service --*/
 		if(widget_lil.record_running && record_widget_big) 
 			context.stopService(new Intent(context, DataRecord.class));
 
 	}
 	
+	/*-- Handles the creation event --*/
 	@Override
 	public void onEnabled(Context context) {
 		super.onEnabled(context);
-		terminated_rec=false;
-		pause=true;
-		PRIMA_VOLTA=true;
+		terminated_rec = false;
+		pause = true;
+		PRIMA_VOLTA = true;
 	}
+	
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int [] appWidgetIds)
 	{
@@ -93,17 +98,14 @@ public class widget_big extends AppWidgetProvider {
 		 *  --*/
 		
 		/*--Record Intent --*/
-		
 		Intent start_rec = new Intent(context,widget_big.class);
 		start_rec.setAction("START_STOP_REC");
 		
 		/*-- Play - Pause Intent --*/
-		
 		Intent start_play = new Intent(context,widget_big.class);
 		start_play.setAction("START_STOP_PLAY");
 		
 		/*-- Previous Intent --*/
-		
 		Intent start_pre = new Intent (context,widget_big.class);
 		start_pre.setAction("START_PRE");
 		
@@ -145,7 +147,7 @@ public class widget_big extends AppWidgetProvider {
 /*------------------------------------------------------------------------------------------------------------------------------------------------*/
         /*-- Recording Code -- */
         
-        if((action.equals("START_STOP_REC"))||(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)&&(intent.getBooleanExtra("RS",false))))
+        if((action.equals("START_STOP_REC")) || (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && (intent.getBooleanExtra("RS",false))))
         {
         	i_record = new Intent(context, DataRecord.class);
         
@@ -164,24 +166,24 @@ public class widget_big extends AppWidgetProvider {
         	/*-- Handling the DataRecord call --*/
         
         	if(action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) && terminated_rec)  {
-	        	widget_lil.record_running=false;
-	        	record_widget_big=false;
-	        	terminated_rec=false;
+	        	widget_lil.record_running = false;
+	        	record_widget_big = false;
+	        	terminated_rec = false;
 	    		rw.setImageViewResource(R.id.rec_big, R.drawable.rec);
 	    		
 	        	Toast.makeText(context, R.string.registrationEnd , Toast.LENGTH_SHORT).show();
         	}
         
         /*-- Handling the widget start_rec call --*/
-        	else
-        	{
+        	else {
         		/*-- Checking the mutually exclusive DataRecord service execution --*/
         		if(!widget_lil.record_widget_lil && !record_widget_big) {  	
-        			if(widget_lil.record_running==false) {
-        				widget_lil.record_running=true;
-        				/*-- Widget Big is free to start the Recording Service --*/
+        			if(widget_lil.record_running == false) {
+        				widget_lil.record_running = true;
         				
-        				record_widget_big=true;
+        				/*-- Widget Big is free to start the Recording Service --*/
+        				record_widget_big = true;
+        				
         				rw.setImageViewResource(R.id.rec_big, R.drawable.stop);
         				context.startService(i_record);
         			}
@@ -189,8 +191,9 @@ public class widget_big extends AppWidgetProvider {
         		}
         		else if(widget_lil.record_widget_lil)
         			Toast.makeText(context, R.string.alreadyRecording , Toast.LENGTH_SHORT).show();
-        				else context.stopService(i_record);
-        		}
+        		
+        			 else context.stopService(i_record);
+        	}
         }
 /*------------------------------------------------------------------------------------------------------------------------------------------------*/
         else
@@ -201,7 +204,7 @@ public class widget_big extends AppWidgetProvider {
         	db = new DbAdapter(context);
         	try {
 				db.open();
-				if(db.fetchAllRecord().getCount()==0) {
+				if(db.fetchAllRecord().getCount() == 0) {
 					Toast.makeText(context, R.string.noData, Toast.LENGTH_SHORT).show();
 					rw.setTextViewText(R.id.title_w_big, "Titolo");
 					rw.setTextViewText(R.id.duration_big, "0,00 s");
@@ -230,21 +233,22 @@ public class widget_big extends AppWidgetProvider {
 				
 				/*-- First Call--*/
 					
-					if(PRIMA_VOLTA)
-					{	
-						PRIMA_VOLTA=false;
+					if(PRIMA_VOLTA) {	
+						PRIMA_VOLTA = false;
 						c.moveToFirst();
-						currid=c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
+						currid = c.getLong(c.getColumnIndex(DbAdapter.KEY_RECORDID));
 						setLayout(rw);
 					}
 					
 				
 				    /*-- Play code --*/      
 				    if(action.equals("START_STOP_PLAY")) {
-				    	if(System.currentTimeMillis()-starttime>300) {
-							starttime=System.currentTimeMillis();
+				    	
+				    	/*-- Delay between all 4 buttons which permits Play Record service to conclude pending operations --*/
+				    	if(System.currentTimeMillis()-starttime > 300) {
+							starttime = System.currentTimeMillis();
 							i_play = new Intent(context, PlayRecord.class);
-							commandIntent=new Intent();
+							commandIntent = new Intent();
 							commandIntent.setAction(UI4.COMMAND_RESPONSE);
 					
 							if(!play_widget)
@@ -253,25 +257,27 @@ public class widget_big extends AppWidgetProvider {
 									
 							else {	
 						    	if(!PlayRecord.running && play_widget){
-						    		pause=false;
+						    		pause = false;
 						        	i_play.putExtra("fromUI4", false);
 						        	i_play.putExtra("ID", currid);
 						        	
 						        	/*-- Check if speakers is already in use --*/ 
 						        	if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
-						        		stopped_first=false;
+						        		stopped_first = false;
 						        		context.startService(i_play);
 						        		rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_pause);
 						        	}
 						        	else {
-						        		stopped_first=true;
+						        		stopped_first = true;
 						        		Toast.makeText(context, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
 						        	}
 						        	
 						    	}
 						    	
 						    	else if(PlayRecord.running && !pause && play_widget) {
-						    		pause=true;
+						    		pause = true;
+						    		
+						    		/*-- Send Pause signal to Play record service --*/
 						    		commandIntent.putExtra("Pausa", true);
 						    		commandIntent.putExtra("Riprendi", false);
 						    		commandIntent.putExtra("Stop", false);
@@ -284,12 +290,14 @@ public class widget_big extends AppWidgetProvider {
 						    		/*-- Check if speakers is already in use --*/ 
 						    		if(!((AudioManager)context.getSystemService(Context.AUDIO_SERVICE)).isMusicActive()) {
 						    			if(stopped_first){
-						    				stopped_first=false;
+						    				stopped_first = false;
 						    				context.startService(i_play); 	
 						    				rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_pause);
 						    			}						    				
 						    			else {
-							        		pause=false;
+							        		pause = false;
+							        		
+							        		/*-- Send Resume signal to Play record service --*/
 							        		commandIntent.putExtra("Pausa", false);
 							        		commandIntent.putExtra("Riprendi", true);
 							        		commandIntent.putExtra("Stop", false);
@@ -305,61 +313,67 @@ public class widget_big extends AppWidgetProvider {
 				    }/*--Start Stop play end --*/
       
 			      if(action.equals("START_PRE")) {
-							if(System.currentTimeMillis()-starttime>300) {
-								starttime=System.currentTimeMillis();
-								if(!play_widget)
-									Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+			    	  
+			    	  	/*-- Delay between all 4 buttons which permits Play Record service to conclude pending operations --*/
+						if(System.currentTimeMillis()-starttime > 300) {
+							starttime = System.currentTimeMillis();
+							if(!play_widget)
+								Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+							
+							if(play_widget) {
+								i_play = new Intent(context, PlayRecord.class);
+								commandIntent = new Intent();
+								commandIntent.setAction(UI4.COMMAND_RESPONSE);
 								
-								if(play_widget)
-								{
-									i_play = new Intent(context, PlayRecord.class);
-									commandIntent=new Intent();
-									commandIntent.setAction(UI4.COMMAND_RESPONSE);
-									commandIntent.putExtra("Stop", true);
-									commandIntent.putExtra("Pausa", false);
-									commandIntent.putExtra("Riprendi", false);  
-									context.sendBroadcast(commandIntent);
-							    	pause=true;
-							    	rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
-									currid=searchId(new DbAdapter(context), currid, PREVIOUS, currentSorting(context));
-									c=db.fetchRecordById(currid);
-									c.moveToFirst();
-							    	setLayout(rw);
-								}
+								/*-- Send Stop signal to Play record service --*/
+								commandIntent.putExtra("Stop", true);
+								commandIntent.putExtra("Pausa", false);
+								commandIntent.putExtra("Riprendi", false);  
+								context.sendBroadcast(commandIntent);
+						    	pause = true;
+						    	rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
+								currid = searchId(new DbAdapter(context), currid, PREVIOUS, currentSorting(context));
+								c = db.fetchRecordById(currid);
+								c.moveToFirst();
+						    	setLayout(rw);
 							}
+						}
 					}/*--  End Start Pre --*/
 				
-					if(action.equals("START_FOR")|| delete_running_record) {
+			      
+					if(action.equals("START_FOR") || delete_running_record) {	
 						
-						if(System.currentTimeMillis()-starttime>300) {
-							starttime=System.currentTimeMillis();
+						/*-- Delay between all 4 buttons which permits Play Record service to conclude pending operations --*/
+						if(System.currentTimeMillis()-starttime > 300) {
+							starttime = System.currentTimeMillis();
 						
 					    	if(!play_widget)
 								Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
 					    	
-					    	if(play_widget){
+					    	if(play_widget) {
 					    		i_play = new Intent(context, PlayRecord.class);
-					    		
-					    		commandIntent=new Intent();
+					    		commandIntent = new Intent();
 					    		commandIntent.setAction(UI4.COMMAND_RESPONSE);
+					    		
+					    		/*-- Send Resume signal to Play record service --*/
 					    		commandIntent.putExtra("Stop", true);
 					    		commandIntent.putExtra("Pausa", false);
 					    		commandIntent.putExtra("Riprendi", false);  
 					    		context.sendBroadcast(commandIntent);
-					        	pause=true;
-					        	rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
-					        	
-					        	old_id=currid;
-					    		currid=searchId(new DbAdapter(context), currid, NEXT, currentSorting(context));
-					        	c=db.fetchRecordById(currid);
+					        	pause = true;
+					        	rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);	
+					        	old_id = currid;
+					    		currid = searchId(new DbAdapter(context), currid, NEXT, currentSorting(context));
+					        	c = db.fetchRecordById(currid);
 					        	c.moveToFirst();
 					        	setLayout(rw);
 						        
+					        	/*-- Delete the record currently displayed on widget --*/
 						        if(delete_running_record) {
-						        	delete_running_record=false;
+						        	delete_running_record = false;
 						        	db.deleteRecord(old_id);
-						        	if(db.fetchAllRecord().getCount()==0){
-						        		Intent notify=new Intent(context, widget_big.class);
+						        	if(db.fetchAllRecord().getCount() == 0){
+						        		Intent notify = new Intent(context, widget_big.class);
 						        		notify.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 						        		context.sendBroadcast(notify);
 						        	}
@@ -371,30 +385,39 @@ public class widget_big extends AppWidgetProvider {
 					
 					
 					if(action.equals("START_STOP")) {
-						if(!play_widget)
-							Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
-						else {
-							Intent stop_playback=new Intent();
-							stop_playback.setAction(UI4.COMMAND_RESPONSE);
-							stop_playback.putExtra("Stop", true);
-							stop_playback.putExtra("Pausa", false);
-							stop_playback.putExtra("Riprendi", false);
-					    	context.sendBroadcast(stop_playback);
-					    	if(!pause) {
-					    		pause=true;
-					    		rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
-					    	}
+						
+						/*-- Delay between all 4 buttons which permits Play Record service to conclude pending operations --*/
+						if(System.currentTimeMillis()-starttime > 300) {
+							starttime = System.currentTimeMillis();
+							
+							if(!play_widget)
+								Toast.makeText(context, R.string.alreadyPlaying, Toast.LENGTH_SHORT).show();
+							
+							else {
+								Intent stop_playback = new Intent();
+								stop_playback.setAction(UI4.COMMAND_RESPONSE);
+								
+								/*-- Send Stop signal to Play record service --*/
+								stop_playback.putExtra("Stop", true);
+								stop_playback.putExtra("Pausa", false);
+								stop_playback.putExtra("Riprendi", false);
+						    	context.sendBroadcast(stop_playback);
+						    	if(!pause) {
+						    		pause = true;
+						    		rw.setImageViewResource(R.id.play_big, R.drawable.ic_action_play);
+						    	}
+							}
 						}
 							
-					}
+					}/*--  End Start Stop --*/
 						
 					
 					
-					/*-- In case of update the running record  --*/
+					/*-- Update the record currently displayed on widget --*/
 					if(update_running_record && rename_running_record) {
-						update_running_record=false;
-						rename_running_record=false;
-						c=db.fetchRecordById(currid);
+						update_running_record = false;
+						rename_running_record = false;
+						c = db.fetchRecordById(currid);
 			        	c.moveToFirst();
 			        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 			    		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
@@ -402,10 +425,10 @@ public class widget_big extends AppWidgetProvider {
 			    		rw.setTextViewText(R.id.duration_big, String.format(Locale.ITALY, "%.2f s", dur));
 					}
 					
-					/*-- In case of rename the running record  --*/
+					/*-- Rename the record currently displayed on widget --*/
 					if(rename_running_record) {
-						rename_running_record=false;
-						c=db.fetchRecordById(currid);
+						rename_running_record = false;
+						c = db.fetchRecordById(currid);
 			        	c.moveToFirst();
 			        	rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 			        	rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
@@ -453,82 +476,82 @@ public class widget_big extends AppWidgetProvider {
 	
 	/*-- Static method used to search a previously or next coming ID respect on saved current sorting --*/
 	public static long searchId(DbAdapter this_db, long playingId, int nextOrPrevious, int currentSorting) {
-	long previousOrNextId;
-	Cursor cursor;
-	try {
-		this_db.open();
-		
-		switch(currentSorting) {
-		 
-		 case BY_NAME:
-			 cursor = this_db.fetchAllRecordSortedByName();
-			 break;
+		long previousOrNextId;
+		Cursor cursor;
+		try {
+			this_db.open();
+			
+			switch(currentSorting) {
 			 
-		 case BY_DATE:
-			 cursor = this_db.fetchAllRecordSortedByDate();
-			 break;
-			 
-		 case BY_DURATION:
-			 cursor = this_db.fetchAllRecordSortedByDuration();
-			 break;
-			 
-		 default:
-			 cursor = this_db.fetchAllRecord();
-			 break;
-		 }
-		
-
-		 switch(nextOrPrevious) {
-		 case PREVIOUS:
-			for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-				if(cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
-					if(!cursor.isFirst()) {
-						cursor.moveToPrevious();
-						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						cursor.close();
-						this_db.close();
-						return previousOrNextId;
-					}
-					else {
-						cursor.moveToLast();
-						previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						cursor.close();
-						this_db.close();
-						return previousOrNextId;
-					}
-				 }
-				}
-			 
-		 case NEXT:
-			 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-				 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
-					 
-					 if(!cursor.isLast()) {
-						 cursor.moveToNext();
-						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						 cursor.close();
-						 this_db.close();
-						 return previousOrNextId;
-					 }
-					 else {
-						 cursor.moveToFirst();
-						 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
-						 cursor.close();
-						 this_db.close();
-						 return previousOrNextId;
-					 }
-				 }
-			 }
+			 case BY_NAME:
+				 cursor = this_db.fetchAllRecordSortedByName();
+				 break;
+				 
+			 case BY_DATE:
+				 cursor = this_db.fetchAllRecordSortedByDate();
+				 break;
+				 
+			 case BY_DURATION:
+				 cursor = this_db.fetchAllRecordSortedByDuration();
+				 break;
+				 
 			 default:
-				 previousOrNextId = playingId;
-				 return previousOrNextId;	 
-		 }
-	} catch (SQLException e) {
-		Log.w("Exception", "Errore nel Database");
-		e.printStackTrace();
-		return playingId;
-	}
-
+				 cursor = this_db.fetchAllRecord();
+				 break;
+			 }
+			
+	
+			 switch(nextOrPrevious) {
+			 case PREVIOUS:
+				for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+					if(cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+						if(!cursor.isFirst()) {
+							cursor.moveToPrevious();
+							previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+							cursor.close();
+							this_db.close();
+							return previousOrNextId;
+						}
+						else {
+							cursor.moveToLast();
+							previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+							cursor.close();
+							this_db.close();
+							return previousOrNextId;
+						}
+					 }
+					}
+				 
+			 case NEXT:
+				 for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+					 if(cursor.getLong(cursor.getColumnIndex(DbAdapter.KEY_RECORDID)) == playingId) {
+						 
+						 if(!cursor.isLast()) {
+							 cursor.moveToNext();
+							 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+							 cursor.close();
+							 this_db.close();
+							 return previousOrNextId;
+						 }
+						 else {
+							 cursor.moveToFirst();
+							 previousOrNextId = cursor.getInt(cursor.getColumnIndex(DbAdapter.KEY_RECORDID));
+							 cursor.close();
+							 this_db.close();
+							 return previousOrNextId;
+						 }
+					 }
+				 }
+				 default:
+					 previousOrNextId = playingId;
+					 return previousOrNextId;	 
+			 }
+		} catch (SQLException e) {
+			Log.w("Exception", "Errore nel Database");
+			e.printStackTrace();
+			return playingId;
+		}
+		
     }
 	
 	
@@ -536,9 +559,9 @@ public class widget_big extends AppWidgetProvider {
 	private void setLayout(RemoteViews rw){
 		rw.setTextViewText(R.id.title_w_big,c.getString(c.getColumnIndex(DbAdapter.KEY_NAME)));
 		rw.setTextViewText(R.id.modify_big,c.getString(c.getColumnIndex(DbAdapter.KEY_LAST)).substring(0, 16));
-		float dur=Float.parseFloat(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
+		float dur = Float.parseFloat(c.getString(c.getColumnIndex(DbAdapter.KEY_DURATION)))/1000;
 		rw.setTextViewText(R.id.duration_big, String.format(Locale.ITALY, "%.2f s", dur));
-		String thumb=c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
+		String thumb = c.getString(c.getColumnIndex(DbAdapter.KEY_IMM));
 		int alpha = Integer.parseInt(thumb.substring(0, 3));
 		int red = Integer.parseInt(thumb.substring(3, 6));
 		int green = Integer.parseInt(thumb.substring(6, 9));
