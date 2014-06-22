@@ -508,7 +508,7 @@ public class UI1 extends Activity {
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.option_menu, menu);
 		return true;
-		}
+	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
