@@ -283,11 +283,6 @@ public class PlayRecord extends IntentService {
 		    if(riprendi) {
 		       if(at.getState() == AudioTrack.STATE_INITIALIZED && at.getPlayState() == AudioTrack.PLAYSTATE_PAUSED)   
 		    	   at.setPlaybackHeadPosition(g%finale.length);
-		       
-		       	   int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-		           if (currentapiVersion >= android.os.Build.VERSION_CODES.KITKAT)
-		        	   at.setLoopPoints(0, finale.length-1, -1);
-		        	   
 		       	   at.play();
 		       		   
 		       }		

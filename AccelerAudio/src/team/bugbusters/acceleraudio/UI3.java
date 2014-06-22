@@ -1,6 +1,5 @@
 package team.bugbusters.acceleraudio;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
@@ -15,7 +14,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -163,7 +161,6 @@ public class UI3 extends Activity {
          
         /*-- Record button pressed --*/
         rec.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 			public void onClick(View v) { 
             	
             	/*-- Check free space before starting data capture (at least 100kb to record a session) --*/

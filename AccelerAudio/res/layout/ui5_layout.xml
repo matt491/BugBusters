@@ -44,11 +44,10 @@
         android:max="60"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_centerVertical="true"
-        android:progress="1" />
+        android:layout_centerVertical="true" />
     
     <TextView
-        android:id="@+id/title_widget_big"
+        android:id="@+id/title_upsamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -62,8 +61,8 @@
         android:id="@+id/sovradef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/title_widget_big"
-        android:layout_toRightOf="@+id/title_widget_big"
+        android:layout_alignBaseline="@+id/title_upsamp"
+        android:layout_toRightOf="@+id/title_upsamp"
         android:layout_marginLeft="10dp" />
    
 
@@ -73,13 +72,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/title_widget_big"
+        android:layout_below="@+id/title_upsamp"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_centerVertical="true"
-        android:max="100"
-        android:progress="1" />
+        android:max="100" />
 
     <Button
         android:id="@+id/salva_imp"

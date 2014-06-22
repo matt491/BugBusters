@@ -10,15 +10,14 @@
         android:layout_height="wrap_content"
      	android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/title_widget_big"
+        android:layout_below="@+id/title_upsamp"
         android:layout_marginTop="2dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:max="100"
-        android:progress="1" />
+        android:max="100" />
 
     <TextView
-        android:id="@+id/title_widget_big"
+        android:id="@+id/title_upsamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tt"
@@ -52,8 +51,8 @@
         android:id="@+id/sovradef"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/title_widget_big"
-       	android:layout_toRightOf="@+id/title_widget_big"
+        android:layout_alignBaseline="@+id/title_upsamp"
+       	android:layout_toRightOf="@+id/title_upsamp"
        	android:layout_marginLeft="10dp" />
 
     <TextView
