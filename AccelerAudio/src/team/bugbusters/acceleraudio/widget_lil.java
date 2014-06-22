@@ -74,12 +74,12 @@ public class widget_lil extends AppWidgetProvider {
 		
             RemoteViews rw = new RemoteViews(context.getPackageName(), R.layout.widget_lil_layout); 
             
-            /*-- calling the DataRecord.class -- */
+            /*-- Calling the DataRecord.class -- */
             
             i_record = new Intent(context, DataRecord.class);
             i_record.putExtra("fromLIL", true);
             
-            /*-- calling the UI5.class (Preferences) -- */
+            /*-- Calling the UI5.class (Preferences) -- */
             
             i_pref = new Intent(context, UI5.class);
             i_pref.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -130,8 +130,11 @@ public class widget_lil extends AppWidgetProvider {
             
             /*-- Preferences check --*/
             
-            if(action.equals("PREF")) 
+            if(action.equals("PREF")) {
+            	UI5.fromWidget=true;
             	context.startActivity(i_pref);
+            }
+            	
 
      
             /*-- Update  --*/

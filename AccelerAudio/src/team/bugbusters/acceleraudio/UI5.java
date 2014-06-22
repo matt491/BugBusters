@@ -1,12 +1,19 @@
 package team.bugbusters.acceleraudio;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Display;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -30,7 +37,7 @@ public class UI5 extends Activity {
 	private String freqdef;
 	private TextView scampdef;
 	private TextView dmax;
-	private boolean fromWidget;
+	public static boolean fromWidget;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,10 +51,7 @@ public class UI5 extends Activity {
 	    	sbsovradef = (SeekBar) findViewById(R.id.sbcampdef);
 	    	scampdef = (TextView) findViewById(R.id.sovradef);
 	    	dmax = (TextView) findViewById(R.id.durmax);
-	    	
-      
-	    	Intent intent = getIntent();
-	    	fromWidget = intent.getBooleanExtra("prefFromWidget", false);
+        	
 	    	
 	    	/*-- Checkbox listener: used to keep at least one checkbox checked --*/
 	    	OnCheckedChangeListener listener = new OnCheckedChangeListener() {
@@ -167,6 +171,35 @@ public class UI5 extends Activity {
 			}
 		
 		}
+	}
+	
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+	public void onResume() {
+		super.onResume();
+		
+    	if(fromWidget) {
+    		/*-- Lock the screen at the current position --*/
+			WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+			Display disp = wm.getDefaultDisplay();
+			int orientation = disp.getRotation();
+			if(orientation == Surface.ROTATION_0) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
+			if(orientation == Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			if(orientation == Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);	
+    	}
+    	
+	}
+	
+	
+	public void onPause() {
+		super.onPause();
+		if(fromWidget)
+			finish();		
+	}
+	
+	
+	public void onDestroy(){
+		super.onDestroy();
+		fromWidget = false;
 	}
 	
 	

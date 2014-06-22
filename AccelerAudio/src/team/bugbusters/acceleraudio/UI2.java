@@ -135,7 +135,7 @@ public class UI2 extends Activity {
 			}});
         
         
-        /*-- Riproduci sessione button pressed --*/
+        /*-- Salva e riproduci button pressed --*/
         fineui2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
@@ -342,7 +342,6 @@ public class UI2 extends Activity {
 		
 		case R.id.Preferenze:
 			Intent prefIntentUI5 = new Intent(getApplicationContext(), UI5.class);
-			prefIntentUI5.putExtra("prefFromWidget", false);
             startActivity(prefIntentUI5);
             return(true);
 		}
