@@ -109,7 +109,7 @@ public class UI2 extends Activity {
         	chZ.setOnCheckedChangeListener(listener);
         
 
-        id_ric=intent_r.getLongExtra(pkg_r+".myIdToUi2", -1);
+        id_ric = intent_r.getLongExtra(pkg_r+".myIdToUi2", -1);
         
         aggiornaDati(INIZIO);
         
@@ -142,7 +142,7 @@ public class UI2 extends Activity {
             	String nomeNuovo=nomevar.getText().toString();
             	
             	/*-- Check for changes --*/
-            	if(chX.isChecked()!=x_selected || chY.isChecked()!=y_selected || chZ.isChecked()!=z_selected ||
+            	if(chX.isChecked() != x_selected || chY.isChecked() != y_selected || chZ.isChecked() != z_selected ||
             		sb.getProgress()!=sovra_ric || !(nome_ric.equals(nomeNuovo)) ){
             	
             		/*-- Check name to prevent errors and if it is already on Database --*/
@@ -153,14 +153,14 @@ public class UI2 extends Activity {
             			Toast.makeText(UI2.this, R.string.ToastAlertSameName, Toast.LENGTH_SHORT).show();
             	
             			/*-- Check if the track to update is already on play --*/
-            			else if (id_ric==widget_big.currid && !widget_big.pause)
+            			else if (id_ric == widget_big.currid && !widget_big.pause)
             				Toast.makeText(UI2.this, R.string.cannotUpdate, Toast.LENGTH_SHORT).show();
             				
             				/*-- Then update existing record with new informations --*/
 	            			else {
-	            				nome_ric=nomeNuovo;
-	            				dataulitmamodifica=DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
-	            				String dur=DataRecord.calcoloTempo(ncampx,ncampy,ncampz,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());	
+	            				nome_ric = nomeNuovo;
+	            				dataulitmamodifica = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
+	            				String dur = DataRecord.calcoloTempo(ncampx,ncampy,ncampz,chX.isChecked(),chY.isChecked(),chZ.isChecked(),sb.getProgress());	
 	            				
 	            				try {
 									db.open();
@@ -173,9 +173,9 @@ public class UI2 extends Activity {
 									e.printStackTrace();
 								}
 	            				
-	            				if(id_ric==widget_big.currid) {
-	            					widget_big.update_running_record=true;
-	            					widget_big.rename_running_record=true;
+	            				if(id_ric == widget_big.currid) {
+	            					widget_big.update_running_record = true;
+	            					widget_big.rename_running_record = true;
 	            					Intent notifica = new Intent(UI2.this,widget_big.class);
 									notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 									sendBroadcast(notifica);	
@@ -199,7 +199,7 @@ public class UI2 extends Activity {
 
 		if(widget_big.pause){
 			stopService(new Intent(this, PlayRecord.class));
-			Intent intentToUI4=new Intent(UI2.this, UI4.class);
+			Intent intentToUI4 = new Intent(UI2.this, UI4.class);
 			intentToUI4.putExtra(pkg_r+".myServiceID", id_ric);
 			startActivity(intentToUI4);
 		}
@@ -215,24 +215,24 @@ public class UI2 extends Activity {
 	private void aggiornaDati(boolean first_time){
 		try {
 			db.open();
-	        cr=db.fetchRecordById(id_ric);
+	        cr = db.fetchRecordById(id_ric);
 	        cr.moveToNext();
 	        
-	        nome_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
-	        timestamp_ric=cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
-	        dataulitmamodifica=cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
-	        x_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
-	        y_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
-	        z_selected=Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
-	        sovra_ric=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
+	        nome_ric = cr.getString(cr.getColumnIndex(DbAdapter.KEY_NAME));
+	        timestamp_ric = cr.getString(cr.getColumnIndex(DbAdapter.KEY_DATE));
+	        dataulitmamodifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_LAST));
+	        x_selected = Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKX)));
+	        y_selected = Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKY)));
+	        z_selected = Boolean.parseBoolean(cr.getString(cr.getColumnIndex(DbAdapter.KEY_CHECKZ)));
+	        sovra_ric = Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_UPSAMPLE)));
 	        codifica = cr.getString(cr.getColumnIndex(DbAdapter.KEY_IMM));
 	        
 	        ultimavar.setText(dataulitmamodifica.substring(0, 16));
 	        
 	        if(first_time){
-	            ncampx=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
-	            ncampy=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
-	            ncampz=Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
+	            ncampx = Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPX)));
+	            ncampy = Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPY)));
+	            ncampz = Integer.parseInt(cr.getString(cr.getColumnIndex(DbAdapter.KEY_NUMCAMPZ)));
 	            
 	            int alpha = Integer.parseInt(codifica.substring(0, 3));
 	            int red = Integer.parseInt(codifica.substring(3, 6));

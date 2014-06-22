@@ -63,7 +63,7 @@ public class UI3 extends Activity {
     private final long INTERVALLO=100L;
     private PackageManager packageManager;
     private AlertDialog alertDialog;
-    private static boolean alreadyShowed = false;;
+    private static boolean alreadyShowed = false;
     		
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,7 @@ public class UI3 extends Activity {
         packageManager = getApplicationContext().getPackageManager();
         
         intentToSer = new Intent(UI3.this, DataRecord.class);
-        intent=new Intent(UI3.this, UI2.class);     
+        intent = new Intent(UI3.this, UI2.class);     
         
         /*-- Create and register receiver which update time progress bar and axes progress bars --*/
         receiver = new MyUI3Receiver();   
@@ -92,23 +92,23 @@ public class UI3 extends Activity {
         db = new DbAdapter(this);
     
         /*-- Set layout view resources --*/
-        pause_resume = (Button)findViewById(R.id.pause_res);
-        stop = (Button)findViewById(R.id.stop);
-        rec = (Button)findViewById(R.id.record);
-        avan = (Button)findViewById(R.id.avanz);
-        nome_music = (EditText)findViewById(R.id.nome);
-        timeView = (TextView)findViewById(R.id.last);
+        pause_resume = (Button) findViewById(R.id.pause_res);
+        stop = (Button) findViewById(R.id.stop);
+        rec = (Button) findViewById(R.id.record);
+        avan = (Button) findViewById(R.id.avanz);
+        nome_music = (EditText) findViewById(R.id.nome);
+        timeView = (TextView) findViewById(R.id.last);
       
         /*-- ProgressBars which show acceleration changes on every axis --*/
-		 pbX=(ProgressBar)findViewById(R.id.x_axis);
-		 pbY=(ProgressBar)findViewById(R.id.y_axis);
-		 pbZ=(ProgressBar)findViewById(R.id.z_axis);
+		 pbX = (ProgressBar) findViewById(R.id.x_axis);
+		 pbY = (ProgressBar) findViewById(R.id.y_axis);
+		 pbZ = (ProgressBar) findViewById(R.id.z_axis);
 		 
 		 /*-- ProgressBar which show recording time --*/
-		 pb=(ProgressBar)findViewById(R.id.progressBar1);
+		 pb = (ProgressBar) findViewById(R.id.progressBar1);
 				 
 		/*-- Show recorded samples --*/
-		varcamp=(TextView)findViewById(R.id.campioni);
+		varcamp = (TextView) findViewById(R.id.campioni);
 
         
         /*-- Enable/Disable buttons --*/
@@ -121,12 +121,16 @@ public class UI3 extends Activity {
         pause_resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if(!in_pausa){
+            		
+            		/*-- Record on pause --*/
             		pause_resume.setText("Riprendi");
-            		in_pausa=true;
-            		prec=timer.myCancel();
+            		in_pausa = true;
+            		prec = timer.myCancel();
             		stopService(intentToSer);
             	}
             	else {
+            		
+            		/*-- Resume recording --*/
             		pause_resume.setText("Pausa");
             		intentToSer.putExtra("fromUI3", true);
             		intentToSer.putExtra("VecchioX", datoX);
@@ -137,8 +141,8 @@ public class UI3 extends Activity {
             		intentToSer.putExtra("attCampX", i);
             		intentToSer.putExtra("attCampY", j);
             		intentToSer.putExtra("attCampZ", k);	
-            		in_pausa=false;
-            		timer=new RecordCounter(end_time*1000-prec, INTERVALLO, prec);
+            		in_pausa = false;
+            		timer = new RecordCounter(end_time*1000-prec, INTERVALLO, prec);
             		timer.start();
             		startService(intentToSer);
             	}
@@ -165,16 +169,16 @@ public class UI3 extends Activity {
             	/*-- Check free space before starting data capture (at least 100kb to record a session) --*/
             	StatFs stat = new StatFs(Environment.getDataDirectory().getPath());
 				@SuppressWarnings("deprecation")
-				long kilobytesAvailable = ((long)stat.getBlockSize() *(long)stat.getAvailableBlocks())/1024;
+				long kilobytesAvailable = ((long)stat.getBlockSize()*(long)stat.getAvailableBlocks())/1024;
 				
-            	if(kilobytesAvailable>=100) {
+            	if(kilobytesAvailable >= 100) {
             		
             		/*-- Check if accelerometer is available --*/
             		if(packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
             			
             			/*-- Check if another record is still running --*/
             			
-            			if(widget_lil.record_running==false) {
+            			if(widget_lil.record_running == false) {
             				
             				/*-- Lock the screen at the current position --*/
             				WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
@@ -184,16 +188,16 @@ public class UI3 extends Activity {
 							if(orientation==Surface.ROTATION_90) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 							if(orientation==Surface.ROTATION_270) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
 							
-							/*-- Set Lock for Record --*/
-	            			widget_lil.record_running=true;
+							/*-- Set Lock for Record (no one can record a new session now) --*/
+	            			widget_lil.record_running = true;
 	            			
 		            		avan.setEnabled(false);
 		            		pause_resume.setEnabled(true);
 		            		stop.setEnabled(true);
 		            		rec.setEnabled(false);
-		            		end_time=prefs.getInt("duratadef", 30);
+		            		end_time = prefs.getInt("duratadef", 30);
 		            		pb.setMax(end_time);
-		            		timer=new RecordCounter(end_time*1000, INTERVALLO, 0 );
+		            		timer = new RecordCounter(end_time*1000, INTERVALLO, 0 );
 		            		timer.start();
 		            		intentToSer.putExtra("fromUI3", true);
 		            		startService(intentToSer);
@@ -211,7 +215,7 @@ public class UI3 extends Activity {
         avan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	pkg=getPackageName();
-            	String nomeinserito=nome_music.getText().toString();
+            	String nomeinserito = nome_music.getText().toString();
             	
             	/*-- If name isn't valid or already exists --*/
             	if(nomeinserito.contains("'") || nomeinserito.contains("_")) {
@@ -227,36 +231,36 @@ public class UI3 extends Activity {
             		nome = nome_music.getText().toString();
             		ts = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
             	
-            		String dur=DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
+            		String dur = DataRecord.calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 							prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
             		
             		try {
 						db.open();		
 						
 						/*-- Check if Database is empty --*/
-						if(db.fetchAllRecord().getCount()==0)
-							was_empty=true;
+						if(db.fetchAllRecord().getCount() == 0)
+							was_empty = true;
 						
-	            		long id_to_ui2=db.createRecord(nome, dur , datoX.toString(), datoY.toString(), datoZ.toString(),
+	            		long id_to_ui2 = db.createRecord(nome, dur , datoX.toString(), datoY.toString(), datoZ.toString(),
 	            				""+ prefs.getBoolean("Xselect", true),""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true),
 	        					i,j,k, ""+prefs.getInt("sovrdef", 0), ts, ts, null);
 	            	    
 	            		
 	            		/*-- Calculate and update image code of new record --*/
-	            		String cod=DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
+	            		String cod = DataRecord.codifica(datoX.toString(),datoY.toString(), datoZ.toString(), ts, id_to_ui2);
 	            		db.updateImageCode(id_to_ui2, cod);
 	            		db.close();
 	            		
 	            		/*-- If Database was empty before then notify widget big --*/
 	            		if(was_empty) {
-							was_empty=false;
+							was_empty = false;
 							Intent notifica = new Intent(UI3.this,widget_big.class);
 							notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 							sendBroadcast(notifica);	
 						}
 	            		
 	            		/*-- Release Lock for Record --*/
-	            		widget_lil.record_running=false;
+	            		widget_lil.record_running = false;
 	            		
 	            		/*-- Start UI 2 --*/
 	            		intent.putExtra(pkg+".myIdToUi2", id_to_ui2);
@@ -281,7 +285,7 @@ public class UI3 extends Activity {
     	AlertDialog.Builder alert = new AlertDialog.Builder(this);
     	LayoutInflater inflater = LayoutInflater.from(this);
     	View dialogView = inflater.inflate(R.layout.notshowagain, null);
-    	cb = (CheckBox) dialogView.findViewById(R.id.checkBox1);
+    	cb = (CheckBox)dialogView.findViewById(R.id.checkBox1);
     	cb.setChecked(isChecked);
     	alert.setView(dialogView);
     	alert.setTitle(R.string.alertTitle);
@@ -378,7 +382,7 @@ public class UI3 extends Activity {
 	 
 	        @Override
 	        public void onTick(long millisUntilFinished) {
-	        	curr=millisUntilFinished;
+	        	curr = millisUntilFinished;
 	        	timeView.setText(String.format("%.1f s", (float)(previous+end-curr)/1000));
 	            pb.setProgress((int)(previous+end-curr)/1000);
 	        }
@@ -414,8 +418,8 @@ public class UI3 extends Activity {
         		datoZ=intent.getStringExtra("ValoreZ");
         		
         		/*-- Data received to maintain current settings (end time and recording samplerate) --*/
-        		freq_curr=intent.getStringExtra("serFreq");
-        		end_time=intent.getIntExtra("serDur",0);       
+        		freq_curr = intent.getStringExtra("serFreq");
+        		end_time = intent.getIntExtra("serDur",0);       
 	        }
 	  }
 

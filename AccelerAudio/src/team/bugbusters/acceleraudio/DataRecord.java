@@ -53,31 +53,29 @@ public class DataRecord extends IntentService implements SensorEventListener {
       
 	        /*-- Restore parameters after a pause --*/
 	        if(intent.hasExtra("VecchioX")){
-	        	datoX=new StringBuilder().append(intent.getStringExtra("VecchioX"));
-	        	datoY=new StringBuilder().append(intent.getStringExtra("VecchioY"));
-	        	datoZ=new StringBuilder().append(intent.getStringExtra("VecchioZ"));
-	        	freq=intent.getStringExtra("attFreq");
-
-	        	durata_def=intent.getIntExtra("attFineTempo", 0);
-	        		
+	        	datoX = new StringBuilder().append(intent.getStringExtra("VecchioX"));
+	        	datoY = new StringBuilder().append(intent.getStringExtra("VecchioY"));
+	        	datoZ = new StringBuilder().append(intent.getStringExtra("VecchioZ"));
+	        	freq = intent.getStringExtra("attFreq");
+	        	durata_def = intent.getIntExtra("attFineTempo", 0);
 	        }
 	        
 	        /*-- Instantiate parameters for a new record --*/
 	        else {
-	        	datoX=new StringBuilder();
-	        	datoY=new StringBuilder();
-	        	datoZ=new StringBuilder();
-	        	freq=prefs.getString("Campion", "Normale");
-	        	durata_def=prefs.getInt("duratadef", 30);
+	        	datoX = new StringBuilder();
+	        	datoY = new StringBuilder();
+	        	datoZ = new StringBuilder();
+	        	freq = prefs.getString("Campion", "Normale");
+	        	durata_def = prefs.getInt("duratadef", 30);
 	        }
 
-	        	i=intent.getIntExtra("attCampX", 0);
-	        	j=intent.getIntExtra("attCampY", 0);
-	        	k=intent.getIntExtra("attCampZ", 0);
+	        	i = intent.getIntExtra("attCampX", 0);
+	        	j = intent.getIntExtra("attCampY", 0);
+	        	k = intent.getIntExtra("attCampZ", 0);
 	        	
-	        	valprec=new float[3];
-	        	ric_UI3=intent.getBooleanExtra("fromUI3", false);
-	        	ric_LIL=intent.getBooleanExtra("fromLIL", false);
+	        	valprec = new float[3];
+	        	ric_UI3 = intent.getBooleanExtra("fromUI3", false);
+	        	ric_LIL = intent.getBooleanExtra("fromLIL", false);
 	        	
 	        	acquisizione();
 	        	
@@ -100,7 +98,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 				/*-- Register accelerometer variations on every axis --*/
 			
-				if(event.values[0]-valprec[0]>NOISE){
+				if(event.values[0]-valprec[0] > NOISE){
 					datoX.append((converti(event.values[0]))+" ");
 					i++;
 					
@@ -108,14 +106,14 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					broadcastIntent.putExtra("intPbX",(int) (Math.abs(event.values[0]-valprec[0])));
 				}
 				
-				if(event.values[1]-valprec[1]>NOISE){
+				if(event.values[1]-valprec[1] > NOISE){
 					datoY.append((converti(event.values[1]))+" ");
 					j++;
 					
 					/*-- Update intent extra with the value of Y-axis progress bar on UI 3 --*/
 					broadcastIntent.putExtra("intPbY", (int) (Math.abs(event.values[1]-valprec[1])));
 				}
-				if(event.values[2]-valprec[2]>NOISE){
+				if(event.values[2]-valprec[2] > NOISE){
 					datoZ.append((converti(event.values[2]))+" ");
 					k++;
 					
@@ -125,7 +123,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				
 				
 				/*-- Every 200ms the Service notify only UI 3 with samples recorded on every axis  --*/
-				if(ric_UI3 && System.currentTimeMillis()-sendtime>200){
+				if(ric_UI3 && System.currentTimeMillis()-sendtime > 200){
 					sendtime=System.currentTimeMillis();
 					broadcastIntent.putExtra("serCampX",i);
 					broadcastIntent.putExtra("serCampY",j);
@@ -134,9 +132,9 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				}
 				
 				
-				valprec[0]=event.values[0];
-				valprec[1]=event.values[1];
-				valprec[2]=event.values[2];
+				valprec[0] = event.values[0];
+				valprec[1] = event.values[1];
+				valprec[2] = event.values[2];
 		}
 	 
 	 
@@ -153,7 +151,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			
 			
 			/*-- If record started from UI 3 then send update values --*/
-			if(ric_UI3==true) {
+			if(ric_UI3 == true) {
 				broadcastIntent.putExtra("ValoreX", datoX.toString());
 				broadcastIntent.putExtra("ValoreY", datoY.toString());
 				broadcastIntent.putExtra("ValoreZ", datoZ.toString());
@@ -169,17 +167,17 @@ public class DataRecord extends IntentService implements SensorEventListener {
 			else {
 				
 				String timestamp = DateFormat.format("dd-MM-yyyy kk:mm:ss", new java.util.Date()).toString();
-				String dur=calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
+				String dur = calcoloTempo(i,j,k,prefs.getBoolean("Xselect", true),prefs.getBoolean("Yselect", true),
 										prefs.getBoolean("Zselect", true),prefs.getInt("sovrdef", 0));	
 				
 				try {
 					db.open();
 					
 					/*-- Check if Database is empty --*/
-					if(db.fetchAllRecord().getCount()==0)
-						was_empty=true;
+					if(db.fetchAllRecord().getCount() == 0)
+						was_empty = true;
 					
-					long id=db.createRecord("Rec_", dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
+					long id = db.createRecord("Rec_", dur, datoX.toString(), datoY.toString(), datoZ.toString(), ""+ prefs.getBoolean("Xselect", true),
 							""+ prefs.getBoolean("Yselect", true), ""+prefs.getBoolean("Zselect", true), i,j,k, ""+prefs.getInt("sovrdef", 0),
 							timestamp, timestamp, null);
 
@@ -190,7 +188,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 					
 					/*-- If Database was empty before then notify widget big --*/
 					if(was_empty) {
-						was_empty=false;
+						was_empty = false;
 						Intent notifica = new Intent(DataRecord.this,widget_big.class);
 						notifica.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 						sendBroadcast(notifica);	
@@ -205,7 +203,7 @@ public class DataRecord extends IntentService implements SensorEventListener {
 				/*-- Signal to widget that the REC is over due to time elapsed expired --*/
 				
 			    /*-- Intent used to communicate with little or big widget --*/
-				if(ric_LIL)  broadcastWidget = new Intent(this,widget_lil.class);
+				if(ric_LIL) broadcastWidget = new Intent(this,widget_lil.class);
 				else  {
 					broadcastWidget = new Intent(this,widget_big.class);
 					broadcastWidget.putExtra("RS", true);
@@ -240,20 +238,20 @@ public class DataRecord extends IntentService implements SensorEventListener {
     	else {
     		sendtime=System.currentTimeMillis();	
     		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-    		valprec[0]=valprec[1]=valprec[2]=0;
+    		valprec[0] = valprec[1] = valprec[2] = 0;
     		
     		/*-- Register sensor (accelerometer) listener --*/
     		if(freq.equals("Lento")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    			NOISE=1.0F;
+    			NOISE = 1.0F;
     		}
     		if(freq.equals("Normale"))   {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-    			NOISE=0.7F;
+    			NOISE = 0.7F;
     		}
     		if(freq.equals("Veloce")) {
     			mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-    			NOISE=0.5F;
+    			NOISE = 0.5F;
     		}
 
     	}
@@ -271,11 +269,11 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	/*-- Method used to calculate record playback time --*/
 	public static String calcoloTempo(int n_campX,int n_campY,int n_campZ, boolean cX, boolean cY, boolean cZ, int sovra){
-		int somma=n_campX+n_campY+n_campZ;
-		int s=PlayRecord.calcoloSovra(sovra,somma);
-		int dimX=2*(PlayRecord.MINSIZE+s*n_campX);
-		int dimY=2*(PlayRecord.MINSIZE+s*n_campY);
-		int dimZ=2*(PlayRecord.MINSIZE+s*n_campZ);
+		int somma = n_campX+n_campY+n_campZ;
+		int s = PlayRecord.calcoloSovra(sovra,somma);
+		int dimX = 2*(PlayRecord.MINSIZE+s*n_campX);
+		int dimY = 2*(PlayRecord.MINSIZE+s*n_campY);
+		int dimZ = 2*(PlayRecord.MINSIZE+s*n_campZ);
 		
 		if(cX && cY && cZ) return String.format(Locale.ITALY,"%04d",(dimX+dimY+dimZ)/(PlayRecord.AT_SAMPLE_RATE/1000));
 		else if(cX && cY) return String.format(Locale.ITALY,"%04d",(dimX+dimY)/(PlayRecord.AT_SAMPLE_RATE/1000));
@@ -290,46 +288,46 @@ public class DataRecord extends IntentService implements SensorEventListener {
 	
 	/*-- Method used to create a string that will be processed to create the record image --*/
 	public static String codifica(String s, String p, String q, String time, long id) {
-		StringBuilder sb=new StringBuilder();
-		Random r=new Random();
+		StringBuilder sb = new StringBuilder();
+		Random r = new Random();
 		
-		int c=110+r.nextInt(146);
+		int c = 110+r.nextInt(146);
 		if(c<10) sb.append("00"+c);
-		else if (c>=10 && c<100) sb.append("0"+c);
+		else if (c >= 10 && c < 100) sb.append("0"+c);
 		else sb.append(""+c);
 		
-		if (s.length()>=50 && p.length()>=50 && q.length()>=50)
+		if (s.length() >= 50 && p.length() >= 50 && q.length() >= 50)
 		try {
-			int k=Integer.parseInt(s.charAt(49) + "" + p.charAt(49) + ""+ q.charAt(49));
-			k=Math.abs(Integer.valueOf(k+r.nextInt(10000)).byteValue() & 0xFF);
-			if(k<10) sb.append("00"+k);
-			else if (k>=10 && k<100) sb.append("0"+k);
+			int k = Integer.parseInt(s.charAt(49) + "" + p.charAt(49) + ""+ q.charAt(49));
+			k = Math.abs(Integer.valueOf(k+r.nextInt(10000)).byteValue() & 0xFF);
+			if(k < 10) sb.append("00"+k);
+			else if (k >= 10 && k<100) sb.append("0"+k);
 			else sb.append(""+k);	
 		} 
 		catch (NumberFormatException e) {
-			int k=Math.abs(Integer.valueOf(r.nextInt(10000)).byteValue() & 0xFF);
+			int k = Math.abs(Integer.valueOf(r.nextInt(10000)).byteValue() & 0xFF);
 			if(k<10) sb.append("00"+k);
-			else if (k>=10 && k<100) sb.append("0"+k);
+			else if (k >= 10 && k < 100) sb.append("0"+k);
 			else sb.append(""+k);	
 		}
 		
 		
 		else{
-			int k=Math.abs(Integer.valueOf(r.nextInt(10000)).byteValue() & 0xFF);
-			if(k<10) sb.append("00"+k);
-			else if (k>=10 && k<100) sb.append("0"+k);
+			int k = Math.abs(Integer.valueOf(r.nextInt(10000)).byteValue() & 0xFF);
+			if(k < 10) sb.append("00"+k);
+			else if (k >= 10 && k < 100) sb.append("0"+k);
 			else sb.append(""+k);	
 		}
 			
-		int h=Integer.parseInt(time.charAt(1)+""+time.charAt(12)+""+time.charAt(15));
-		h=Math.abs(Integer.valueOf(h+r.nextInt(10000)).byteValue() & 0xFF);
-		if(h<10) sb.append("00"+h);
-		else if (h>=10 && h<100) sb.append("0"+h);
+		int h = Integer.parseInt(time.charAt(1)+""+time.charAt(12)+""+time.charAt(15));
+		h = Math.abs(Integer.valueOf(h+r.nextInt(10000)).byteValue() & 0xFF);
+		if(h < 10) sb.append("00"+h);
+		else if (h >= 10 && h < 100) sb.append("0"+h);
 		else sb.append(""+h);
 
-		int l=(int) Math.abs(Math.sin(((double)id)/10)*255);
-		if(l<10) sb.append("00"+l);
-		else if (l>=10 && l<100) sb.append("0"+l);
+		int l = (int) Math.abs(Math.sin(((double)id)/10)*255);
+		if(l < 10) sb.append("00"+l);
+		else if (l >= 10 && l < 100) sb.append("0"+l);
 		else sb.append(""+l);
 		return sb.toString();
 	}

@@ -55,30 +55,35 @@ public class UI4 extends Activity {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.ui4_layout);
-        pause_resume=(ImageButton)findViewById(R.id.imageButton1);
+        
+        /*-- Set layout view resources --*/
+        pause_resume = (ImageButton) findViewById(R.id.imageButton1);
         iv = (ImageView) findViewById(R.id.imageView1);
         name = (TextView) findViewById(R.id.title_big);
         duration = (TextView) findViewById(R.id.textView3);
         time = (TextView) findViewById(R.id.textView4);
-        sbtime=(SeekBar)findViewById(R.id.seekBar1);
+        sbtime = (SeekBar) findViewById(R.id.seekBar1);
         sbtime.setEnabled(false);
-        starttime=System.currentTimeMillis();
-        on_play=false;
+        starttime = System.currentTimeMillis();
+        on_play = false;
         
         db = new DbAdapter(this);
         
+        /*-- Create and register receiver which is used to handle Play Record service notification --*/
         receiver = new MyUI4Receiver();
         registerReceiver(receiver,new IntentFilter(MyUI4Receiver.NOTIFY_FRAME));
         
-        pkg_r=getPackageName();   
-        id=getIntent().getLongExtra(pkg_r+".myServiceID", -1);
-        playIntentService=new Intent(UI4.this, PlayRecord.class);
+        pkg_r=getPackageName();  
+        
+        /*-- Receive record ID from UI1/UI2 --*/
+        id = getIntent().getLongExtra(pkg_r+".myServiceID", -1);
+        playIntentService = new Intent(UI4.this, PlayRecord.class);
         
         /*-- Layout settings --*/
         impostaUI4(id);
         
         /*-- Set Lock for Play --*/
-        widget_big.play_widget=false;
+        widget_big.play_widget = false;
         
         /*-- Broadcast used to send playback commands to Play Record service --*/
         broadcastIntent = new Intent();
@@ -87,10 +92,10 @@ public class UI4 extends Activity {
         
         /*-- Only on activity start --*/
         if(primavolta){
-        	primavolta=false;
+        	primavolta = false;
         	playIntentService.putExtra("fromUI4", true);
 	        playIntentService.putExtra("ID", id);
-	    	endtime=durata;
+	    	endtime = durata;
 	    	sbtime.setMax((int) endtime);
 	    	
 	        /*-- Check if speakers is already in use --*/ 
@@ -98,7 +103,7 @@ public class UI4 extends Activity {
 	        	startService(playIntentService);
  
 	        else {
-	        	stopped_first=true;
+	        	stopped_first = true;
 	        	Toast.makeText(UI4.this, R.string.speakerUnavailable, Toast.LENGTH_SHORT).show();
 	        }
 		    	
@@ -111,11 +116,13 @@ public class UI4 extends Activity {
             public void onClick(View v) {
             	
             	/*-- Delay between all 3 button pressing which permit Play Record service to conclude pending operations --*/
-            	if(System.currentTimeMillis()-starttime>100) {
-            		starttime=System.currentTimeMillis();
+            	if(System.currentTimeMillis()-starttime > 100) {
+            		starttime = System.currentTimeMillis();
 	            	if(on_play){
-	            		on_play=false;
+	            		on_play = false;
 	            		timer.cancel();
+	            		
+	            		/*-- Send Pause signal to Play record service --*/
 		            	broadcastIntent.putExtra("Pausa", true);
 		            	broadcastIntent.putExtra("Riprendi", false);
 		            	broadcastIntent.putExtra("Stop", false);
@@ -127,17 +134,19 @@ public class UI4 extends Activity {
 	        	        if(!((AudioManager)getSystemService(Context.AUDIO_SERVICE)).isMusicActive()){
 	        	        	
 	        	        	if(stopped_first){
-	        	        		stopped_first=false;
+	        	        		stopped_first = false;
 	        	        		startService(playIntentService);
 	        	        	}
 	        	        	
 	        	        	else{
-			            		on_play=true;
+			            		on_play = true;
+			            		
+			            		/*-- Send Resume signal to Play record service --*/
 			            		broadcastIntent.putExtra("Riprendi", true);
 			                	broadcastIntent.putExtra("Pausa", false);
 			                	broadcastIntent.putExtra("Stop", false);
 			                	sendBroadcast(broadcastIntent);	
-			                	timer=new TimerCounter(endtime-(frame/(PlayRecord.AT_SAMPLE_RATE/1000)), INTERVALLO, frame/(PlayRecord.AT_SAMPLE_RATE/1000));
+			                	timer = new TimerCounter(endtime-(frame/(PlayRecord.AT_SAMPLE_RATE/1000)), INTERVALLO, frame/(PlayRecord.AT_SAMPLE_RATE/1000));
 			                	timer.start();
 			                	sendBroadcast(broadcastIntent);	
 			                	pause_resume.setImageResource(R.drawable.ic_action_pause);
@@ -212,9 +221,6 @@ public class UI4 extends Activity {
 			
 			name.setText(nome);
 			duration.setText(String.format("%.2f secondi", (float) durata/1000));
-		} catch (NumberFormatException e) {
-			Toast.makeText(UI4.this, R.string.dbError, Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
 		} catch (SQLException e) {
 			Toast.makeText(UI4.this, R.string.dbError, Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
@@ -224,8 +230,9 @@ public class UI4 extends Activity {
 	public void onDestroy(){
 		
 		/*-- Release Lock for Play --*/
-		widget_big.play_widget=true;
+		widget_big.play_widget = true;
 		
+		/*-- Unregister receiver --*/
 		this.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
@@ -234,6 +241,8 @@ public class UI4 extends Activity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+		
+		/*-- Send Stop signal to Play record service --*/
 		broadcastIntent.putExtra("Stop", true);
     	broadcastIntent.putExtra("Pausa", false);
     	broadcastIntent.putExtra("Riprendi", false);
@@ -279,7 +288,7 @@ public class UI4 extends Activity {
 	public class TimerCounter extends CountDownTimer{
 		 private long end;
 		 private long previous;
-		 private long curr=0;
+		 private long curr = 0;
 		  
 	     public TimerCounter(long millisInFuture, long countDownInterval, long prev) {
 	          super(millisInFuture, countDownInterval);
@@ -290,14 +299,14 @@ public class UI4 extends Activity {
 	      @Override
 	     public void onFinish() {
 	    	  time.setText(String.format("%.2f s", (float)(previous+end)/1000));
-	    	  timer=new TimerCounter(previous+end, INTERVALLO, 0);
+	    	  timer = new TimerCounter(previous+end, INTERVALLO, 0);
 	    	  timer.start();   	  
 	      }
 	       
 
 	      @Override
 	      public void onTick(long millisUntilFinished) {
-	    	  curr=millisUntilFinished;
+	    	  curr = millisUntilFinished;
 	          time.setText(String.format("%.2f s", (float)(previous+end-curr)/1000));
 	          sbtime.setProgress((int)(previous+end-curr));
 	      }
