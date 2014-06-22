@@ -249,7 +249,7 @@ public class UI4 extends Activity {
     	sendBroadcast(broadcastIntent);
     	primavolta=true;
         finish();	
-	return;
+
 	}
 	
 	@Override

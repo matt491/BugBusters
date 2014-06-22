@@ -307,7 +307,6 @@ public class UI2 extends Activity {
 			Intent returnIntent = new Intent(UI2.this, UI1.class);
         	startActivity(returnIntent);
         	finish();	
-	return;
 	}
 	
 	

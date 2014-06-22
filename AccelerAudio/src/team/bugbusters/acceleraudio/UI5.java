@@ -173,16 +173,9 @@ public class UI5 extends Activity {
 	/*-- Back button pressed --*/
 	@Override
 	public void onBackPressed() {
-        	finish();	
-	return;
+        	finish();
 	}
 	
-	
-	public void onPause(){
-		super.onPause();
-		if(fromWidget) 
-			finish();
-	}
 	
 	
 	/*-- Method used to set spinner selection --*/

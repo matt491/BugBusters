@@ -427,17 +427,18 @@ public class UI3 extends Activity {
 	  /*-- Back button pressed --*/
 	  @Override
 	  public void onBackPressed() {
-				if(timer!=null) timer.cancel();
-    			if(!widget_lil.record_widget_lil && !widget_big.record_widget_big) {
-    				stopService(intentToSer);
-    				widget_lil.record_running=false;
-    			}
-    			alreadyShowed = false;
-				Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
-	        	startActivity(returnIntent);
-	        	finish();	
+		  
+		  if(timer!=null) timer.cancel();
+		  if(!widget_lil.record_widget_lil && !widget_big.record_widget_big) {
+		  	stopService(intentToSer);
+			widget_lil.record_running = false;
+		  }
+		  alreadyShowed = false;
+		  Intent returnIntent = new Intent(getApplicationContext(), UI1.class);
+		  startActivity(returnIntent);
+		  finish();	
 
-		}
+	  }
 		
 		/*-- Method used to save current state --*/
 		@Override
