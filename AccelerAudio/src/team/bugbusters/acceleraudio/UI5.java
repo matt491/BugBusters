@@ -177,8 +177,8 @@ public class UI5 extends Activity {
 	public void onResume() {
 		super.onResume();
 		
+		/*-- If UI5 was launched/restored from widget then lock the screen at the current position --*/
     	if(fromWidget) {
-    		/*-- Lock the screen at the current position --*/
 			WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 			Display disp = wm.getDefaultDisplay();
 			int orientation = disp.getRotation();
